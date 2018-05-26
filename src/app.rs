@@ -3,12 +3,14 @@ use sfml::window::{Event::*, Style};
 
 use player::{Player, LocalPlayer};
 use world::World;
+use view::View;
 
 enum AppState {
 	Menu,
 	InGame {
 		players: [Box<Player>; 2],
-		world: World
+		world: World,
+		view: View
 	}
 }
 
@@ -23,6 +25,7 @@ impl App {
 			state: AppState::InGame {
 				players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
 				world: World::gen(),
+				view: View::new(),
 			},
 			window: RenderWindow::new((800, 600), "Combat", Style::CLOSE, &Default::default()),
 		}
@@ -36,6 +39,9 @@ impl App {
 					_ => {},
 				}
 			}
+
+			self.tick();
+
 			self.window.clear(&Color::rgb(0, 0, 0));
 
 			self.render();
@@ -44,9 +50,15 @@ impl App {
 		}
 	}
 
+	fn tick(&mut self) {
+		if let AppState::InGame { ref world, ref players, ref mut view } = self.state {
+			world.tick(players, view);
+		}
+	}
+
 	fn render(&mut self) {
-		if let AppState::InGame { ref world, .. } = self.state {
-			world.render(&mut self.window);
+		if let AppState::InGame { ref world, ref view, .. } = self.state {
+			world.render(&mut self.window, view);
 		}
 	}
 }

@@ -3,6 +3,7 @@ extern crate rand;
 
 mod world;
 mod player;
+mod view;
 mod app;
 
 use app::App;
