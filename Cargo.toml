@@ -5,3 +5,4 @@ authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
 
 [dependencies]
 sfml = "0.14"
+rand = "0.5"

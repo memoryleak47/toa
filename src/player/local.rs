@@ -4,6 +4,11 @@ pub struct LocalPlayer {
 
 }
 
-impl Player for LocalPlayer {
+impl LocalPlayer {
+	pub fn new() -> LocalPlayer {
+		LocalPlayer {}
+	}
+}
 
+impl Player for LocalPlayer {
 }

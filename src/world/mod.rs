@@ -12,7 +12,7 @@ pub struct World {
 impl World {
 	pub fn gen() -> World {
 		World {
-			tilemap: TileMap::gen()
+			tilemap: TileMap::gen(),
 		}
 	}
 
