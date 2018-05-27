@@ -3,7 +3,7 @@ use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
-use world::{TILESIZE, MAP_SIZE};
+use world::{Direction, TILESIZE, MAP_SIZE};
 
 const FULL_STAMINA: u8 = 100;
 const FULL_HEALTH: u8 = 100;
@@ -65,7 +65,8 @@ impl UnitMap {
 		}
 	}
 
-	pub fn try_move(&mut self, from: Vector2u, to: Vector2u, player: u8) -> bool {
+	pub fn try_move(&mut self, from: Vector2u, direction: Direction, player: u8) -> bool {
+		let to = direction.plus_vector(from);
 		if let Some(unit) = self.units[from.x as usize][from.y as usize] {
 			if unit.owner == player {
 				self.units[to.x as usize][to.y as usize] = Some(unit);

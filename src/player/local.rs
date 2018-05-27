@@ -14,7 +14,7 @@ impl LocalPlayer {
 }
 
 impl Player for LocalPlayer {
-	fn fetch_command(&self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
-		return view.handle_action_keys(w, input);
+	fn fetch_command(&self, world: &World, view: &mut View, input: &Input) -> Option<Command> {
+		return view.handle_action_keys(world, input);
 	}
 }

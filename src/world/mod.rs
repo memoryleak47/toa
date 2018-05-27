@@ -3,7 +3,8 @@ mod buildingmap;
 mod unitmap;
 
 use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
-use sfml::system::Vector2u;
+use sfml::system::{Vector2u, Vector2i};
+use std::cmp::{min, max};
 
 pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
 
@@ -15,9 +16,36 @@ use world::unitmap::UnitMap;
 use player::Player;
 use view::View;
 
+#[derive(Copy, Clone)]
+pub enum Direction {
+	Up, Left, Down, Right
+}
+
+pub fn crop_vector(v: Vector2i) -> Vector2u {
+	Vector2u::new(
+		max(0, min(MAP_SIZE as i32 - 1, v.x)) as u32,
+		max(0, min(MAP_SIZE as i32 - 1, v.y)) as u32,
+	)
+}
+
+impl Direction {
+	pub fn to_vector(&self) -> Vector2i {
+		match self {
+			Direction::Up => Vector2i::new(0, -1),
+			Direction::Left => Vector2i::new(-1, 0),
+			Direction::Down => Vector2i::new(0, 1),
+			Direction::Right => Vector2i::new(1, 0),
+		}
+	}
+
+	pub fn plus_vector(&self, p: Vector2u) -> Vector2u {
+		let v = self.to_vector();
+		crop_vector(Vector2i::new(p.x as i32 + v.x, p.y as i32 + v.y))
+	}
+}
+
 pub enum Command {
-	Move { from: Vector2u, to: Vector2u },
-	Fight { from: Vector2u, to: Vector2u },
+	Move { from: Vector2u, direction: Direction },
 	NextTurn,
 }
 
@@ -70,14 +98,11 @@ impl World {
 
 	fn exec(&mut self, command: Command, view: &mut View) {
 		match command {
-			Command::Move { from, to } => {
-				if self.unitmap.try_move(from, to, self.active_player) {
-					view.action = None;
-					view.marked_tile = to;
+			Command::Move { from, direction } => {
+				if self.unitmap.try_move(from, direction, self.active_player) {
+					view.marked_tile = direction.plus_vector(from);
 				}
-			},
-			Command::Fight { from, to } => {
-				// TODO
+				// TODO do something in case this is an attack
 			},
 			Command::NextTurn => {
 				self.active_player = 1 - self.active_player;

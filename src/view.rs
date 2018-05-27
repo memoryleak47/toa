@@ -4,39 +4,19 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, T
 use sfml::window::Key;
 
 use input::Input;
-use world::World;
-use ::world::{MAP_SIZE, TILESIZE, Command};
+use world::{World, Direction, MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
 const ACTION_BORDER_SIZE: u8 = 3;
-const MOVE_WAIT_TIME: u32 = 3;
+const MOVE_WAIT_TIME: u32 = 7;
 
 #[allow(non_snake_case)]
 fn MARKED_TILE_COLOR() -> Color { Color::rgb(150, 150, 0) }
 
-pub struct ViewAction {
-	kind: ViewActionKind,
-	to: Vector2u,
-}
-
-pub enum ViewActionKind {
-	Move,
-	Fight,
-}
-
-impl ViewActionKind {
-	fn get_marker_color(&self) -> Color {
-		match self {
-			ViewActionKind::Move => Color::rgb(0, 0, 150),
-			ViewActionKind::Fight => Color::rgb(150, 0, 0),
-		}
-	}
-}
-
 pub struct View {
 	pub focus_position: Vector2f, // the tile in the center of the screen, in map coordinates
 	pub marked_tile: Vector2u,
-	pub action: Option<ViewAction>,
+	pub marking_unit: bool,
 }
 
 impl View {
@@ -44,40 +24,19 @@ impl View {
 		View {
 			focus_position: Vector2f::new(MAP_SIZE as f32 / 2., MAP_SIZE as f32  / 2.),
 			marked_tile: Vector2u::new(MAP_SIZE as u32 / 2, MAP_SIZE as u32 / 2),
-			action: None,
+			marking_unit: false,
 		}
 	}
 
-	pub fn move_cursor(&mut self, v: Vector2i) {
-		let c: &mut Vector2u = match self.action {
-			None => &mut self.marked_tile,
-			Some(ref mut x) => &mut x.to,
-		};
-		*c = Vector2u::new(
-			min(MAP_SIZE as u32 - 1, max(0, c.x as i32 + v.x) as u32),
-			min(MAP_SIZE as u32 - 1, max(0, c.y as i32 + v.y) as u32)
-		);
+	pub fn move_cursor(&mut self, direction: Direction) {
+		self.marked_tile = direction.plus_vector(self.marked_tile);
 	}
 
 	pub fn handle_action_keys(&mut self, w: &World, input: &Input) -> Option<Command> {
-
 		if input.is_fresh_pressed(Key::Return) {
-			if let Some(ref action) = self.action {
-				match action.kind {
-					ViewActionKind::Move => return Some(Command::Move { from: self.marked_tile, to: action.to }),
-					ViewActionKind::Fight => return Some(Command::Fight { from: self.marked_tile, to: action.to }),
-				}
-			}
-		}
-
-		if let Some(unit) = w.unitmap.get(self.marked_tile) {
-			if unit.owner == w.active_player {
-				if input.is_fresh_pressed(Key::M) {
-					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
-				}
-
-				if input.is_fresh_pressed(Key::F) {
-					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Fight })
+			if let Some(unit) = w.unitmap.get(self.marked_tile) {
+				if unit.owner == w.active_player {
+					self.marking_unit = true;
 				}
 			}
 		}
@@ -87,21 +46,27 @@ impl View {
 			return Some(Command::NextTurn);
 		}
 
+		if self.marking_unit {
+			if let Some(direction) = move_direction(input) {
+				return Some(Command::Move { from: self.marked_tile, direction });
+			}
+		}
+
 		None
 	}
 
 	pub fn handle_basic_keys(&mut self, input: &Input) {
 		if input.is_pressed(Key::Escape) {
-			self.action = None;
+			self.marking_unit = false;
 		}
 
-		let x = input.is_pressed_mod(Key::D, MOVE_WAIT_TIME) as i32 - input.is_pressed_mod(Key::A, MOVE_WAIT_TIME) as i32;
-		let y = input.is_pressed_mod(Key::S, MOVE_WAIT_TIME) as i32 - input.is_pressed_mod(Key::W, MOVE_WAIT_TIME) as i32;
-
-		if input.is_pressed(Key::LControl) || input.is_pressed(Key::RControl) {
-			self.focus_position += Vector2f::new(x as f32, y as f32);
-		} else {
-			self.move_cursor(Vector2i::new(x, y));
+		if let Some(direction) = move_direction(input) {
+			if input.is_pressed(Key::LControl) || input.is_pressed(Key::RControl) {
+				let v = direction.to_vector();
+				self.focus_position += Vector2f::new(v.x as f32, v.y as f32);
+			} else if !self.marking_unit {
+				self.move_cursor(direction);
+			}
 		}
 	}
 
@@ -136,8 +101,13 @@ impl View {
 
 	pub fn render(&self, window: &mut RenderWindow) {
 		self.render_marker(window, &MARKED_TILE_COLOR(), MARKED_TILE_BORDER_SIZE, self.marked_tile);
-		if let Some(ViewAction { ref kind, ref to }) = self.action {
-			self.render_marker(window, &kind.get_marker_color(), ACTION_BORDER_SIZE, to.clone());
-		}
 	}
+}
+
+fn move_direction(input: &Input) -> Option<Direction> {
+	if input.is_pressed_mod(Key::W, MOVE_WAIT_TIME) { Some(Direction::Up) }
+	else if input.is_pressed_mod(Key::A, MOVE_WAIT_TIME) { Some(Direction::Left) }
+	else if input.is_pressed_mod(Key::S, MOVE_WAIT_TIME) { Some(Direction::Down) }
+	else if input.is_pressed_mod(Key::D, MOVE_WAIT_TIME) { Some(Direction::Right) }
+	else { None }
 }
