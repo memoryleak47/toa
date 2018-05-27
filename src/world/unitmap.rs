@@ -55,7 +55,7 @@ impl World {
 	pub fn refill_stamina(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(mut unit) = self.unitmap[x][y] {
+				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
 					unit.stamina = FULL_STAMINA;
 				}
 			}
@@ -70,7 +70,7 @@ impl World {
 		if tile.x < MAP_SIZE_X as u32 - 1 {
 			Vector2u::new(tile.x + 1, tile.y)
 		} else if tile.y < MAP_SIZE_Y as u32 - 1 {
-			Vector2u::new(tile.x, tile.y + 1)
+			Vector2u::new(0, tile.y + 1)
 		} else {
 			Vector2u::new(0, 0)
 		}

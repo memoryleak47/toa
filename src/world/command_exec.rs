@@ -15,12 +15,22 @@ impl World {
 
 	fn exec_move(&mut self, from: Vector2u, direction: Direction, view: &mut View) {
 		let to = direction.plus_vector(from);
+
+		let stamina_cost = self.get_terrain(from).get_stamina_cost() + self.get_terrain(to).get_stamina_cost();
+
 		if let Some(mut unit) = self.get_unit(from).cloned() {
-			if let Some(defending_unit) = self.get_unit(to).cloned() {
-				// TODO
-			} else {
-				let stamina_cost = self.get_terrain(from).get_stamina_cost() + self.get_terrain(to).get_stamina_cost();
-				if unit.stamina > stamina_cost {
+			if unit.stamina > stamina_cost {
+				if let Some(mut defending_unit) = self.get_unit(to).cloned() {
+					if defending_unit.owner != unit.owner {
+						unit.stamina -= stamina_cost;
+
+						defending_unit.health = defending_unit.health.saturating_sub(10);
+						unit.health = unit.health.saturating_sub(10);
+
+						self.unitmap[from.x as usize][from.y as usize] = Some(unit);
+						self.unitmap[to.x as usize][to.y as usize] = Some(defending_unit);
+					}
+				} else {
 					unit.stamina -= stamina_cost;
 					self.unitmap[to.x as usize][to.y as usize] = Some(unit);
 					self.unitmap[from.x as usize][from.y as usize] = None;
