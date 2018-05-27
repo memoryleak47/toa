@@ -9,6 +9,7 @@ use ::world::{MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
 const ACTION_BORDER_SIZE: u8 = 3;
+const MOVE_WAIT_TIME: u32 = 3;
 
 #[allow(non_snake_case)]
 fn MARKED_TILE_COLOR() -> Color { Color::rgb(150, 150, 0) }
@@ -94,8 +95,8 @@ impl View {
 			self.action = None;
 		}
 
-		let x = input.is_pressed(Key::D) as i32 - input.is_pressed(Key::A) as i32;
-		let y = input.is_pressed(Key::S) as i32 - input.is_pressed(Key::W) as i32;
+		let x = input.is_pressed_mod(Key::D, MOVE_WAIT_TIME) as i32 - input.is_pressed_mod(Key::A, MOVE_WAIT_TIME) as i32;
+		let y = input.is_pressed_mod(Key::S, MOVE_WAIT_TIME) as i32 - input.is_pressed_mod(Key::W, MOVE_WAIT_TIME) as i32;
 
 		if input.is_pressed(Key::LControl) || input.is_pressed(Key::RControl) {
 			self.focus_position += Vector2f::new(x as f32, y as f32);

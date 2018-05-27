@@ -1,17 +1,21 @@
+use std::collections::HashMap;
 use sfml::window::Key;
 
-static KEYS: [Key; 10] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::M, Key::F, Key::LControl, Key::RControl];
+static KEYS: [Key; 11] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::Escape, Key::M, Key::F, Key::LControl, Key::RControl];
+
+struct KeyState {
+	time: u32,
+	pressed: bool,
+}
 
 pub struct Input {
-	pressed_keys: Vec<&'static Key>,
-	fresh_pressed_keys: Vec<&'static Key>,
+	keymap: HashMap<Key, KeyState>,
 }
 
 impl Input {
 	pub fn new() -> Input {
 		Input {
-			pressed_keys: vec![],
-			fresh_pressed_keys: vec![],
+			keymap: new_keymap()
 		}
 	}
 
@@ -20,26 +24,41 @@ impl Input {
 	}
 
 	pub fn is_pressed(&self, key: Key) -> bool {
-		self.pressed_keys.contains(&&key)
+		self.keymap[&key].pressed
 	}
 
 	pub fn is_fresh_pressed(&self, key: Key) -> bool {
-		self.fresh_pressed_keys.contains(&&key)
+		let state = &self.keymap[&key];
+		state.pressed && state.time == 0
+	}
+
+	pub fn is_pressed_mod(&self, key: Key, modulo: u32) -> bool {
+		let state = &self.keymap[&key];
+		state.pressed && state.time % modulo == 0
 	}
 
 	fn tick_keys(&mut self) {
-		let old_pressed_keys = self.pressed_keys.clone();
-
-		self.pressed_keys = vec![];
-		self.fresh_pressed_keys = vec![];
+		let mut keymap = HashMap::new();
 
 		for key in KEYS.iter() {
-			if key.is_pressed() {
-				self.pressed_keys.push(key);
-				if !old_pressed_keys.contains(&key) {
-					self.fresh_pressed_keys.push(key);
-				}
+			let state = &self.keymap[&key];
+			if state.pressed == key.is_pressed() {
+				keymap.insert(*key, KeyState { time: state.time + 1, pressed: state.pressed });
+			} else {
+				keymap.insert(*key, KeyState { time: 0, pressed: !state.pressed });
 			}
 		}
+
+		self.keymap = keymap;
 	}
+}
+
+fn new_keymap() -> HashMap<Key, KeyState> {
+	let mut keymap = HashMap::new();
+
+	for key in KEYS.iter() {
+		keymap.insert(*key, KeyState { time: 0, pressed: key.is_pressed() });
+	}
+
+	keymap
 }
