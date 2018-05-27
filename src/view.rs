@@ -1,5 +1,4 @@
-use std::cmp::{min, max};
-use sfml::system::{Vector2u, Vector2i, Vector2f};
+use sfml::system::{Vector2u, Vector2f};
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
 use sfml::window::Key;
 
@@ -7,7 +6,6 @@ use input::Input;
 use world::{World, Direction, MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
-const ACTION_BORDER_SIZE: u8 = 3;
 const MOVE_WAIT_TIME: u32 = 7;
 
 #[allow(non_snake_case)]
