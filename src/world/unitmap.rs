@@ -1,13 +1,18 @@
 use sfml::graphics::{RenderWindow, RenderTarget, CircleShape, Shape, Color, Transformable};
-use sfml::system::Vector2f;
+use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
 use world::{TILESIZE, MAP_SIZE};
 
+const FULL_STAMINA: u8 = 100;
+const FULL_HEALTH: u8 = 100;
+
 #[derive(Copy, Clone)]
 pub struct Unit {
 	owner: u8,
+	stamina: u8,
+	health: u8,
 }
 
 impl Unit {
@@ -28,8 +33,8 @@ impl UnitMap {
 	pub fn gen() -> UnitMap {
 		let mut units = [[None; MAP_SIZE]; MAP_SIZE];
 
-		units[MAP_SIZE / 2][0] = Some(Unit { owner: 0 });
-		units[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Unit { owner: 1 });
+		units[MAP_SIZE / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
+		units[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
 
 		UnitMap { units }
 	}
@@ -48,5 +53,26 @@ impl UnitMap {
 				}
 			}
 		}
+	}
+
+	pub fn refill_stamina(&mut self) {
+		for x in 0..MAP_SIZE {
+			for y in 0..MAP_SIZE {
+				if let Some(mut unit) = self.units[x][y] {
+					unit.stamina = FULL_STAMINA;
+				}
+			}
+		}
+	}
+
+	pub fn try_move(&mut self, from: Vector2u, to: Vector2u, player: u8) -> bool {
+		if let Some(unit) = self.units[from.x as usize][from.y as usize] {
+			if unit.owner == player {
+				self.units[to.x as usize][to.y as usize] = Some(unit);
+				self.units[from.x as usize][from.y as usize] = None;
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -52,21 +52,32 @@ impl World {
 		view.handle_basic_keys();
 
 		if let Some(command) = players[self.active_player as usize].fetch_command(view) {
-			self.exec(command);
+			self.exec(command, view);
 		}
 	}
 
-	fn exec(&mut self, command: Command) {
+	fn exec(&mut self, command: Command, view: &mut View) {
 		match command {
 			Command::Move { from, to } => {
-				// TODO
+				if self.unitmap.try_move(from, to, self.active_player) {
+					view.action = None;
+					view.marked_tile = to;
+				}
 			},
 			Command::Fight { from, to } => {
 				// TODO
 			},
 			Command::NextTurn => {
 				self.active_player = 1 - self.active_player;
+
+				if self.active_player == 0 {
+					self.reset_turn();
+				}
 			},
 		}
+	}
+
+	fn reset_turn(&mut self) {
+		self.unitmap.refill_stamina();
 	}
 }
