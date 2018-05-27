@@ -39,8 +39,8 @@ pub struct View {
 impl View {
 	pub fn new() -> View {
 		View {
-			focus_position: Vector2f::new(0., 0.),
-			marked_tile: Vector2u::new(0, 0),
+			focus_position: Vector2f::new(MAP_SIZE as f32 / 2., MAP_SIZE as f32  / 2.),
+			marked_tile: Vector2u::new(MAP_SIZE as u32 / 2, MAP_SIZE as u32 / 2),
 			action: None
 		}
 	}

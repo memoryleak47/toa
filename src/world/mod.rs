@@ -14,10 +14,6 @@ use world::unitmap::UnitMap;
 use player::Player;
 use view::View;
 
-struct Unit {
-	owner: u8,
-}
-
 pub enum Command {
 	Move { from: Vector2u, to: Vector2u },
 	Fight { from: Vector2u, to: Vector2u },

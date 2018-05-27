@@ -5,7 +5,7 @@ use rand::{RngCore, thread_rng};
 use view::View;
 
 pub const TILESIZE: f32 = 20.;
-pub const MAP_SIZE: usize = 16;
+pub const MAP_SIZE: usize = 64;
 
 #[allow(non_snake_case)]
 pub fn TILESIZE_VEC() -> Vector2f {
