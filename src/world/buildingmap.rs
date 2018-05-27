@@ -6,22 +6,20 @@ use view::View;
 use world::{TILESIZE, TILESIZE_VEC, MAP_SIZE};
 
 #[derive(Copy, Clone, Debug)]
-enum BuildingKind {
-	Spawn,
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Building {
-	owner: u8,
-	kind: BuildingKind,
+pub enum Building {
+	Spawn { owner: u8 },
 }
 
 impl Building {
 	fn get_color(&self) -> Color {
-		if self.owner == 0 {
-			Color::rgba(255, 0, 0, 100)
-		} else {
-			Color::rgba(0, 0, 255, 100)
+		match self {
+			Building::Spawn { owner } =>  {
+				if *owner == 0 {
+					Color::rgba(255, 0, 0, 100)
+				} else {
+					Color::rgba(0, 0, 255, 100)
+				}
+			}
 		}
 	}
 }
@@ -34,8 +32,8 @@ impl BuildingMap {
 	pub fn gen() -> BuildingMap {
 		let mut buildings = [[None; MAP_SIZE]; MAP_SIZE];
 
-		buildings[MAP_SIZE / 2][0] = Some(Building { owner: 0, kind: BuildingKind::Spawn });
-		buildings[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Building { owner: 1, kind: BuildingKind::Spawn });
+		buildings[MAP_SIZE / 2][0] = Some(Building::Spawn { owner: 0 });
+		buildings[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Building::Spawn { owner: 1 });
 
 		BuildingMap { buildings }
 	}
