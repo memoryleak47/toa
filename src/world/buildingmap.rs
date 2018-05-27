@@ -8,7 +8,7 @@ use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
 
 #[derive(Copy, Clone, Debug)]
 pub enum Building {
-	Spawn { owner: u8 },
+	Spawn { owner: u32 },
 }
 
 impl Building {

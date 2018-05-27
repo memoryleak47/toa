@@ -23,6 +23,15 @@ impl Tile {
 			Tile::IRON => Color::rgb(150,150,150),
 		}
 	}
+
+	pub fn get_stamina_cost(&self) -> u32 {
+		match self {
+			Tile::GRASS => 10,
+			Tile::FOREST => 20,
+			Tile::STONE => 20,
+			Tile::IRON => 20,
+		}
+	}
 }
 
 pub fn new_tilemap() -> [[Tile; MAP_SIZE]; MAP_SIZE] {

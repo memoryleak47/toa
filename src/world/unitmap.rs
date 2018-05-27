@@ -4,16 +4,16 @@ use sfml::system::{Vector2f, Vector2u};
 use view::View;
 
 use world::{World, TILESIZE, MAP_SIZE};
-use misc::{Direction, vector_uf};
+use misc::{vector_uf};
 
-const FULL_STAMINA: u8 = 100;
-const FULL_HEALTH: u8 = 100;
+const FULL_STAMINA: u32 = 100;
+const FULL_HEALTH: u32 = 100;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Unit {
-	pub owner: u8,
-	pub stamina: u8,
-	pub health: u8,
+	pub owner: u32,
+	pub stamina: u32,
+	pub health: u32,
 }
 
 impl Unit {
@@ -60,18 +60,6 @@ impl World {
 				}
 			}
 		}
-	}
-
-	pub fn try_move(&mut self, from: Vector2u, direction: Direction, player: u8) -> bool {
-		let to = direction.plus_vector(from);
-		if let Some(unit) = self.unitmap[from.x as usize][from.y as usize] {
-			if unit.owner == player {
-				self.unitmap[to.x as usize][to.y as usize] = Some(unit);
-				self.unitmap[from.x as usize][from.y as usize] = None;
-				return true;
-			}
-		}
-		return false;
 	}
 
 	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {

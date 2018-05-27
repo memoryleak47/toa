@@ -1,7 +1,9 @@
+mod command_exec;
 mod tilemap;
 mod buildingmap;
 mod unitmap;
 
+pub use self::command_exec::*;
 pub use self::tilemap::*;
 pub use self::buildingmap::*;
 pub use self::unitmap::*;
@@ -13,7 +15,6 @@ use input::Input;
 
 use player::Player;
 use view::View;
-use command::Command;
 
 pub const TILESIZE: f32 = 20.;
 pub const MAP_SIZE: usize = 64;
@@ -28,7 +29,7 @@ pub struct World {
 	pub tilemap: [[Tile; MAP_SIZE]; MAP_SIZE],
 	pub buildingmap: [[Option<Building>; MAP_SIZE]; MAP_SIZE],
 	pub unitmap: [[Option<Unit>; MAP_SIZE]; MAP_SIZE],
-	pub active_player: u8,
+	pub active_player: u32,
 }
 
 impl World {
@@ -67,25 +68,6 @@ impl World {
 
 		if let Some(command) = players[self.active_player as usize].fetch_command(self, view, input) {
 			self.exec(command, view);
-		}
-	}
-
-	fn exec(&mut self, command: Command, view: &mut View) {
-		match command {
-			Command::Move { from, direction } => {
-				let active_player = self.active_player;
-				if self.try_move(from, direction, active_player) {
-					view.marked_tile = direction.plus_vector(from);
-				}
-				// TODO do something in case this is an attack
-			},
-			Command::NextTurn => {
-				self.active_player = 1 - self.active_player;
-
-				if self.active_player == 0 {
-					self.reset_turn();
-				}
-			},
 		}
 	}
 

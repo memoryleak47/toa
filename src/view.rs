@@ -7,7 +7,7 @@ use world::{World, MAP_SIZE, TILESIZE};
 use misc::Direction;
 use command::Command;
 
-const MARKED_TILE_BORDER_SIZE: u8 = 5;
+const MARKED_TILE_BORDER_SIZE: u32 = 5;
 const MOVE_WAIT_TIME: u32 = 7;
 
 #[allow(non_snake_case)]
@@ -70,7 +70,7 @@ impl View {
 		}
 	}
 
-	fn render_marker(&self, window: &mut RenderWindow, color: &Color, size: u8, position: Vector2u) {
+	fn render_marker(&self, window: &mut RenderWindow, color: &Color, size: u32, position: Vector2u) {
 		let posf = Vector2f::new(position.x as f32 * TILESIZE, position.y as f32 * TILESIZE);
 
 		let halfscreen = Vector2f::new(window.size().x as f32, window.size().y as f32) / 2.0;
