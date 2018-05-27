@@ -3,6 +3,7 @@ use sfml::system::{Vector2u, Vector2i, Vector2f};
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
 use sfml::window::Key;
 
+use world::World;
 use ::world::{MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
@@ -56,7 +57,7 @@ impl View {
 		);
 	}
 
-	pub fn handle_action_keys(&mut self) -> Option<Command> {
+	pub fn handle_action_keys(&mut self, w: &World) -> Option<Command> {
 		// TODO these key-checks should only be triggered by fresh presses
 
 		if Key::Return.is_pressed() {
@@ -68,15 +69,20 @@ impl View {
 			}
 		}
 
-		if Key::M.is_pressed() {
-			self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
-		}
+		if let Some(unit) = w.unitmap.get(self.marked_tile) {
+			if unit.owner == w.active_player {
+				if Key::M.is_pressed() {
+					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
+				}
 
-		if Key::F.is_pressed() {
-			self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Fight })
+				if Key::F.is_pressed() {
+					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Fight })
+				}
+			}
 		}
 
 		if Key::N.is_pressed() {
+			*self = View::new();
 			return Some(Command::NextTurn);
 		}
 

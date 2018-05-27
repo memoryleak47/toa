@@ -22,10 +22,10 @@ pub enum Command {
 
 // represents the current world situation
 pub struct World {
-	tilemap: TileMap,
-	buildingmap: BuildingMap,
-	unitmap: UnitMap,
-	active_player: u8,
+	pub tilemap: TileMap,
+	pub buildingmap: BuildingMap,
+	pub unitmap: UnitMap,
+	pub active_player: u8,
 }
 
 impl World {
@@ -62,7 +62,7 @@ impl World {
 	pub fn tick(&mut self, players: &[Box<Player>; 2], view: &mut View) {
 		view.handle_basic_keys();
 
-		if let Some(command) = players[self.active_player as usize].fetch_command(view) {
+		if let Some(command) = players[self.active_player as usize].fetch_command(self, view) {
 			self.exec(command, view);
 		}
 	}

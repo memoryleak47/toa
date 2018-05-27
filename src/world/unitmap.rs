@@ -10,9 +10,9 @@ const FULL_HEALTH: u8 = 100;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Unit {
-	owner: u8,
-	stamina: u8,
-	health: u8,
+	pub owner: u8,
+	pub stamina: u8,
+	pub health: u8,
 }
 
 impl Unit {
