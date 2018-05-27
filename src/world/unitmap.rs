@@ -3,7 +3,7 @@ use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
-use world::{Direction, TILESIZE, MAP_SIZE};
+use world::{World, Direction, TILESIZE, MAP_SIZE};
 
 const FULL_STAMINA: u8 = 100;
 const FULL_HEALTH: u8 = 100;
@@ -25,24 +25,21 @@ impl Unit {
 	}
 }
 
-pub struct UnitMap {
-	units: [[Option<Unit>; MAP_SIZE]; MAP_SIZE],
+pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE]; MAP_SIZE] {
+	let mut unitmap = [[None; MAP_SIZE]; MAP_SIZE];
+
+	unitmap[MAP_SIZE / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
+	unitmap[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
+
+	unitmap
 }
 
-impl UnitMap {
-	pub fn gen() -> UnitMap {
-		let mut units = [[None; MAP_SIZE]; MAP_SIZE];
 
-		units[MAP_SIZE / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
-		units[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
-
-		UnitMap { units }
-	}
-
-	pub fn render(&self, window: &mut RenderWindow, view: &View) {
+impl World {
+	pub fn render_unitmap(&self, window: &mut RenderWindow, view: &View) {
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
-				if let Some(unit) = self.units[x][y] {
+				if let Some(unit) = self.unitmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 					let size = window.size();
 
@@ -58,7 +55,7 @@ impl UnitMap {
 	pub fn refill_stamina(&mut self) {
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
-				if let Some(mut unit) = self.units[x][y] {
+				if let Some(mut unit) = self.unitmap[x][y] {
 					unit.stamina = FULL_STAMINA;
 				}
 			}
@@ -67,17 +64,17 @@ impl UnitMap {
 
 	pub fn try_move(&mut self, from: Vector2u, direction: Direction, player: u8) -> bool {
 		let to = direction.plus_vector(from);
-		if let Some(unit) = self.units[from.x as usize][from.y as usize] {
+		if let Some(unit) = self.unitmap[from.x as usize][from.y as usize] {
 			if unit.owner == player {
-				self.units[to.x as usize][to.y as usize] = Some(unit);
-				self.units[from.x as usize][from.y as usize] = None;
+				self.unitmap[to.x as usize][to.y as usize] = Some(unit);
+				self.unitmap[from.x as usize][from.y as usize] = None;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	pub fn get(&self, p: Vector2u) -> Option<&Unit> {
-		self.units[p.x as usize][p.y as usize].as_ref()
+	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {
+		self.unitmap[p.x as usize][p.y as usize].as_ref()
 	}
 }

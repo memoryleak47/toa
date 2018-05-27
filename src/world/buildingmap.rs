@@ -3,7 +3,7 @@ use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
-use world::{TILESIZE, TILESIZE_VEC, MAP_SIZE};
+use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
 
 #[derive(Copy, Clone, Debug)]
 pub enum Building {
@@ -24,24 +24,20 @@ impl Building {
 	}
 }
 
-pub struct BuildingMap {
-	buildings: [[Option<Building>; MAP_SIZE]; MAP_SIZE],
+pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE]; MAP_SIZE] {
+	let mut buildingmap = [[None; MAP_SIZE]; MAP_SIZE];
+
+	buildingmap[MAP_SIZE / 2][0] = Some(Building::Spawn { owner: 0 });
+	buildingmap[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Building::Spawn { owner: 1 });
+
+	buildingmap
 }
 
-impl BuildingMap {
-	pub fn gen() -> BuildingMap {
-		let mut buildings = [[None; MAP_SIZE]; MAP_SIZE];
-
-		buildings[MAP_SIZE / 2][0] = Some(Building::Spawn { owner: 0 });
-		buildings[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Building::Spawn { owner: 1 });
-
-		BuildingMap { buildings }
-	}
-
-	pub fn render(&self, window: &mut RenderWindow, view: &View) {
+impl World {
+	pub fn render_buildingmap(&self, window: &mut RenderWindow, view: &View) {
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
-				if let Some(building) = self.buildings[x][y] {
+				if let Some(building) = self.buildingmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 					let size = window.size();
 
@@ -55,7 +51,7 @@ impl BuildingMap {
 		}
 	}
 
-	pub fn get(&self, p: Vector2u) -> Option<&Building> {
-		self.buildings[p.x as usize][p.y as usize].as_ref()
+	pub fn get_building(&self, p: Vector2u) -> Option<&Building> {
+		self.buildingmap[p.x as usize][p.y as usize].as_ref()
 	}
 }

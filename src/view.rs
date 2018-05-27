@@ -32,7 +32,7 @@ impl View {
 
 	pub fn handle_action_keys(&mut self, w: &World, input: &Input) -> Option<Command> {
 		if input.is_fresh_pressed(Key::Return) {
-			if let Some(unit) = w.unitmap.get(self.marked_tile) {
+			if let Some(unit) = w.get_unit(self.marked_tile) {
 				if unit.owner == w.active_player {
 					self.marking_unit = true;
 				}

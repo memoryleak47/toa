@@ -2,6 +2,10 @@ mod tilemap;
 mod buildingmap;
 mod unitmap;
 
+pub use self::tilemap::*;
+pub use self::buildingmap::*;
+pub use self::unitmap::*;
+
 use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
 use sfml::system::{Vector2u, Vector2i};
 use std::cmp::{min, max};
@@ -9,9 +13,6 @@ use std::cmp::{min, max};
 pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
 
 use input::Input;
-use world::tilemap::TileMap;
-use world::buildingmap::BuildingMap;
-use world::unitmap::UnitMap;
 
 use player::Player;
 use view::View;
@@ -51,26 +52,26 @@ pub enum Command {
 
 // represents the current world situation
 pub struct World {
-	pub tilemap: TileMap,
-	pub buildingmap: BuildingMap,
-	pub unitmap: UnitMap,
+	pub tilemap: [[Tile; MAP_SIZE]; MAP_SIZE],
+	pub buildingmap: [[Option<Building>; MAP_SIZE]; MAP_SIZE],
+	pub unitmap: [[Option<Unit>; MAP_SIZE]; MAP_SIZE],
 	pub active_player: u8,
 }
 
 impl World {
 	pub fn gen() -> World {
 		World {
-			tilemap: TileMap::gen(),
-			buildingmap: BuildingMap::gen(),
-			unitmap: UnitMap::gen(),
+			tilemap: new_tilemap(),
+			buildingmap: new_buildingmap(),
+			unitmap: new_unitmap(),
 			active_player: 0,
 		}
 	}
 
 	pub fn render(&self, w: &mut RenderWindow, view: &View) {
-		self.tilemap.render(w, view);
-		self.buildingmap.render(w, view);
-		self.unitmap.render(w, view);
+		self.render_tilemap(w, view);
+		self.render_buildingmap(w, view);
+		self.render_unitmap(w, view);
 
 		self.render_hud(w, view);
 	}
@@ -80,9 +81,9 @@ impl World {
 
 		let pos = view.marked_tile;
 
-		let terrain = self.tilemap.get(pos);
-		let building = self.buildingmap.get(pos);
-		let unit = self.unitmap.get(pos);
+		let terrain = self.get_tile(pos);
+		let building = self.get_building(pos);
+		let unit = self.get_unit(pos);
 
 		let t = Text::new(&format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}", self.active_player, terrain, building, unit), &f, 30);
 		w.draw(&t);
@@ -99,7 +100,8 @@ impl World {
 	fn exec(&mut self, command: Command, view: &mut View) {
 		match command {
 			Command::Move { from, direction } => {
-				if self.unitmap.try_move(from, direction, self.active_player) {
+				let active_player = self.active_player;
+				if self.try_move(from, direction, active_player) {
 					view.marked_tile = direction.plus_vector(from);
 				}
 				// TODO do something in case this is an attack
@@ -115,6 +117,6 @@ impl World {
 	}
 
 	fn reset_turn(&mut self) {
-		self.unitmap.refill_stamina();
+		self.refill_stamina();
 	}
 }
