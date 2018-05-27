@@ -11,7 +11,7 @@ const MARKED_TILE_BORDER_SIZE: u32 = 5;
 const MOVE_WAIT_TIME: u32 = 7;
 
 #[allow(non_snake_case)]
-fn MARKED_TILE_COLOR() -> Color { Color::rgb(150, 150, 0) }
+fn MARKED_TILE_COLOR() -> Color { Color::rgb(200, 150, 0) }
 
 pub struct View {
 	pub focus_position: Vector2f, // the tile in the center of the screen, in map coordinates
