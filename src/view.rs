@@ -3,11 +3,12 @@ use sfml::system::{Vector2u, Vector2i, Vector2f};
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
 use sfml::window::Key;
 
-use ::world::{MAP_SIZE, TILESIZE, TILESIZE_VEC};
+use ::world::{MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
 const ACTION_BORDER_SIZE: u8 = 3;
 
+#[allow(non_snake_case)]
 fn MARKED_TILE_COLOR() -> Color { Color::rgb(150, 150, 0) }
 
 pub struct ViewAction {
@@ -55,10 +56,31 @@ impl View {
 		);
 	}
 
-	pub fn handle_action_keys(&mut self) {
+	pub fn handle_action_keys(&mut self) -> Option<Command> {
+		// TODO these key-checks should only be triggered by fresh presses
+
+		if Key::Return.is_pressed() {
+			if let Some(ref action) = self.action {
+				match action.kind {
+					ViewActionKind::Move => return Some(Command::Move { from: self.marked_tile, to: action.to }),
+					ViewActionKind::Fight => return Some(Command::Fight { from: self.marked_tile, to: action.to }),
+				}
+			}
+		}
+
 		if Key::M.is_pressed() {
 			self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
 		}
+
+		if Key::F.is_pressed() {
+			self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Fight })
+		}
+
+		if Key::N.is_pressed() {
+			return Some(Command::NextTurn);
+		}
+
+		None
 	}
 
 	pub fn handle_basic_keys(&mut self) {

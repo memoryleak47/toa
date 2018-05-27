@@ -1,5 +1,5 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
-use sfml::system::{Vector2f, Vector2u};
+use sfml::system::Vector2f;
 use rand::{RngCore, thread_rng};
 
 use view::View;
@@ -7,6 +7,7 @@ use view::View;
 pub const TILESIZE: f32 = 20.;
 pub const MAP_SIZE: usize = 16;
 
+#[allow(non_snake_case)]
 pub fn TILESIZE_VEC() -> Vector2f {
 	Vector2f::new(TILESIZE, TILESIZE)
 }
@@ -58,7 +59,6 @@ impl TileMap {
 	pub fn render(&self, window: &mut RenderWindow, view: &View) {
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
-				let pos = Vector2u::new(x as u32, y as u32);
 				let posf = Vector2f::new(x as f32, y as f32);
 				let size = window.size();
 

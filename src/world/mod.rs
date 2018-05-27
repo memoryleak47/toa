@@ -11,6 +11,8 @@ use view::View;
 
 pub enum Command {
 	Move { from: Vector2u, to: Vector2u },
+	Fight { from: Vector2u, to: Vector2u },
+	NextTurn,
 }
 
 // represents the current world situation
@@ -42,7 +44,14 @@ impl World {
 	fn exec(&mut self, command: Command) {
 		match command {
 			Command::Move { from, to } => {
-			}
+				// TODO
+			},
+			Command::Fight { from, to } => {
+				// TODO
+			},
+			Command::NextTurn => {
+				self.active_player = 1 - self.active_player;
+			},
 		}
 	}
 }
