@@ -4,7 +4,7 @@ use sfml::system::{Vector2f, Vector2u};
 use view::View;
 use misc::vector_uf;
 
-use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
+use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE_X, MAP_SIZE_Y};
 
 #[derive(Copy, Clone, Debug)]
 pub enum Building {
@@ -25,19 +25,19 @@ impl Building {
 	}
 }
 
-pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE]; MAP_SIZE] {
-	let mut buildingmap = [[None; MAP_SIZE]; MAP_SIZE];
+pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X] {
+	let mut buildingmap = [[None; MAP_SIZE_Y]; MAP_SIZE_X];
 
-	buildingmap[MAP_SIZE / 2][0] = Some(Building::Spawn { owner: 0 });
-	buildingmap[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Building::Spawn { owner: 1 });
+	buildingmap[MAP_SIZE_X / 2][0] = Some(Building::Spawn { owner: 0 });
+	buildingmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Building::Spawn { owner: 1 });
 
 	buildingmap
 }
 
 impl World {
 	pub fn render_buildingmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE {
-			for y in 0..MAP_SIZE {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
 				if let Some(building) = self.buildingmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 

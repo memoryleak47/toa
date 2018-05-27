@@ -3,7 +3,7 @@ use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
-use world::{World, TILESIZE, MAP_SIZE};
+use world::{World, TILESIZE, MAP_SIZE_X, MAP_SIZE_Y};
 use misc::{vector_uf};
 
 const FULL_STAMINA: u32 = 100;
@@ -26,11 +26,11 @@ impl Unit {
 	}
 }
 
-pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE]; MAP_SIZE] {
-	let mut unitmap = [[None; MAP_SIZE]; MAP_SIZE];
+pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {
+	let mut unitmap = [[None; MAP_SIZE_Y]; MAP_SIZE_X];
 
-	unitmap[MAP_SIZE / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
-	unitmap[MAP_SIZE / 2][MAP_SIZE - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
+	unitmap[MAP_SIZE_X / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
+	unitmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
 
 	unitmap
 }
@@ -38,8 +38,8 @@ pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE]; MAP_SIZE] {
 
 impl World {
 	pub fn render_unitmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE {
-			for y in 0..MAP_SIZE {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
 				if let Some(unit) = self.unitmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 
@@ -53,8 +53,8 @@ impl World {
 	}
 
 	pub fn refill_stamina(&mut self) {
-		for x in 0..MAP_SIZE {
-			for y in 0..MAP_SIZE {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
 				if let Some(mut unit) = self.unitmap[x][y] {
 					unit.stamina = FULL_STAMINA;
 				}
@@ -67,9 +67,9 @@ impl World {
 	}
 
 	fn next_tile(&self, tile: Vector2u) -> Vector2u {
-		if tile.x < MAP_SIZE as u32- 1 {
+		if tile.x < MAP_SIZE_X as u32 - 1 {
 			Vector2u::new(tile.x + 1, tile.y)
-		} else if tile.y < MAP_SIZE as u32 - 1 {
+		} else if tile.y < MAP_SIZE_Y as u32 - 1 {
 			Vector2u::new(tile.x, tile.y + 1)
 		} else {
 			Vector2u::new(0, 0)
@@ -79,7 +79,7 @@ impl World {
 	pub fn find_next_unit_tile(&self, start: Vector2u, player: u32) -> Option<Vector2u> {
 		let mut i = start;
 
-		for _ in 0..(MAP_SIZE * MAP_SIZE) {
+		for _ in 0..(MAP_SIZE_X * MAP_SIZE_Y) {
 			i = self.next_tile(i);
 			if let Some(unit) = self.get_unit(i) {
 				if unit.owner == player {

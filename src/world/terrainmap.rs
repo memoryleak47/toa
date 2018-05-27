@@ -3,7 +3,7 @@ use sfml::system::{Vector2f, Vector2u};
 use rand::{RngCore, thread_rng};
 
 use view::View;
-use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
+use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE_X, MAP_SIZE_Y};
 use misc::vector_uf;
 
 #[derive(Clone, Copy, Debug)]
@@ -34,12 +34,12 @@ impl Terrain {
 	}
 }
 
-pub fn new_terrainmap() -> [[Terrain; MAP_SIZE]; MAP_SIZE] {
+pub fn new_terrainmap() -> [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X] {
 	let mut rng = thread_rng();
 
-	let mut terrainmap = [[Terrain::GRASS; MAP_SIZE]; MAP_SIZE];
-	for x in 0..MAP_SIZE {
-		for y in 0..MAP_SIZE {
+	let mut terrainmap = [[Terrain::GRASS; MAP_SIZE_Y]; MAP_SIZE_X];
+	for x in 0..MAP_SIZE_X {
+		for y in 0..MAP_SIZE_Y {
 			let r = rng.next_u32();
 			if r % 3 == 0 {
 				terrainmap[x][y] = Terrain::FOREST;
@@ -56,8 +56,8 @@ pub fn new_terrainmap() -> [[Terrain; MAP_SIZE]; MAP_SIZE] {
 
 impl World {
 	pub fn render_terrainmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE {
-			for y in 0..MAP_SIZE {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
 				let posf = Vector2f::new(x as f32, y as f32);
 
 				let mut shape = RectangleShape::new();

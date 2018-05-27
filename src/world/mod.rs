@@ -17,7 +17,8 @@ use player::Player;
 use view::View;
 
 pub const TILESIZE: f32 = 20.;
-pub const MAP_SIZE: usize = 64;
+pub const MAP_SIZE_X: usize = 42;
+pub const MAP_SIZE_Y: usize = 54;
 
 #[allow(non_snake_case)]
 pub fn TILESIZE_VEC() -> Vector2f {
@@ -26,9 +27,9 @@ pub fn TILESIZE_VEC() -> Vector2f {
 
 // represents the current world situation
 pub struct World {
-	pub terrainmap: [[Terrain; MAP_SIZE]; MAP_SIZE],
-	pub buildingmap: [[Option<Building>; MAP_SIZE]; MAP_SIZE],
-	pub unitmap: [[Option<Unit>; MAP_SIZE]; MAP_SIZE],
+	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub buildingmap: [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub active_player: u32,
 }
 

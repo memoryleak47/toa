@@ -3,7 +3,7 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, T
 use sfml::window::Key;
 
 use input::Input;
-use world::{World, MAP_SIZE, TILESIZE};
+use world::{World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE};
 use misc::Direction;
 use command::Command;
 
@@ -22,7 +22,7 @@ pub struct View {
 impl View {
 	pub fn new() -> View {
 		View {
-			focus_position: Vector2f::new(MAP_SIZE as f32 / 2., MAP_SIZE as f32  / 2.),
+			focus_position: Vector2f::new(MAP_SIZE_X as f32 / 2., MAP_SIZE_Y as f32  / 2.),
 			marked_tile: Vector2u::new(0, 0),
 			marking_unit: false,
 		}
