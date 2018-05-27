@@ -1,6 +1,6 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
 use sfml::system::{Vector2f, Vector2u};
-use rand::{thread_rng, Rng};
+use rand::{RngCore, thread_rng, Rng};
 
 use view::View;
 
@@ -20,15 +20,13 @@ pub enum Tile {
 	IRON,
 }
 
-const SPAWN_TILE_CHOICES: [Tile; 4] = [Tile::GRASS, Tile::FOREST, Tile::STONE, Tile::IRON];
-
 impl Tile {
 	pub fn get_color(&self) -> Color {
 		match self {
-			Tile::GRASS => Color::rgb(20,200,100),
+			Tile::GRASS => Color::rgb(50,150,50),
 			Tile::FOREST => Color::rgb(0,50,0),
-			Tile::STONE => Color::rgb(70,70,70),
-			Tile::IRON => Color::rgb(100,100,100),
+			Tile::STONE => Color::rgb(50,50,50),
+			Tile::IRON => Color::rgb(150,150,150),
 		}
 	}
 }
@@ -44,7 +42,14 @@ impl TileMap {
 		let mut tiles = [[Tile::GRASS; MAP_SIZE]; MAP_SIZE];
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
-				tiles[x][y] = *rng.choose(&SPAWN_TILE_CHOICES).unwrap();
+				let r = rng.next_u32();
+				if r % 3 == 0 {
+					tiles[x][y] = Tile::FOREST;
+				} else if r % 7 == 0 {
+					tiles[x][y] = Tile::STONE;
+				} else if r % 11 == 0 {
+					tiles[x][y] = Tile::IRON;
+				}
 			}
 		}
 
