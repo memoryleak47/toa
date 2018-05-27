@@ -1,16 +1,16 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
-use sfml::system::Vector2f;
+use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
 use world::{TILESIZE, TILESIZE_VEC, MAP_SIZE};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 enum BuildingKind {
 	Spawn,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Building {
 	owner: u8,
 	kind: BuildingKind,
@@ -55,5 +55,9 @@ impl BuildingMap {
 				}
 			}
 		}
+	}
+
+	pub fn get(&self, p: Vector2u) -> Option<&Building> {
+		self.buildings[p.x as usize][p.y as usize].as_ref()
 	}
 }

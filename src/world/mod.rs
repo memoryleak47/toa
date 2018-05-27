@@ -2,7 +2,7 @@ mod tilemap;
 mod buildingmap;
 mod unitmap;
 
-use sfml::graphics::RenderWindow;
+use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
 use sfml::system::Vector2u;
 
 pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
@@ -46,6 +46,21 @@ impl World {
 		self.tilemap.render(w, view);
 		self.buildingmap.render(w, view);
 		self.unitmap.render(w, view);
+
+		self.render_hud(w, view);
+	}
+
+	fn render_hud(&self, w: &mut RenderWindow, view: &View) {
+		let f = Font::from_file("/usr/share/fonts/TTF/DejaVuSerif.ttf").unwrap();
+
+		let pos = view.marked_tile;
+
+		let terrain = self.tilemap.get(pos);
+		let building = self.buildingmap.get(pos);
+		let unit = self.unitmap.get(pos);
+
+		let t = Text::new(&format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}", self.active_player, terrain, building, unit), &f, 30);
+		w.draw(&t);
 	}
 
 	pub fn tick(&mut self, players: &[Box<Player>; 2], view: &mut View) {

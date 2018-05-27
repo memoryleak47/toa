@@ -8,7 +8,7 @@ use world::{TILESIZE, MAP_SIZE};
 const FULL_STAMINA: u8 = 100;
 const FULL_HEALTH: u8 = 100;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Unit {
 	owner: u8,
 	stamina: u8,
@@ -74,5 +74,9 @@ impl UnitMap {
 			}
 		}
 		return false;
+	}
+
+	pub fn get(&self, p: Vector2u) -> Option<&Unit> {
+		self.units[p.x as usize][p.y as usize].as_ref()
 	}
 }

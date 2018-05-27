@@ -1,5 +1,5 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
-use sfml::system::Vector2f;
+use sfml::system::{Vector2f, Vector2u};
 use rand::{RngCore, thread_rng};
 
 use view::View;
@@ -12,7 +12,7 @@ pub fn TILESIZE_VEC() -> Vector2f {
 	Vector2f::new(TILESIZE, TILESIZE)
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Tile {
 	GRASS,
 	FOREST,
@@ -69,5 +69,9 @@ impl TileMap {
 				window.draw(&shape);
 			}
 		}
+	}
+
+	pub fn get(&self, p: Vector2u) -> &Tile {
+		&self.tiles[p.x as usize][p.y as usize]
 	}
 }
