@@ -1,6 +1,6 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
 use sfml::system::{Vector2f, Vector2u};
-use rand::{RngCore, thread_rng, Rng};
+use rand::{RngCore, thread_rng};
 
 use view::View;
 

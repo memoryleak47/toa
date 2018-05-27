@@ -6,7 +6,7 @@ use ::world::MAP_SIZE;
 
 pub struct ViewAction {
 	kind: ViewActionKind,
-	from: Vector2u,
+	to: Vector2u,
 }
 
 pub enum ViewActionKind {
@@ -32,7 +32,7 @@ impl View {
 	pub fn move_cursor(&mut self, v: Vector2i) {
 		let c: &mut Vector2u = match self.action {
 			None => &mut self.marked_tile,
-			Some(ref mut x) => &mut x.from,
+			Some(ref mut x) => &mut x.to,
 		};
 		*c = Vector2u::new(
 			min(MAP_SIZE as u32 - 1, max(0, c.x as i32 + v.x) as u32),
@@ -40,7 +40,13 @@ impl View {
 		);
 	}
 
-	pub fn handle_keys(&mut self) {
+	pub fn handle_action_keys(&mut self) {
+		if Key::M.is_pressed() {
+			self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
+		}
+	}
+
+	pub fn handle_basic_keys(&mut self) {
 		if Key::Escape.is_pressed() {
 			self.action = None;
 		}

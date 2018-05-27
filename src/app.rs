@@ -54,7 +54,7 @@ impl App {
 	}
 
 	fn tick(&mut self) {
-		if let AppState::InGame { ref world, ref players, ref mut view } = self.state {
+		if let AppState::InGame { ref mut world, ref players, ref mut view } = self.state {
 			world.tick(players, view);
 		}
 	}
