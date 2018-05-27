@@ -65,4 +65,29 @@ impl World {
 	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {
 		self.unitmap[p.x as usize][p.y as usize].as_ref()
 	}
+
+	fn next_tile(&self, tile: Vector2u) -> Vector2u {
+		if tile.x < MAP_SIZE as u32- 1 {
+			Vector2u::new(tile.x + 1, tile.y)
+		} else if tile.y < MAP_SIZE as u32 - 1 {
+			Vector2u::new(tile.x, tile.y + 1)
+		} else {
+			Vector2u::new(0, 0)
+		}
+	}
+
+	pub fn find_next_unit_tile(&self, start: Vector2u, player: u32) -> Option<Vector2u> {
+		let mut i = start;
+
+		for _ in 0..(MAP_SIZE * MAP_SIZE) {
+			i = self.next_tile(i);
+			if let Some(unit) = self.get_unit(i) {
+				if unit.owner == player {
+					return Some(i);
+				}
+			}
+		}
+
+		None
+	}
 }

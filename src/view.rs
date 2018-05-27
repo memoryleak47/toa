@@ -23,7 +23,7 @@ impl View {
 	pub fn new() -> View {
 		View {
 			focus_position: Vector2f::new(MAP_SIZE as f32 / 2., MAP_SIZE as f32  / 2.),
-			marked_tile: Vector2u::new(MAP_SIZE as u32 / 2, MAP_SIZE as u32 / 2),
+			marked_tile: Vector2u::new(0, 0),
 			marking_unit: false,
 		}
 	}
@@ -33,7 +33,7 @@ impl View {
 	}
 
 	pub fn handle_action_keys(&mut self, w: &World, input: &Input) -> Option<Command> {
-		if input.is_fresh_pressed(Key::Return) {
+		if input.is_fresh_pressed(Key::Return) && !self.marking_unit {
 			if let Some(unit) = w.get_unit(self.marked_tile) {
 				if unit.owner == w.active_player {
 					self.marking_unit = true;
@@ -50,6 +50,8 @@ impl View {
 			if let Some(direction) = move_direction(input) {
 				return Some(Command::Move { from: self.marked_tile, direction });
 			}
+		} else if input.is_fresh_pressed(Key::U) {
+			self.marked_tile = w.find_next_unit_tile(self.marked_tile, w.active_player).unwrap();
 		}
 
 		None
