@@ -3,7 +3,8 @@ use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
 
-use world::{World, Direction, TILESIZE, MAP_SIZE};
+use world::{World, TILESIZE, MAP_SIZE};
+use misc::{Direction, vector_uf};
 
 const FULL_STAMINA: u8 = 100;
 const FULL_HEALTH: u8 = 100;
@@ -41,11 +42,10 @@ impl World {
 			for y in 0..MAP_SIZE {
 				if let Some(unit) = self.unitmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
-					let size = window.size();
 
 					let mut shape = CircleShape::new(TILESIZE / 2.0, 200);
 					shape.set_fill_color(&unit.get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
+					shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 					window.draw(&shape);
 				}
 			}

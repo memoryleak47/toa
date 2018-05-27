@@ -3,7 +3,9 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, T
 use sfml::window::Key;
 
 use input::Input;
-use world::{World, Direction, MAP_SIZE, TILESIZE, Command};
+use world::{World, MAP_SIZE, TILESIZE};
+use misc::Direction;
+use command::Command;
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
 const MOVE_WAIT_TIME: u32 = 7;

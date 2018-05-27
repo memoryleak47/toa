@@ -2,6 +2,7 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, T
 use sfml::system::{Vector2f, Vector2u};
 
 use view::View;
+use misc::vector_uf;
 
 use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
 
@@ -39,11 +40,10 @@ impl World {
 			for y in 0..MAP_SIZE {
 				if let Some(building) = self.buildingmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
-					let size = window.size();
 
 					let mut shape = RectangleShape::new();
 					shape.set_fill_color(&building.get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
+					shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 					shape.set_size(TILESIZE_VEC());
 					window.draw(&shape);
 				}

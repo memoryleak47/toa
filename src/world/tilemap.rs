@@ -3,15 +3,8 @@ use sfml::system::{Vector2f, Vector2u};
 use rand::{RngCore, thread_rng};
 
 use view::View;
-use world::World;
-
-pub const TILESIZE: f32 = 20.;
-pub const MAP_SIZE: usize = 64;
-
-#[allow(non_snake_case)]
-pub fn TILESIZE_VEC() -> Vector2f {
-	Vector2f::new(TILESIZE, TILESIZE)
-}
+use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE};
+use misc::vector_uf;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Tile {
@@ -57,11 +50,10 @@ impl World {
 		for x in 0..MAP_SIZE {
 			for y in 0..MAP_SIZE {
 				let posf = Vector2f::new(x as f32, y as f32);
-				let size = window.size();
 
 				let mut shape = RectangleShape::new();
 				shape.set_fill_color(&self.tilemap[x][y].get_color());
-				shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
+				shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 				shape.set_size(TILESIZE_VEC());
 				window.draw(&shape);
 			}

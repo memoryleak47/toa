@@ -7,47 +7,20 @@ pub use self::buildingmap::*;
 pub use self::unitmap::*;
 
 use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
-use sfml::system::{Vector2u, Vector2i};
-use std::cmp::{min, max};
-
-pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
+use sfml::system::{Vector2f};
 
 use input::Input;
 
 use player::Player;
 use view::View;
+use command::Command;
 
-#[derive(Copy, Clone)]
-pub enum Direction {
-	Up, Left, Down, Right
-}
+pub const TILESIZE: f32 = 20.;
+pub const MAP_SIZE: usize = 64;
 
-pub fn crop_vector(v: Vector2i) -> Vector2u {
-	Vector2u::new(
-		max(0, min(MAP_SIZE as i32 - 1, v.x)) as u32,
-		max(0, min(MAP_SIZE as i32 - 1, v.y)) as u32,
-	)
-}
-
-impl Direction {
-	pub fn to_vector(&self) -> Vector2i {
-		match self {
-			Direction::Up => Vector2i::new(0, -1),
-			Direction::Left => Vector2i::new(-1, 0),
-			Direction::Down => Vector2i::new(0, 1),
-			Direction::Right => Vector2i::new(1, 0),
-		}
-	}
-
-	pub fn plus_vector(&self, p: Vector2u) -> Vector2u {
-		let v = self.to_vector();
-		crop_vector(Vector2i::new(p.x as i32 + v.x, p.y as i32 + v.y))
-	}
-}
-
-pub enum Command {
-	Move { from: Vector2u, direction: Direction },
-	NextTurn,
+#[allow(non_snake_case)]
+pub fn TILESIZE_VEC() -> Vector2f {
+	Vector2f::new(TILESIZE, TILESIZE)
 }
 
 // represents the current world situation

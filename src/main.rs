@@ -1,6 +1,8 @@
 extern crate sfml;
 extern crate rand;
 
+mod misc;
+mod command;
 mod input;
 mod world;
 mod player;

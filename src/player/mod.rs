@@ -1,7 +1,7 @@
 mod local;
 
 pub use player::local::LocalPlayer;
-pub use world::Command;
+pub use command::Command;
 
 use input::Input;
 use view::View;
