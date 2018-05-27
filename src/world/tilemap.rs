@@ -4,9 +4,9 @@ use rand::{thread_rng, Rng};
 
 use view::View;
 
-const TILESIZE: f32 = 20.;
-const MAP_SIZE: usize = 16;
-const BORDER_SIZE: u32 = 5;
+pub const TILESIZE: f32 = 20.;
+pub const MAP_SIZE: usize = 16;
+pub const BORDER_SIZE: u32 = 5;
 
 fn TILESIZE_VEC() -> Vector2f {
 	Vector2f::new(TILESIZE, TILESIZE)

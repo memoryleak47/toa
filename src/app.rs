@@ -32,6 +32,9 @@ impl App {
 	}
 
 	pub fn run(&mut self) {
+
+		self.window.set_framerate_limit(60);
+
 		while self.window.is_open() {
 			while let Some(event) = self.window.poll_event() {
 				match event {

@@ -1,5 +1,7 @@
 mod tilemap;
 
+pub use world::tilemap::{TILESIZE, MAP_SIZE};
+
 use sfml::graphics::RenderWindow;
 
 use world::tilemap::TileMap;
@@ -25,6 +27,6 @@ impl World {
 	}
 
 	pub fn tick(&self, players: &[Box<Player>; 2], view: &mut View) {
-
+		view.handle_keys();
 	}
 }
