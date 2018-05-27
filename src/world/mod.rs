@@ -7,6 +7,7 @@ use sfml::system::Vector2u;
 
 pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
 
+use input::Input;
 use world::tilemap::TileMap;
 use world::buildingmap::BuildingMap;
 use world::unitmap::UnitMap;
@@ -59,10 +60,10 @@ impl World {
 		w.draw(&t);
 	}
 
-	pub fn tick(&mut self, players: &[Box<Player>; 2], view: &mut View) {
-		view.handle_basic_keys();
+	pub fn tick(&mut self, players: &[Box<Player>; 2], view: &mut View, input: &Input) {
+		view.handle_basic_keys(input);
 
-		if let Some(command) = players[self.active_player as usize].fetch_command(self, view) {
+		if let Some(command) = players[self.active_player as usize].fetch_command(self, view, input) {
 			self.exec(command, view);
 		}
 	}

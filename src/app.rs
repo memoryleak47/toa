@@ -1,6 +1,7 @@
 use sfml::graphics::{RenderWindow, Color, RenderTarget};
 use sfml::window::{Event::*, Style, VideoMode};
 
+use input::Input;
 use player::{Player, LocalPlayer};
 use world::World;
 use view::View;
@@ -17,6 +18,7 @@ enum AppState {
 pub struct App {
 	window: RenderWindow,
 	state: AppState,
+	input: Input,
 }
 
 impl App {
@@ -27,6 +29,7 @@ impl App {
 				world: World::gen(),
 				view: View::new(),
 			},
+			input: Input::new(),
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 		}
 	}
@@ -54,8 +57,9 @@ impl App {
 	}
 
 	fn tick(&mut self) {
+		self.input.tick();
 		if let AppState::InGame { ref mut world, ref players, ref mut view } = self.state {
-			world.tick(players, view);
+			world.tick(players, view, &self.input);
 		}
 	}
 
