@@ -3,7 +3,7 @@ mod tilemap;
 use sfml::graphics::RenderWindow;
 use sfml::system::Vector2u;
 
-pub use world::tilemap::{TILESIZE, MAP_SIZE};
+pub use world::tilemap::{TILESIZE, MAP_SIZE, TILESIZE_VEC};
 
 use world::tilemap::TileMap;
 use player::Player;

@@ -62,6 +62,7 @@ impl App {
 	fn render(&mut self) {
 		if let AppState::InGame { ref world, ref view, .. } = self.state {
 			world.render(&mut self.window, view);
+			view.render(&mut self.window);
 		}
 	}
 }

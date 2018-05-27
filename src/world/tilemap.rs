@@ -6,9 +6,8 @@ use view::View;
 
 pub const TILESIZE: f32 = 20.;
 pub const MAP_SIZE: usize = 16;
-pub const BORDER_SIZE: u32 = 5;
 
-fn TILESIZE_VEC() -> Vector2f {
+pub fn TILESIZE_VEC() -> Vector2f {
 	Vector2f::new(TILESIZE, TILESIZE)
 }
 
@@ -63,27 +62,11 @@ impl TileMap {
 				let posf = Vector2f::new(x as f32, y as f32);
 				let size = window.size();
 
-				if pos == view.marked_tile {
-					// yellow marked tile
-					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&Color::rgb(250, 250, 100));
-					shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
-					shape.set_size(TILESIZE_VEC());
-					window.draw(&shape);
-
-					// normal tile
-					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&self.tiles[x][y].get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new((size.x + BORDER_SIZE) as f32 , (size.y + BORDER_SIZE) as f32) / 2.0);
-					shape.set_size(TILESIZE_VEC() - Vector2f::new(BORDER_SIZE as f32, BORDER_SIZE as f32));
-					window.draw(&shape);
-				} else {
-					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&self.tiles[x][y].get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
-					shape.set_size(TILESIZE_VEC());
-					window.draw(&shape);
-				}
+				let mut shape = RectangleShape::new();
+				shape.set_fill_color(&self.tiles[x][y].get_color());
+				shape.set_position((posf - view.focus_position) * TILESIZE + Vector2f::new(size.x as f32, size.y as f32) / 2.0);
+				shape.set_size(TILESIZE_VEC());
+				window.draw(&shape);
 			}
 		}
 	}
