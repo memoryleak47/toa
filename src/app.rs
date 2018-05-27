@@ -1,5 +1,5 @@
 use sfml::graphics::{RenderWindow, Color, RenderTarget};
-use sfml::window::{Event::*, Style};
+use sfml::window::{Event::*, Style, VideoMode};
 
 use player::{Player, LocalPlayer};
 use world::World;
@@ -27,7 +27,7 @@ impl App {
 				world: World::gen(),
 				view: View::new(),
 			},
-			window: RenderWindow::new((800, 600), "Combat", Style::CLOSE, &Default::default()),
+			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 		}
 	}
 
