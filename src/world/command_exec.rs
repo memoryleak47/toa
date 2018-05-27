@@ -19,7 +19,7 @@ impl World {
 			if let Some(defending_unit) = self.get_unit(to).cloned() {
 				// TODO
 			} else {
-				let stamina_cost = self.get_tile(from).get_stamina_cost() + self.get_tile(to).get_stamina_cost();
+				let stamina_cost = self.get_terrain(from).get_stamina_cost() + self.get_terrain(to).get_stamina_cost();
 				if unit.stamina > stamina_cost {
 					unit.stamina -= stamina_cost;
 					self.unitmap[to.x as usize][to.y as usize] = Some(unit);

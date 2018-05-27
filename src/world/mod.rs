@@ -1,10 +1,10 @@
 mod command_exec;
-mod tilemap;
+mod terrainmap;
 mod buildingmap;
 mod unitmap;
 
 pub use self::command_exec::*;
-pub use self::tilemap::*;
+pub use self::terrainmap::*;
 pub use self::buildingmap::*;
 pub use self::unitmap::*;
 
@@ -26,7 +26,7 @@ pub fn TILESIZE_VEC() -> Vector2f {
 
 // represents the current world situation
 pub struct World {
-	pub tilemap: [[Tile; MAP_SIZE]; MAP_SIZE],
+	pub terrainmap: [[Terrain; MAP_SIZE]; MAP_SIZE],
 	pub buildingmap: [[Option<Building>; MAP_SIZE]; MAP_SIZE],
 	pub unitmap: [[Option<Unit>; MAP_SIZE]; MAP_SIZE],
 	pub active_player: u32,
@@ -35,7 +35,7 @@ pub struct World {
 impl World {
 	pub fn gen() -> World {
 		World {
-			tilemap: new_tilemap(),
+			terrainmap: new_terrainmap(),
 			buildingmap: new_buildingmap(),
 			unitmap: new_unitmap(),
 			active_player: 0,
@@ -43,7 +43,7 @@ impl World {
 	}
 
 	pub fn render(&self, w: &mut RenderWindow, view: &View) {
-		self.render_tilemap(w, view);
+		self.render_terrainmap(w, view);
 		self.render_buildingmap(w, view);
 		self.render_unitmap(w, view);
 
@@ -55,7 +55,7 @@ impl World {
 
 		let pos = view.marked_tile;
 
-		let terrain = self.get_tile(pos);
+		let terrain = self.get_terrain(pos);
 		let building = self.get_building(pos);
 		let unit = self.get_unit(pos);
 
