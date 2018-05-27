@@ -8,6 +8,7 @@ use ::world::{MAP_SIZE, TILESIZE, Command};
 
 const MARKED_TILE_BORDER_SIZE: u8 = 5;
 const ACTION_BORDER_SIZE: u8 = 3;
+static KEYS: [Key; 8] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::M, Key::F];
 
 #[allow(non_snake_case)]
 fn MARKED_TILE_COLOR() -> Color { Color::rgb(150, 150, 0) }
@@ -35,6 +36,8 @@ pub struct View {
 	pub focus_position: Vector2f, // the tile in the center of the screen, in map coordinates
 	pub marked_tile: Vector2u,
 	pub action: Option<ViewAction>,
+	pub pressed_keys: Vec<&'static Key>,
+	pub fresh_pressed_keys: Vec<&'static Key>,
 }
 
 impl View {
@@ -42,8 +45,19 @@ impl View {
 		View {
 			focus_position: Vector2f::new(MAP_SIZE as f32 / 2., MAP_SIZE as f32  / 2.),
 			marked_tile: Vector2u::new(MAP_SIZE as u32 / 2, MAP_SIZE as u32 / 2),
-			action: None
+			action: None,
+			pressed_keys: vec![],
+			fresh_pressed_keys: vec![],
 		}
+	}
+
+	pub fn reset(&mut self) {
+		// reset everything, except for {fresh_,}pressed_keys
+		let pressed_keys = self.pressed_keys.clone();
+		let fresh_pressed_keys = self.fresh_pressed_keys.clone();
+		*self = View::new();
+		self.pressed_keys = pressed_keys;
+		self.fresh_pressed_keys = fresh_pressed_keys;
 	}
 
 	pub fn move_cursor(&mut self, v: Vector2i) {
@@ -58,9 +72,8 @@ impl View {
 	}
 
 	pub fn handle_action_keys(&mut self, w: &World) -> Option<Command> {
-		// TODO these key-checks should only be triggered by fresh presses
 
-		if Key::Return.is_pressed() {
+		if self.is_fresh_pressed(&Key::Return) {
 			if let Some(ref action) = self.action {
 				match action.kind {
 					ViewActionKind::Move => return Some(Command::Move { from: self.marked_tile, to: action.to }),
@@ -71,18 +84,18 @@ impl View {
 
 		if let Some(unit) = w.unitmap.get(self.marked_tile) {
 			if unit.owner == w.active_player {
-				if Key::M.is_pressed() {
+				if self.is_fresh_pressed(&Key::M) {
 					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Move })
 				}
 
-				if Key::F.is_pressed() {
+				if self.is_fresh_pressed(&Key::F) {
 					self.action = Some(ViewAction { to: self.marked_tile.clone(), kind: ViewActionKind::Fight })
 				}
 			}
 		}
 
-		if Key::N.is_pressed() {
-			*self = View::new();
+		if self.is_fresh_pressed(&Key::N) {
+			self.reset();
 			return Some(Command::NextTurn);
 		}
 
@@ -90,6 +103,8 @@ impl View {
 	}
 
 	pub fn handle_basic_keys(&mut self) {
+		self.tick_keys();
+
 		if Key::Escape.is_pressed() {
 			self.action = None;
 		}
@@ -137,6 +152,26 @@ impl View {
 		self.render_marker(window, &MARKED_TILE_COLOR(), MARKED_TILE_BORDER_SIZE, self.marked_tile);
 		if let Some(ViewAction { ref kind, ref to }) = self.action {
 			self.render_marker(window, &kind.get_marker_color(), ACTION_BORDER_SIZE, to.clone());
+		}
+	}
+
+	fn is_fresh_pressed(&self, key: &Key) -> bool {
+		self.fresh_pressed_keys.contains(&key)
+	}
+
+	fn tick_keys(&mut self) {
+		let old_pressed_keys = self.pressed_keys.clone();
+
+		self.pressed_keys = vec![];
+		self.fresh_pressed_keys = vec![];
+
+		for key in KEYS.iter() {
+			if key.is_pressed() {
+				self.pressed_keys.push(key);
+				if !old_pressed_keys.contains(&key) {
+					self.fresh_pressed_keys.push(key);
+				}
+			}
 		}
 	}
 }
