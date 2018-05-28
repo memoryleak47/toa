@@ -43,6 +43,22 @@ pub enum BuildingKind {
 	IronMine { stamina: u32 },
 }
 
+impl Building {
+	pub fn work(&mut self) {
+		match self {
+			Building { ref health, kind: BuildingKind::InConstruction { ref required_stamina, ref building }} => {
+				if *required_stamina > 10 {
+					let kind = BuildingKind::InConstruction { required_stamina: *required_stamina - 10, building: building.clone() };
+					*self = Building { kind, health: *health };
+				} else {
+					*self = (**building).clone();
+				}
+			},
+			_ => {}
+		}
+	}
+}
+
 #[derive(Debug, Clone)]
 pub struct Building {
 	pub kind: BuildingKind,
@@ -104,5 +120,9 @@ impl World {
 
 	pub fn get_building(&self, p: Vector2u) -> Option<&Building> {
 		self.buildingmap[p.x as usize][p.y as usize].as_ref()
+	}
+
+	pub fn get_building_mut(&mut self, p: Vector2u) -> Option<&mut Building> {
+		self.buildingmap[p.x as usize][p.y as usize].as_mut()
 	}
 }

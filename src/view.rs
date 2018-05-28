@@ -54,6 +54,10 @@ impl View {
 			if input.is_fresh_pressed(Key::F) {
 				return Some(Command::Build { at: self.marked_tile, plan: &BUILDING_PLANS[0]})
 			}
+
+			if input.is_fresh_pressed(Key::J) {
+				return Some(Command::Work { at: self.marked_tile })
+			}
 		} else if input.is_fresh_pressed(Key::U) {
 			self.marked_tile = w.find_next_unit_tile(self.marked_tile, w.active_player).unwrap();
 		}

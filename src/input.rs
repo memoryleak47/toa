@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use sfml::window::Key;
 
-static KEYS: [Key; 12] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::Escape, Key::M, Key::F, Key::LControl, Key::RControl, Key::U];
+static KEYS: [Key; 13] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::Escape, Key::M, Key::F, Key::LControl, Key::RControl, Key::U, Key::J];
 
 struct KeyState {
 	time: u32,

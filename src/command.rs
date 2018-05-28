@@ -5,5 +5,6 @@ use world::buildingmap::BuildingPlan;
 pub enum Command {
 	Move { from: Vector2u, direction: Direction },
 	NextTurn,
-	Build { at: Vector2u, plan: &'static BuildingPlan<'static> }
+	Build { at: Vector2u, plan: &'static BuildingPlan<'static> },
+	Work { at: Vector2u }
 }

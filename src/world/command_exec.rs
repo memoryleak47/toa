@@ -13,6 +13,7 @@ impl World {
 			Command::Move { from, direction } => self.exec_move(from, direction, view),
 			Command::NextTurn => self.exec_next_turn(),
 			Command::Build { at, plan } => self.exec_build(at, plan),
+			Command::Work { at } => self.exec_work(at),
 		}
 	}
 
@@ -57,9 +58,21 @@ impl World {
 		match plan.building.kind {
 			BuildingKind::Farm { .. } => {
 				if *self.get_terrain(at) != Terrain::GRASS { return; }
-				self.buildingmap[at.x as usize][at.y as usize] = Some(Building { health: 10, kind: (*plan).building.kind.clone() } )
+				let construction = BuildingKind::InConstruction { required_stamina: plan.required_stamina, building: plan.building.clone() };
+				self.buildingmap[at.x as usize][at.y as usize] = Some(Building { health: 10, kind: construction })
 			},
 			_ => { /* TODO */ },
+		}
+	}
+
+	fn exec_work(&mut self, at: Vector2u) {
+		if !self.get_unit(at).is_some() || ! (self.get_unit(at).unwrap().stamina >= 10) || !self.get_building(at).is_some() { return; }
+
+		if let Some(unit) = self.get_unit_mut(at) {
+			unit.stamina -= 10;
+		}
+		if let Some(building) = self.get_building_mut(at) {
+			building.work();
 		}
 	}
 }

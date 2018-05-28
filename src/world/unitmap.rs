@@ -106,10 +106,6 @@ impl World {
 		}
 	}
 
-	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {
-		self.unitmap[p.x as usize][p.y as usize].as_ref()
-	}
-
 	fn next_tile(&self, tile: Vector2u) -> Vector2u {
 		if tile.x < MAP_SIZE_X as u32 - 1 {
 			Vector2u::new(tile.x + 1, tile.y)
@@ -133,5 +129,13 @@ impl World {
 		}
 
 		None
+	}
+
+	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {
+		self.unitmap[p.x as usize][p.y as usize].as_ref()
+	}
+
+	pub fn get_unit_mut(&mut self, p: Vector2u) -> Option<&mut Unit> {
+		self.unitmap[p.x as usize][p.y as usize].as_mut()
 	}
 }
