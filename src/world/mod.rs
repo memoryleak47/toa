@@ -2,11 +2,13 @@ pub mod command_exec;
 pub mod terrainmap;
 pub mod buildingmap;
 pub mod unitmap;
+pub mod itemmap;
 
 pub use self::command_exec::*;
 pub use self::terrainmap::*;
 pub use self::buildingmap::*;
 pub use self::unitmap::*;
+pub use self::itemmap::*;
 
 use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
 use sfml::system::{Vector2f};
@@ -15,6 +17,7 @@ use input::Input;
 
 use player::Player;
 use view::View;
+use item::Item;
 
 pub const TILESIZE: f32 = 20.;
 pub const MAP_SIZE_X: usize = 42;
@@ -30,6 +33,7 @@ pub struct World {
 	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub buildingmap: [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub itemmap: [[Option<Item>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub active_player: u32,
 }
 
@@ -39,6 +43,7 @@ impl World {
 			terrainmap: new_terrainmap(),
 			buildingmap: new_buildingmap(),
 			unitmap: new_unitmap(),
+			itemmap: new_itemmap(),
 			active_player: 0,
 		}
 	}
