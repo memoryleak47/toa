@@ -12,7 +12,7 @@ use world::terrainmap::Terrain;
 use item::ItemKind;
 
 lazy_static! {
-static ref BUILDING_PLANS: [BuildingPlan<'static>; 1] = [
+pub static ref BUILDING_PLANS: [BuildingPlan<'static>; 1] = [
 		BuildingPlan {
 			building: Box::new(Building {
 				kind: BuildingKind::Farm { stamina: 0 },
@@ -27,10 +27,10 @@ static ref BUILDING_PLANS: [BuildingPlan<'static>; 1] = [
 
 #[derive(Debug)]
 pub struct BuildingPlan<'a> {
-	building: Box<Building>,
-	required_stamina: u32,
-	required_terrain: Option<Terrain>,
-	required_resources: &'a [(ItemKind, u32)],
+	pub building: Box<Building>,
+	pub required_stamina: u32,
+	pub required_terrain: Option<Terrain>,
+	pub required_resources: &'a [(ItemKind, u32)],
 }
 
 #[derive(Debug, Clone)]
@@ -45,8 +45,8 @@ pub enum BuildingKind {
 
 #[derive(Debug, Clone)]
 pub struct Building {
-	kind: BuildingKind,
-	health: u32
+	pub kind: BuildingKind,
+	pub health: u32
 }
 
 impl BuildingKind {

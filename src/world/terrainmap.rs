@@ -6,7 +6,7 @@ use view::View;
 use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE_X, MAP_SIZE_Y};
 use misc::vector_uf;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Terrain {
 	GRASS,
 	FOREST,

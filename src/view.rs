@@ -3,7 +3,7 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, T
 use sfml::window::Key;
 
 use input::Input;
-use world::{World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE};
+use world::{buildingmap::BUILDING_PLANS, World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE};
 use misc::Direction;
 use command::Command;
 
@@ -49,6 +49,10 @@ impl View {
 		if self.marking_unit {
 			if let Some(direction) = move_direction(input) {
 				return Some(Command::Move { from: self.marked_tile, direction });
+			}
+
+			if input.is_fresh_pressed(Key::F) {
+				return Some(Command::Build { at: self.marked_tile, plan: &BUILDING_PLANS[0]})
 			}
 		} else if input.is_fresh_pressed(Key::U) {
 			self.marked_tile = w.find_next_unit_tile(self.marked_tile, w.active_player).unwrap();

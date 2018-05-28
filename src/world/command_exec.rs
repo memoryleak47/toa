@@ -4,7 +4,8 @@ use world::World;
 use command::Command;
 use view::View;
 use misc::Direction;
-use world::buildingmap::BuildingPlan;
+use world::buildingmap::{Building, BuildingPlan, BuildingKind};
+use world::terrainmap::Terrain;
 
 impl World {
 	pub fn exec(&mut self, command: Command, view: &mut View) {
@@ -53,6 +54,12 @@ impl World {
 	}
 
 	fn exec_build(&mut self, at: Vector2u, plan: &'static BuildingPlan<'static>) {
-		// TODO
+		match plan.building.kind {
+			BuildingKind::Farm { .. } => {
+				if *self.get_terrain(at) != Terrain::GRASS { return; }
+				self.buildingmap[at.x as usize][at.y as usize] = Some(Building { health: 10, kind: (*plan).building.kind.clone() } )
+			},
+			_ => { /* TODO */ },
+		}
 	}
 }
