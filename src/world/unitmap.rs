@@ -8,15 +8,28 @@ use misc::{vector_uf};
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
+const FULL_FOOD: u32 = 100;
+const FOOD_PER_TURN: u32 = 4;
+const HUNGER_DAMAGE: u32 = 10;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Unit {
 	pub owner: u32,
 	pub stamina: u32,
 	pub health: u32,
+	pub food: u32,
 }
 
 impl Unit {
+	fn new(owner: u32) -> Unit {
+		Unit {
+			owner,
+			stamina: FULL_STAMINA,
+			health: FULL_HEALTH,
+			food: FULL_FOOD,
+		}
+	}
+
 	fn get_color(&self) -> Color {
 		if self.owner == 0 {
 			Color::rgb(255, 0, 0)
@@ -29,8 +42,8 @@ impl Unit {
 pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {
 	let mut unitmap = [[None; MAP_SIZE_Y]; MAP_SIZE_X];
 
-	unitmap[MAP_SIZE_X / 2][0] = Some(Unit { owner: 0, stamina: FULL_STAMINA, health: FULL_HEALTH });
-	unitmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Unit { owner: 1, stamina: FULL_STAMINA, health: FULL_HEALTH });
+	unitmap[MAP_SIZE_X / 2][0] = Some(Unit::new(0));
+	unitmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Unit::new(1));
 
 	unitmap
 }
@@ -47,6 +60,37 @@ impl World {
 					shape.set_fill_color(&unit.get_color());
 					shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 					window.draw(&shape);
+				}
+			}
+		}
+	}
+
+	pub fn tick_unitmap(&mut self) {
+		self.reduce_food();
+		self.apply_hunger_consequences();
+	}
+
+	fn reduce_food(&mut self) {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
+				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
+					unit.food = unit.food.saturating_sub(FOOD_PER_TURN);
+				}
+			}
+		}
+	}
+
+	fn apply_hunger_consequences(&mut self) {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
+				let opt = &mut self.unitmap[x][y];
+				if let Some(ref mut unit) = opt {
+					if unit.food == 0 {
+						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
+						if unit.health == 0 {
+							*opt = None;
+						}
+					}
 				}
 			}
 		}

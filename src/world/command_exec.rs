@@ -26,6 +26,7 @@ impl World {
 
 						defending_unit.health = defending_unit.health.saturating_sub(10);
 						unit.health = unit.health.saturating_sub(10);
+						// TODO remove dead units
 
 						self.unitmap[from.x as usize][from.y as usize] = Some(unit);
 						self.unitmap[to.x as usize][to.y as usize] = Some(defending_unit);
@@ -46,5 +47,6 @@ impl World {
 		if self.active_player == 0 {
 			self.reset_turn();
 		}
+		self.on_turn_start();
 	}
 }

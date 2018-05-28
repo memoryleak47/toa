@@ -72,6 +72,10 @@ impl World {
 		}
 	}
 
+	fn on_turn_start(&mut self) {
+		self.tick_unitmap();
+	}
+
 	fn reset_turn(&mut self) {
 		self.refill_stamina();
 	}
