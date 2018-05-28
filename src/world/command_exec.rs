@@ -4,12 +4,14 @@ use world::World;
 use command::Command;
 use view::View;
 use misc::Direction;
+use world::buildingmap::BuildingPlan;
 
 impl World {
 	pub fn exec(&mut self, command: Command, view: &mut View) {
 		match command {
 			Command::Move { from, direction } => self.exec_move(from, direction, view),
 			Command::NextTurn => self.exec_next_turn(),
+			Command::Build { at, plan } => self.exec_build(at, plan),
 		}
 	}
 
@@ -48,5 +50,9 @@ impl World {
 			self.reset_turn();
 		}
 		self.on_turn_start();
+	}
+
+	fn exec_build(&mut self, at: Vector2u, plan: &'static BuildingPlan<'static>) {
+		// TODO
 	}
 }

@@ -1,7 +1,7 @@
-mod command_exec;
-mod terrainmap;
-mod buildingmap;
-mod unitmap;
+pub mod command_exec;
+pub mod terrainmap;
+pub mod buildingmap;
+pub mod unitmap;
 
 pub use self::command_exec::*;
 pub use self::terrainmap::*;

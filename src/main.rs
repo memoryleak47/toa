@@ -1,9 +1,13 @@
 extern crate sfml;
 extern crate rand;
 
+#[macro_use]
+extern crate lazy_static;
+
 mod misc;
-mod command;
+mod item;
 mod input;
+mod command;
 mod world;
 mod player;
 mod view;
