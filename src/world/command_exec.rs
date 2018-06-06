@@ -30,10 +30,9 @@ impl World {
 
 						defending_unit.health = defending_unit.health.saturating_sub(10);
 						unit.health = unit.health.saturating_sub(10);
-						// TODO remove dead units
 
-						self.unitmap[from.x as usize][from.y as usize] = Some(unit);
-						self.unitmap[to.x as usize][to.y as usize] = Some(defending_unit);
+						self.unitmap[from.x as usize][from.y as usize] = if unit.health > 0 { Some(unit) } else { None };
+						self.unitmap[to.x as usize][to.y as usize] = if defending_unit.health > 0 { Some(defending_unit) } else { None };
 					}
 				} else {
 					unit.stamina -= stamina_cost;
