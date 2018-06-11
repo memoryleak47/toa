@@ -10,13 +10,8 @@ pub use self::buildingmap::*;
 pub use self::unitmap::*;
 pub use self::itemmap::*;
 
-use sfml::graphics::{RenderTarget, RenderWindow, Text, Font};
-use sfml::system::{Vector2f};
+use sfml::system::Vector2f;
 
-use input::Input;
-
-use player::Player;
-use view::View;
 use item::Item;
 
 pub const TILESIZE: f32 = 20.;
@@ -45,35 +40,6 @@ impl World {
 			unitmap: new_unitmap(),
 			itemmap: new_itemmap(),
 			active_player: 0,
-		}
-	}
-
-	pub fn render(&self, w: &mut RenderWindow, view: &View) {
-		self.render_terrainmap(w, view);
-		self.render_buildingmap(w, view);
-		self.render_unitmap(w, view);
-
-		self.render_hud(w, view);
-	}
-
-	fn render_hud(&self, w: &mut RenderWindow, view: &View) {
-		let f = Font::from_file("/usr/share/fonts/TTF/DejaVuSerif.ttf").unwrap();
-
-		let pos = view.marked_tile;
-
-		let terrain = self.get_terrain(pos);
-		let building = self.get_building(pos);
-		let unit = self.get_unit(pos);
-
-		let t = Text::new(&format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}", self.active_player, terrain, building, unit), &f, 30);
-		w.draw(&t);
-	}
-
-	pub fn tick(&mut self, players: &[Box<Player>; 2], view: &mut View, input: &Input) {
-		view.handle_basic_keys(input);
-
-		if let Some(command) = players[self.active_player as usize].fetch_command(self, view, input) {
-			self.exec(command, view);
 		}
 	}
 

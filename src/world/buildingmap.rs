@@ -1,13 +1,10 @@
 use std::mem;
 use std::ptr;
 
-use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
-use sfml::system::{Vector2f, Vector2u};
+use sfml::graphics::Color;
+use sfml::system::Vector2u;
 
-use view::View;
-use misc::vector_uf;
-
-use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE_X, MAP_SIZE_Y};
+use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::terrainmap::Terrain;
 use item::ItemKind;
 
@@ -66,7 +63,7 @@ pub struct Building {
 }
 
 impl BuildingKind {
-	fn get_color(&self) -> Color {
+	pub fn get_color(&self) -> Color {
 		match self {
 			BuildingKind::Spawn { owner, .. } =>  {
 				if *owner == 0 {
@@ -102,22 +99,6 @@ pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X] {
 }
 
 impl World {
-	pub fn render_buildingmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(building) = self.buildingmap[x][y].as_ref() {
-					let posf = Vector2f::new(x as f32, y as f32);
-
-					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&building.kind.get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
-					shape.set_size(TILESIZE_VEC());
-					window.draw(&shape);
-				}
-			}
-		}
-	}
-
 	pub fn get_building(&self, p: Vector2u) -> Option<&Building> {
 		self.buildingmap[p.x as usize][p.y as usize].as_ref()
 	}

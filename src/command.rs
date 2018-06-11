@@ -1,4 +1,5 @@
 use sfml::system::Vector2u;
+
 use misc::Direction;
 use world::buildingmap::BuildingPlan;
 

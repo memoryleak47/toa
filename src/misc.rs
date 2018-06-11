@@ -23,6 +23,7 @@ pub fn vector_uf(v: Vector2u) -> Vector2f {
 	Vector2f::new(v.x as f32, v.y as f32)
 }
 
+
 impl Direction {
 	pub fn to_vector(&self) -> Vector2i {
 		match self {

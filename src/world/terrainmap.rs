@@ -1,10 +1,8 @@
-use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable};
-use sfml::system::{Vector2f, Vector2u};
+use sfml::graphics::Color;
+use sfml::system::Vector2u;
 use rand::{RngCore, thread_rng};
 
-use view::View;
-use world::{World, TILESIZE, TILESIZE_VEC, MAP_SIZE_X, MAP_SIZE_Y};
-use misc::vector_uf;
+use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Terrain {
@@ -55,20 +53,6 @@ pub fn new_terrainmap() -> [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X] {
 }
 
 impl World {
-	pub fn render_terrainmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				let posf = Vector2f::new(x as f32, y as f32);
-
-				let mut shape = RectangleShape::new();
-				shape.set_fill_color(&self.terrainmap[x][y].get_color());
-				shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
-				shape.set_size(TILESIZE_VEC());
-				window.draw(&shape);
-			}
-		}
-	}
-
 	pub fn get_terrain(&self, p: Vector2u) -> &Terrain {
 		&self.terrainmap[p.x as usize][p.y as usize]
 	}

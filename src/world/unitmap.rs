@@ -1,10 +1,7 @@
-use sfml::graphics::{RenderWindow, RenderTarget, CircleShape, Shape, Color, Transformable};
-use sfml::system::{Vector2f, Vector2u};
+use sfml::graphics::Color;
+use sfml::system::Vector2u;
 
-use view::View;
-
-use world::{World, TILESIZE, MAP_SIZE_X, MAP_SIZE_Y};
-use misc::{vector_uf};
+use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -30,7 +27,7 @@ impl Unit {
 		}
 	}
 
-	fn get_color(&self) -> Color {
+	pub fn get_color(&self) -> Color {
 		if self.owner == 0 {
 			Color::rgb(255, 0, 0)
 		} else {
@@ -50,21 +47,6 @@ pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {
 
 
 impl World {
-	pub fn render_unitmap(&self, window: &mut RenderWindow, view: &View) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(unit) = self.unitmap[x][y] {
-					let posf = Vector2f::new(x as f32, y as f32);
-
-					let mut shape = CircleShape::new(TILESIZE / 2.0, 200);
-					shape.set_fill_color(&unit.get_color());
-					shape.set_position((posf - view.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
-					window.draw(&shape);
-				}
-			}
-		}
-	}
-
 	pub fn tick_unitmap(&mut self) {
 		self.reduce_food();
 		self.apply_hunger_consequences();

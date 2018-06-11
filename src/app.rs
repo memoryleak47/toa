@@ -11,7 +11,7 @@ enum AppState {
 	InGame {
 		players: [Box<Player>; 2],
 		world: World,
-		view: View
+		view: View, // TODO reset view, on turn-start!
 	}
 }
 
@@ -23,15 +23,19 @@ pub struct App {
 
 impl App {
 	pub fn new() -> App {
-		App {
-			state: AppState::InGame {
-				players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
-				world: World::gen(),
-				view: View::new(),
-			},
-			input: Input::new(),
+		let mut app = App {
+			state: AppState::Menu,
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
-		}
+			input: Input::new(),
+		};
+
+		app.state = AppState::InGame {
+			players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
+			world: World::gen(),
+			view: View::new(0),
+		};
+
+		app
 	}
 
 	pub fn run(&mut self) {
@@ -58,15 +62,22 @@ impl App {
 
 	fn tick(&mut self) {
 		self.input.tick();
-		if let AppState::InGame { ref mut world, ref players, ref mut view } = self.state {
-			world.tick(players, view, &self.input);
+		if let AppState::InGame { ref mut world, ref mut players, ref mut view } = self.state {
+			let mut active_player = &mut players[world.active_player as usize];
+
+			if !active_player.uses_view() {
+				view.tick_default(&self.input);
+			}
+
+			if let Some(command) = active_player.tick(world, view, &self.input) {
+				world.exec(command, view);
+			}
 		}
 	}
 
 	fn render(&mut self) {
 		if let AppState::InGame { ref world, ref view, .. } = self.state {
-			world.render(&mut self.window, view);
-			view.render(&mut self.window);
+			view.render(&mut self.window, world);
 		}
 	}
 }

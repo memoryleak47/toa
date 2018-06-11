@@ -38,7 +38,7 @@ impl World {
 					unit.stamina -= stamina_cost;
 					self.unitmap[to.x as usize][to.y as usize] = Some(unit);
 					self.unitmap[from.x as usize][from.y as usize] = None;
-					view.marked_tile = to;
+					view.main_cursor = to;
 				}
 			}
 		}
