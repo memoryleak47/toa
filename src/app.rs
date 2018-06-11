@@ -23,19 +23,15 @@ pub struct App {
 
 impl App {
 	pub fn new() -> App {
-		let mut app = App {
-			state: AppState::Menu,
+		App {
+			state: AppState::InGame {
+				players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
+				world: World::gen(),
+				view: View::new(0),
+			},
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
-		};
-
-		app.state = AppState::InGame {
-			players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
-			world: World::gen(),
-			view: View::new(0),
-		};
-
-		app
+		}
 	}
 
 	pub fn run(&mut self) {
