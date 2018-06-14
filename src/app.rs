@@ -60,14 +60,15 @@ impl App {
 	fn tick(&mut self) {
 		self.input.tick();
 		if let AppState::InGame { ref mut world, ref mut players, ref mut view } = self.state {
-			let mut active_player = &mut players[world.active_player as usize];
-
-			if let Some(command) = active_player.tick(world, view, &self.input) {
+			if let Some(command) = players[world.active_player as usize].tick(world, view, &self.input) {
 				world.exec(&command, view);
 
-				// reset view
 				if let Command::NextTurn = command {
+					// reset view
 					*view = View::new(world.active_player);
+
+					players[1 - world.active_player as usize].turn_end();
+					players[world.active_player as usize].turn_start();
 				}
 			}
 		}
