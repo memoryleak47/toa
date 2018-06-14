@@ -5,6 +5,7 @@ use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, CircleShape, Sh
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
 use misc::*;
+use graphics::TextureState;
 
 const MARK_BORDER_SIZE: u32 = 5;
 
@@ -37,7 +38,6 @@ impl View {
 		self.main_cursor = direction.plus_vector(self.main_cursor);
 	}
 
-
 	fn render_marker(&self, window: &mut RenderWindow, color: &Color, size: u32, position: Vector2u) {
 		let posf = Vector2f::new(position.x as f32 * TILESIZE, position.y as f32 * TILESIZE);
 
@@ -67,8 +67,8 @@ impl View {
 		window.draw(&shape);
 	}
 
-	pub fn render(&self, window: &mut RenderWindow, world: &World) {
-		self.render_terrainmap(window, world);
+	pub fn render(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
+		self.render_terrainmap(window, world, texture_state);
 		self.render_buildingmap(window, world);
 		self.render_unitmap(window, world);
 
@@ -94,13 +94,13 @@ impl View {
 		window.draw(&t);
 	}
 
-	fn render_terrainmap(&self, window: &mut RenderWindow, world: &World) {
+	fn render_terrainmap(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				let posf = Vector2f::new(x as f32, y as f32);
 
-				let mut shape = RectangleShape::new();
-				shape.set_fill_color(&world.terrainmap[x][y].get_color());
+				let texture = texture_state.get_texture(world.terrainmap[x][y].get_texture_id());
+				let mut shape = RectangleShape::with_texture(texture);
 				shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 				shape.set_size(TILESIZE_VEC());
 				window.draw(&shape);

@@ -6,6 +6,7 @@ use player::{Player, LocalPlayer};
 use world::World;
 use view::View;
 use command::Command;
+use graphics::TextureState;
 
 enum AppState {
 	Menu,
@@ -20,6 +21,7 @@ pub struct App {
 	window: RenderWindow,
 	state: AppState,
 	input: Input,
+	texture_state: TextureState,
 }
 
 impl App {
@@ -32,6 +34,7 @@ impl App {
 			},
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
+			texture_state: TextureState::new(),
 		}
 	}
 
@@ -76,7 +79,7 @@ impl App {
 
 	fn render(&mut self) {
 		if let AppState::InGame { ref world, ref view, .. } = self.state {
-			view.render(&mut self.window, world);
+			view.render(&mut self.window, world, &self.texture_state);
 		}
 	}
 }

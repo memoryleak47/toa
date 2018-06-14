@@ -5,6 +5,7 @@ extern crate rand;
 extern crate lazy_static;
 
 mod misc;
+mod graphics;
 mod item;
 mod input;
 mod command;

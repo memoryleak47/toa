@@ -1,7 +1,7 @@
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 use rand::{RngCore, thread_rng};
 
+use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -13,12 +13,12 @@ pub enum Terrain {
 }
 
 impl Terrain {
-	pub fn get_color(&self) -> Color {
+	pub fn get_texture_id(&self) -> TextureId {
 		match self {
-			Terrain::GRASS => Color::rgb(50,150,50),
-			Terrain::FOREST => Color::rgb(0,50,0),
-			Terrain::STONE => Color::rgb(50,50,50),
-			Terrain::IRON => Color::rgb(150,150,150),
+			Terrain::GRASS => TextureId::GrassTile,
+			Terrain::FOREST => TextureId::ForestTile,
+			Terrain::STONE => TextureId::StoneTile,
+			Terrain::IRON => TextureId::IronTile,
 		}
 	}
 
