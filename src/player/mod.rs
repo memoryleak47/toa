@@ -12,6 +12,4 @@ pub trait Player {
 
 	fn turn_start(&mut self) {}
 	fn turn_end(&mut self) {}
-
-	fn uses_view(&self) -> bool;
 }

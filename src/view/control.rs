@@ -5,7 +5,7 @@ use input::Input;
 use view::View;
 
 impl View {
-	// This implements the view-functionality, which is used if the active-player returns false for `uses_view`
+	// This implements the view-functionality, which is used if the active-player is no LocalPlayer, it should be called in *Player::tick()
 	pub fn tick_default(&mut self, input: &Input) {
 		if let Some(direction) = input.move_direction() {
 			if input.is_pressed(Key::LControl) || input.is_pressed(Key::RControl) {

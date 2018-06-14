@@ -8,12 +8,12 @@ use world::buildingmap::{Building, BuildingPlan, BuildingKind};
 use world::terrainmap::Terrain;
 
 impl World {
-	pub fn exec(&mut self, command: Command, view: &mut View) {
+	pub fn exec(&mut self, command: &Command, view: &mut View) {
 		match command {
-			Command::Move { from, direction } => self.exec_move(from, direction, view),
-			Command::NextTurn => self.exec_next_turn(),
-			Command::Build { at, plan } => self.exec_build(at, plan),
-			Command::Work { at } => self.exec_work(at),
+			&Command::Move { from, direction } => self.exec_move(from, direction, view),
+			&Command::NextTurn => self.exec_next_turn(),
+			&Command::Build { at, plan } => self.exec_build(at, plan),
+			&Command::Work { at } => self.exec_work(at),
 		}
 	}
 

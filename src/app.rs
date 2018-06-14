@@ -5,13 +5,14 @@ use input::Input;
 use player::{Player, LocalPlayer};
 use world::World;
 use view::View;
+use command::Command;
 
 enum AppState {
 	Menu,
 	InGame {
 		players: [Box<Player>; 2],
 		world: World,
-		view: View, // TODO reset view, on turn-start!
+		view: View,
 	}
 }
 
@@ -61,12 +62,13 @@ impl App {
 		if let AppState::InGame { ref mut world, ref mut players, ref mut view } = self.state {
 			let mut active_player = &mut players[world.active_player as usize];
 
-			if !active_player.uses_view() {
-				view.tick_default(&self.input);
-			}
-
 			if let Some(command) = active_player.tick(world, view, &self.input) {
-				world.exec(command, view);
+				world.exec(&command, view);
+
+				// reset view
+				if let Command::NextTurn = command {
+					*view = View::new(world.active_player);
+				}
 			}
 		}
 	}

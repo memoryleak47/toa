@@ -67,6 +67,4 @@ impl Player for LocalPlayer {
 	fn turn_start(&mut self) {
 		self.marking_unit = false;
 	}
-
-	fn uses_view(&self) -> bool { true }
 }
