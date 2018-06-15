@@ -31,6 +31,7 @@ impl LocalPlayer {
 				if x.is_workable() {
 					v.push("[j]: work on building");
 				}
+				v.push("[r]: repair building");
 			}
 			if let Terrain::GRASS = w.get_terrain(view.main_cursor) {
 				if w.get_building(view.main_cursor).is_none() {
