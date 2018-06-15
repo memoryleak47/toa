@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
@@ -17,6 +19,14 @@ pub static ref BUILDING_PLANS: [BuildingPlan<'static>; 1] = [
 			required_resources: &[],
 		},
 	];
+}
+
+impl Deref for Building {
+	type Target = BuildingKind;
+
+	fn deref(&self) -> &BuildingKind {
+		&self.kind
+	}
 }
 
 #[derive(Debug)]
@@ -53,14 +63,6 @@ impl Building {
 			_ => {}
 		}
 	}
-
-	pub fn is_burnable(&self) -> bool {
-		self.kind.is_burnable()
-	}
-
-	pub fn is_workable(&self) -> bool {
-		self.kind.is_workable()
-	}
 }
 
 #[derive(Debug, Clone)]
@@ -84,14 +86,14 @@ impl BuildingKind {
 		}
 	}
 
-	fn is_burnable(&self) -> bool {
+	pub fn is_burnable(&self) -> bool {
 		match self {
 			BuildingKind::Wall | BuildingKind::HalfWall | BuildingKind::Spawn { .. } => false,
 			_ => true,
 		}
 	}
 
-	fn is_workable(&self) -> bool {
+	pub fn is_workable(&self) -> bool {
 		match self {
 			BuildingKind::Wall | BuildingKind::HalfWall | BuildingKind::Spawn { .. } => false,
 			_ => true,
