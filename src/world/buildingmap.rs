@@ -1,6 +1,3 @@
-use std::mem;
-use std::ptr;
-
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 

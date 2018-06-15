@@ -1,5 +1,3 @@
-use std::{ptr, mem};
-
 use sfml::system::Vector2u;
 
 use item::{Item, Inventory};
