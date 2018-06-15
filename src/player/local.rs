@@ -15,10 +15,22 @@ impl LocalPlayer {
 	pub fn new() -> LocalPlayer {
 		LocalPlayer { marking_unit: false }
 	}
-}
 
-impl Player for LocalPlayer {
-	fn tick(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
+	fn get_hotkey_text(&self, w: &World, view: &View) -> String {
+		let mut v = Vec::new();
+		if self.marking_unit {
+			v.push("[escape]: stop controlling unit");
+		} else {
+			if let Some(u) = w.get_unit(view.main_cursor) {
+				if u.owner == view.player {
+					v.push("[enter]: control unit");
+				}
+			}
+		}
+		v.join("\n")
+	}
+
+	fn handle_keys(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
 		if input.is_pressed(Key::Escape) {
 			self.marking_unit = false;
 		}
@@ -62,6 +74,14 @@ impl Player for LocalPlayer {
 		}
 
 		None
+	}
+}
+
+impl Player for LocalPlayer {
+	fn tick(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
+		let ret = self.handle_keys(w, view, input);
+		view.text = self.get_hotkey_text(w, view);
+		ret
 	}
 
 	fn turn_start(&mut self) {

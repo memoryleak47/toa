@@ -20,7 +20,8 @@ pub struct View {
 	pub main_cursor: Vector2u, // the marked tile position
 	pub second_cursor: Option<Vector2u>, // the optional second marked tile position
 	pub marked_tiles: Vec<Vector2u>, // a set of slightly transparently marked tiles
-	pub player: u32 // important for the vision
+	pub player: u32, // important for the vision
+	pub text: String
 }
 
 impl View {
@@ -30,7 +31,8 @@ impl View {
 			main_cursor: Vector2u::new(0, 0),
 			second_cursor: None,
 			marked_tiles: Vec::new(),
-			player
+			player,
+			text: String::new(),
 		}
 	}
 
@@ -90,7 +92,8 @@ impl View {
 		let building = world.get_building(pos);
 		let unit = world.get_unit(pos);
 
-		let t = Text::new(&format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}", world.active_player, terrain, building, unit), &f, 30);
+		let s = format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}\n\n\n{}", world.active_player, terrain, building, unit, &self.text);
+		let t = Text::new(&s, &f, 15);
 		window.draw(&t);
 	}
 
