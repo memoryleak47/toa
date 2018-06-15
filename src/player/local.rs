@@ -4,7 +4,7 @@ use sfml::system::Vector2f;
 use player::Player;
 use view::View;
 use input::Input;
-use world::{buildingmap::BUILDING_PLANS, World};
+use world::{terrainmap::Terrain, buildingmap::BUILDING_PLANS, World};
 use command::Command;
 
 pub struct LocalPlayer {
@@ -18,9 +18,26 @@ impl LocalPlayer {
 
 	fn get_hotkey_text(&self, w: &World, view: &View) -> String {
 		let mut v = Vec::new();
+		v.push("[n]: next turn");
+		v.push("[ctrl + w|a|s|d]: move camera");
 		if self.marking_unit {
+			v.push("[w|a|s|d]: move unit");
 			v.push("[escape]: stop controlling unit");
+			if let Some(x) = w.get_building(view.main_cursor) {
+				if x.is_burnable() {
+					v.push("[b]: burn building");
+				}
+				if x.is_workable() {
+					v.push("[j]: work on building");
+				}
+			}
+			if let Terrain::GRASS = w.get_terrain(view.main_cursor) {
+				if w.get_building(view.main_cursor).is_none() {
+					v.push("[f]: build farm");
+				}
+			}
 		} else {
+			v.push("[w|a|s|d]: move main cursor");
 			if let Some(u) = w.get_unit(view.main_cursor) {
 				if u.owner == view.player {
 					v.push("[enter]: control unit");
@@ -62,7 +79,7 @@ impl LocalPlayer {
 				return Some(Command::Move { from: view.main_cursor, direction });
 			}
 
-			if input.is_fresh_pressed(Key::F) {
+			if input.is_fresh_pressed(Key::F) && w.get_building(view.main_cursor).is_none() {
 				return Some(Command::Build { at: view.main_cursor, plan: &BUILDING_PLANS[0]})
 			}
 

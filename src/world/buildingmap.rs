@@ -38,6 +38,8 @@ pub enum BuildingKind {
 	Sawmill { stamina: u32 },
 	StoneMine { stamina: u32 },
 	IronMine { stamina: u32 },
+	Wall,
+	HalfWall,
 }
 
 impl Building {
@@ -53,6 +55,14 @@ impl Building {
 			},
 			_ => {}
 		}
+	}
+
+	pub fn is_burnable(&self) -> bool {
+		self.kind.is_burnable()
+	}
+
+	pub fn is_workable(&self) -> bool {
+		self.kind.is_workable()
 	}
 }
 
@@ -74,6 +84,20 @@ impl BuildingKind {
 			},
 			BuildingKind::InConstruction { .. } => Color::rgb(100, 100, 100),
 			_ => Color::rgb(50, 50, 50) // TODO
+		}
+	}
+
+	fn is_burnable(&self) -> bool {
+		match self {
+			BuildingKind::Wall | BuildingKind::HalfWall | BuildingKind::Spawn { .. } => false,
+			_ => true,
+		}
+	}
+
+	fn is_workable(&self) -> bool {
+		match self {
+			BuildingKind::Wall | BuildingKind::HalfWall | BuildingKind::Spawn { .. } => false,
+			_ => true,
 		}
 	}
 }
