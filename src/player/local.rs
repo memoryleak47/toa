@@ -23,6 +23,7 @@ impl LocalPlayer {
 		if self.marking_unit {
 			v.push("[w|a|s|d]: move unit");
 			v.push("[escape]: stop controlling unit");
+			v.push("[i]: drop item");
 			if let Some(x) = w.get_building(view.main_cursor) {
 				if x.is_burnable() {
 					v.push("[b]: burn building");
