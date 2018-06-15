@@ -13,6 +13,21 @@ impl World {
 		self.get_inventory_mut(here).push(item);
 	}
 
+	pub fn tick_itemmap(&mut self) {
+		self.damage_items_on_ground();
+	}
+
+	fn damage_items_on_ground(&mut self) {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
+				for item in self.itemmap[x][y].iter_mut() {
+					item.health -= 3;
+				}
+				// TODO remove dead items
+			}
+		}
+	}
+
 	pub fn get_inventory(&self, p: Vector2u) -> &Inventory {
 		&self.itemmap[p.x as usize][p.y as usize]
 	}

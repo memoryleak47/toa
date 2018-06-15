@@ -8,8 +8,8 @@ pub enum ItemKind {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Item {
-	health: u32,
-	kind: ItemKind,
+	pub health: u32,
+	pub kind: ItemKind,
 }
 
 #[derive(Clone, Debug)]
@@ -26,11 +26,11 @@ impl Inventory {
 		self.items.push(item);
 	}
 
-	pub fn iter(&self, item: Item) -> &[Item] {
+	pub fn iter(&self) -> &[Item] {
 		&self.items[..]
 	}
 
-	pub fn iter_mut(&mut self, item: Item) -> &mut [Item] {
+	pub fn iter_mut(&mut self) -> &mut [Item] {
 		&mut self.items[..]
 	}
 }

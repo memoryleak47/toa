@@ -45,6 +45,7 @@ impl World {
 
 	fn on_turn_start(&mut self) {
 		self.tick_unitmap();
+		self.tick_itemmap();
 	}
 
 	fn reset_turn(&mut self) {
