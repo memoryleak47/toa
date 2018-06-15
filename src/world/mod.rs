@@ -12,7 +12,7 @@ pub use self::itemmap::*;
 
 use sfml::system::Vector2f;
 
-use item::Item;
+use item::Inventory;
 
 pub const TILESIZE: f32 = 20.;
 pub const MAP_SIZE_X: usize = 42;
@@ -28,7 +28,7 @@ pub struct World {
 	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub buildingmap: [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub itemmap: [[Option<Item>; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub itemmap: [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub active_player: u32,
 }
 

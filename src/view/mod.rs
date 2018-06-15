@@ -114,7 +114,7 @@ impl View {
 	fn render_unitmap(&self, window: &mut RenderWindow, world: &World) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(unit) = world.unitmap[x][y] {
+				if let Some(ref unit) = world.unitmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 
 					let mut shape = CircleShape::new(TILESIZE / 2.0, 200);

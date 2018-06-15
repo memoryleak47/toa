@@ -103,18 +103,7 @@ impl BuildingKind {
 }
 
 pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X] {
-	let mut buildingmap: [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X];
-	unsafe {
-		buildingmap = mem::uninitialized();
-	}
-
-	for x in 0..MAP_SIZE_X {
-		for y in 0..MAP_SIZE_Y {
-			unsafe {
-				ptr::write(&mut buildingmap[x][y], None);
-			}
-		}
-	}
+	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
 	buildingmap[MAP_SIZE_X / 2][0] = Some(Building { health: 100, kind: BuildingKind::Spawn { owner: 0, food: 0 }});
 	buildingmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Building { health: 100, kind: BuildingKind::Spawn { owner: 1, food: 0 }});

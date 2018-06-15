@@ -4,6 +4,7 @@ extern crate rand;
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
 mod misc;
 mod graphics;
 mod item;

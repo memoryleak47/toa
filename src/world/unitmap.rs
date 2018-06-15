@@ -2,6 +2,7 @@ use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use item::Inventory;
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -9,12 +10,13 @@ const FULL_FOOD: u32 = 100;
 const FOOD_PER_TURN: u32 = 4;
 const HUNGER_DAMAGE: u32 = 10;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Unit {
 	pub owner: u32,
 	pub stamina: u32,
 	pub health: u32,
 	pub food: u32,
+	pub inventory: Inventory,
 }
 
 impl Unit {
@@ -24,6 +26,7 @@ impl Unit {
 			stamina: FULL_STAMINA,
 			health: FULL_HEALTH,
 			food: FULL_FOOD,
+			inventory: Inventory::new(),
 		}
 	}
 
@@ -37,7 +40,7 @@ impl Unit {
 }
 
 pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {
-	let mut unitmap = [[None; MAP_SIZE_Y]; MAP_SIZE_X];
+	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
 	unitmap[MAP_SIZE_X / 2][0] = Some(Unit::new(0));
 	unitmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Unit::new(1));
