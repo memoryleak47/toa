@@ -4,7 +4,7 @@ use sfml::system::Vector2f;
 use player::Player;
 use view::View;
 use input::Input;
-use world::{terrainmap::Terrain, buildingmap::BUILDING_PLANS, World};
+use world::{buildingmap::BUILDING_PLANS, World};
 use command::Command;
 
 pub struct LocalPlayer {
@@ -17,36 +17,25 @@ impl LocalPlayer {
 	}
 
 	fn get_hotkey_text(&self, w: &World, view: &View) -> String {
-		let mut v = Vec::new();
-		v.push("[n]: next turn");
-		v.push("[ctrl + w|a|s|d]: move camera");
+		let mut v = w.get_unitless_commands(w.active_player);
+
 		if self.marking_unit {
-			v.push("[w|a|s|d]: move unit");
-			v.push("[escape]: stop controlling unit");
-			v.push("[i]: drop item");
-			if let Some(x) = w.get_building(view.main_cursor) {
-				if x.is_burnable() {
-					v.push("[b]: burn building");
-				}
-				if x.is_workable() {
-					v.push("[j]: work on building");
-				}
-				v.push("[r]: repair building");
-			}
-			if let Terrain::GRASS = w.get_terrain(view.main_cursor) {
-				if w.get_building(view.main_cursor).is_none() {
-					v.push("[f]: build farm");
-				}
-			}
-		} else {
-			v.push("[w|a|s|d]: move main cursor");
-			if let Some(u) = w.get_unit(view.main_cursor) {
-				if u.owner == view.player {
-					v.push("[enter]: control unit");
-				}
+			v.extend(w.get_commands_by_unit(w.active_player, view.main_cursor));
+		}
+
+		let info_strings: Vec<_> = v.iter()
+			.map(|x| x.get_info_string())
+			.collect();
+
+		let mut unique = Vec::new();
+
+		for s in info_strings.into_iter() {
+			if !unique.contains(&s) {
+				unique.push(s);
 			}
 		}
-		v.join("\n")
+
+		unique.join("\n")
 	}
 
 	fn handle_keys(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {

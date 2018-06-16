@@ -5,7 +5,7 @@ use command::Command;
 use misc::*;
 
 impl World {
-	fn get_unitless_commands(&self, player: u32) -> Vec<Command> {
+	pub fn get_unitless_commands(&self, player: u32) -> Vec<Command> {
 		vec![Command::NextTurn]
 	}
 
