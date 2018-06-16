@@ -9,11 +9,15 @@ use world::terrainmap::Terrain;
 
 impl World {
 	pub fn exec(&mut self, command: &Command, view: &mut View) {
+		assert!(self.is_valid_command(self.active_player, command));
+
 		match command {
 			&Command::Move { from, direction } => self.exec_move(from, direction, view),
+			&Command::Attack { from, to } => self.exec_attack(from, to),
 			&Command::NextTurn => self.exec_next_turn(),
 			&Command::Build { at, plan } => self.exec_build(at, plan),
 			&Command::Work { at } => self.exec_work(at),
+			
 		}
 	}
 
@@ -22,6 +26,7 @@ impl World {
 
 		let stamina_cost = self.get_terrain(from).get_stamina_cost() + self.get_terrain(to).get_stamina_cost();
 
+		// TODO this should not do an attack!
 		if let Some(mut unit) = self.get_unit(from).cloned() {
 			if unit.stamina > stamina_cost {
 				if let Some(mut defending_unit) = self.get_unit(to).cloned() {
@@ -38,10 +43,14 @@ impl World {
 					unit.stamina -= stamina_cost;
 					self.unitmap[to.x as usize][to.y as usize] = Some(unit);
 					self.unitmap[from.x as usize][from.y as usize] = None;
-					view.main_cursor = to;
+					view.main_cursor = to; // TODO this is hacky!
 				}
 			}
 		}
+	}
+
+	fn exec_attack(&mut self, from: Vector2u, to: Vector2u) {
+		unimplemented!()
 	}
 
 	fn exec_next_turn(&mut self) {

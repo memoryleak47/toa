@@ -1,9 +1,11 @@
+pub mod command_check;
 pub mod command_exec;
 pub mod terrainmap;
 pub mod buildingmap;
 pub mod unitmap;
 pub mod itemmap;
 
+pub use self::command_check::*;
 pub use self::command_exec::*;
 pub use self::terrainmap::*;
 pub use self::buildingmap::*;
