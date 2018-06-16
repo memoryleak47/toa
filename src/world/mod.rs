@@ -68,4 +68,12 @@ impl World {
 		let height_summand = 10 * (self.get_height(pos) as i32 - self.get_height(to) as i32).abs() as u32;
 		terrain_summand + height_summand
 	}
+
+	fn required_attack_stamina(&self, pos: Vector2u, to: Vector2u) -> u32 {
+		10
+	}
+
+	fn required_work_stamina(&self, pos: Vector2u) -> u32 {
+		10
+	}
 }

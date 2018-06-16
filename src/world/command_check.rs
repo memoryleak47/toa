@@ -74,10 +74,35 @@ impl World {
 					.filter(|x| x.stamina >= stamina)
 					.is_some()
 			},
-			Command::Attack { from, to } => true, // TODO
+			Command::Attack { from, to } => {
+				// TODO in range-check
+
+				let stamina = self.required_attack_stamina(*from, *to);
+				self.get_unit(*from)
+					.filter(|x| x.owner == player)
+					.filter(|x| x.stamina >= stamina)
+					.is_some()
+			},
 			Command::NextTurn => true,
-			Command::Build { .. } => true, // TODO
-			Command::Work { .. } => true, // TODO
+			Command::Build { at, plan } => {
+				self.get_unit(*at)
+					.filter(|x| x.owner == player)
+					.filter(|x| x.inventory.contains_all(plan.required_resources))
+					.is_some()
+				&&
+				(plan.required_terrain.is_none() || plan.required_terrain.as_ref() == Some(self.get_terrain(*at)))
+			}
+			Command::Work { at } => {
+				let stamina = self.required_work_stamina(*at);
+				self.get_unit(*at)
+					.filter(|x| x.owner == player)
+					.filter(|x| x.stamina >= stamina)
+					.is_some()
+				&&
+				self.get_building(*at)
+					.filter(|x| x.is_workable())
+					.is_some()
+			}
 		}
 	}
 }

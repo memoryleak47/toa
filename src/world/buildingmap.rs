@@ -34,7 +34,7 @@ pub struct BuildingPlan<'a> {
 	pub building: Box<Building>,
 	pub required_stamina: u32,
 	pub required_terrain: Option<Terrain>,
-	pub required_resources: &'a [(ItemKind, u32)],
+	pub required_resources: &'a [ItemKind], // may contain the same element multiple times
 }
 
 #[derive(Debug, Clone)]
