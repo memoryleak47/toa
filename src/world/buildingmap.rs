@@ -99,6 +99,14 @@ impl BuildingKind {
 			_ => true,
 		}
 	}
+
+	pub fn get_height(&self) -> u32 {
+		match self {
+			BuildingKind::Wall => 2,
+			BuildingKind::HalfWall => 1,
+			_ => 0,
+		}
+	}
 }
 
 pub fn new_buildingmap() -> [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X] {

@@ -54,15 +54,21 @@ impl World {
 	}
 
 	pub fn is_valid_command(&self, player: u32, command: &Command) -> bool {
-	/*
 		match command {
-			Command::Move { from, direction } => { },
-			Command::Attack { from, to } => { },
+			Command::Move { from, direction } => {
+				let to = direction.plus_vector(*from);
+				let stamina = self.required_walk_stamina(*from, *direction);
+
+				self.get_height(to).saturating_sub(self.get_height(*from)) != 2 // can't climb a wall! // can't climb a wall!
+				&& self.get_unit(*from)
+					.filter(|x| x.owner == player)
+					.filter(|x| x.stamina >= stamina)
+					.is_some()
+			},
+			Command::Attack { from, to } => true, // TODO
 			Command::NextTurn => true,
-			Command::Build { .. } => { },
-			Command::Work { .. } => {}
+			Command::Build { .. } => true, // TODO
+			Command::Work { .. } => true, // TODO
 		}
-	*/
-	true
 	}
 }
