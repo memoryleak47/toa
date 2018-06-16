@@ -5,6 +5,10 @@ use command::Command;
 use misc::*;
 
 impl World {
+	fn get_unitless_commands(&self, player: u32) -> Vec<Command> {
+		vec![Command::NextTurn]
+	}
+
 	fn get_unchecked_commands_by_unit(&self, player: u32, pos: Vector2u) -> Vec<Command> {
 		let mut v = Vec::new();
 
@@ -22,9 +26,6 @@ impl World {
 				v.push(Command::Attack { from: pos, to: target });
 			}
 		}
-
-		// add NextTurn
-		v.push(Command::NextTurn);
 
 		// add Build
 		for plan in BUILDING_PLANS.iter() {
@@ -47,9 +48,17 @@ impl World {
 		let mut v = Vec::new();
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				v.extend(self.get_commands_by_unit(player, Vector2u::new(x as u32, y as u32)));
+				let pos = Vector2u::new(x as u32, y as u32);
+				if self.get_unit(pos)
+						.filter(|x| x.owner == player)
+						.is_some() {
+					v.extend(self.get_commands_by_unit(player, pos));
+				}
 			}
 		}
+
+		v.extend(self.get_unitless_commands(player));
+
 		v
 	}
 
