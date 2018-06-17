@@ -13,7 +13,6 @@ enum AppState {
 	InGame {
 		players: [Box<Player>; 2],
 		world: World,
-		view: View,
 	}
 }
 
@@ -28,9 +27,8 @@ impl App {
 	pub fn new() -> App {
 		App {
 			state: AppState::InGame {
-				players: [Box::new(LocalPlayer::new()), Box::new(LocalPlayer::new())],
+				players: [Box::new(LocalPlayer::new(0)), Box::new(LocalPlayer::new(1))],
 				world: World::gen(),
-				view: View::new(0),
 			},
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
@@ -62,14 +60,11 @@ impl App {
 
 	fn tick(&mut self) {
 		self.input.tick();
-		if let AppState::InGame { ref mut world, ref mut players, ref mut view } = self.state {
-			if let Some(command) = players[world.active_player as usize].tick(world, view, &self.input) {
-				world.exec(&command, view);
+		if let AppState::InGame { ref mut world, ref mut players } = self.state {
+			if let Some(command) = players[world.active_player as usize].tick(world, &self.input) {
+				world.exec(&command);
 
 				if let Command::NextTurn = command {
-					// reset view
-					*view = View::new(world.active_player);
-
 					players[1 - world.active_player as usize].turn_end();
 					players[world.active_player as usize].turn_start();
 				}
@@ -78,7 +73,8 @@ impl App {
 	}
 
 	fn render(&mut self) {
-		if let AppState::InGame { ref world, ref view, .. } = self.state {
+		if let AppState::InGame { ref world, ref players, .. } = self.state {
+			let view = players[world.active_player as usize].get_view(world);
 			view.render(&mut self.window, world, &self.texture_state);
 		}
 	}

@@ -2,17 +2,16 @@ use sfml::system::Vector2u;
 
 use world::World;
 use command::Command;
-use view::View;
 use misc::Direction;
 use world::buildingmap::{Building, BuildingPlan, BuildingKind};
 use world::terrainmap::Terrain;
 
 impl World {
-	pub fn exec(&mut self, command: &Command, view: &mut View) {
+	pub fn exec(&mut self, command: &Command) {
 		assert!(self.is_valid_command(self.active_player, command));
 
 		match command {
-			&Command::Move { from, direction } => self.exec_move(from, direction, view),
+			&Command::Move { from, direction } => self.exec_move(from, direction),
 			&Command::Attack { from, to } => self.exec_attack(from, to),
 			&Command::NextTurn => self.exec_next_turn(),
 			&Command::Build { at, plan } => self.exec_build(at, plan),
@@ -21,7 +20,7 @@ impl World {
 		}
 	}
 
-	fn exec_move(&mut self, from: Vector2u, direction: Direction, view: &mut View) {
+	fn exec_move(&mut self, from: Vector2u, direction: Direction) {
 		let to = direction.plus_vector(from);
 
 		let stamina_cost = self.get_terrain(from).get_stamina_cost() + self.get_terrain(to).get_stamina_cost();
@@ -43,7 +42,6 @@ impl World {
 					unit.stamina -= stamina_cost;
 					self.unitmap[to.x as usize][to.y as usize] = Some(unit);
 					self.unitmap[from.x as usize][from.y as usize] = None;
-					view.main_cursor = to; // TODO this is hacky!
 				}
 			}
 		}

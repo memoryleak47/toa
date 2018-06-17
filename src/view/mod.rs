@@ -1,4 +1,4 @@
-mod control;
+pub mod default;
 
 use sfml::system::{Vector2u, Vector2f};
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, CircleShape, Shape, Color, Transformable, Text, Font};
@@ -7,93 +7,48 @@ use world::{World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
 use misc::*;
 use graphics::TextureState;
 
-const MARK_BORDER_SIZE: u32 = 5;
+const MARKER_BORDER_SIZE: f32 = 5.;
+lazy_static! {
+	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
+}
 
-#[allow(non_snake_case)]
-fn MAIN_CURSOR_COLOR() -> Color { Color::rgb(200, 150, 0) }
+pub enum MarkerType {
+	Transparent,
+	Border
+}
 
-#[allow(non_snake_case)]
-fn SECOND_CURSOR_COLOR() -> Color { Color::rgb(200, 0, 0) }
+pub struct Marker {
+	pub position: Vector2u,
+	pub marker_type: MarkerType,
+	pub color: &'static Color,
+}
 
 pub struct View {
 	pub focus_position: Vector2f, // the tile in the center of the screen, in map coordinates
-	pub main_cursor: Vector2u, // the marked tile position
-	pub second_cursor: Option<Vector2u>, // the optional second marked tile position
-	pub marked_tiles: Vec<Vector2u>, // a set of slightly transparently marked tiles
+	pub markers: Vec<Marker>,
 	pub player: u32, // important for the vision
 	pub text: String
 }
 
 impl View {
-	pub fn new(player: u32) -> View {
-		View {
-			focus_position: Vector2f::new(MAP_SIZE_X as f32 / 2., MAP_SIZE_Y as f32 / 2.),
-			main_cursor: Vector2u::new(0, 0),
-			second_cursor: None,
-			marked_tiles: Vec::new(),
-			player,
-			text: String::new(),
+	fn render_markers(&self, window: &mut RenderWindow) {
+		for marker in self.markers.iter() {
+			marker.render(window, self);
 		}
-	}
-
-	pub fn move_cursor(&mut self, direction: Direction) {
-		self.main_cursor = direction.plus_vector(self.main_cursor);
-	}
-
-	fn render_marker(&self, window: &mut RenderWindow, color: &Color, size: u32, position: Vector2u) {
-		let posf = Vector2f::new(position.x as f32 * TILESIZE, position.y as f32 * TILESIZE);
-
-		let halfscreen = Vector2f::new(window.size().x as f32, window.size().y as f32) / 2.0;
-
-		let mut shape = RectangleShape::new();
-		shape.set_fill_color(color);
-
-		// top
-		shape.set_position((posf - self.focus_position * TILESIZE) + halfscreen);
-		shape.set_size(Vector2f::new(TILESIZE as f32, size as f32));
-		window.draw(&shape);
-
-		// left
-		shape.set_position((posf - self.focus_position * TILESIZE) + halfscreen);
-		shape.set_size(Vector2f::new(size as f32, TILESIZE as f32));
-		window.draw(&shape);
-
-		// bottom
-		shape.set_position((posf - self.focus_position * TILESIZE) + halfscreen + Vector2f::new(0., TILESIZE - size as f32));
-		shape.set_size(Vector2f::new(TILESIZE as f32, size as f32));
-		window.draw(&shape);
-
-		// right
-		shape.set_position((posf - self.focus_position * TILESIZE) + halfscreen + Vector2f::new(TILESIZE - size as f32, 0.));
-		shape.set_size(Vector2f::new(size as f32, TILESIZE as f32));
-		window.draw(&shape);
 	}
 
 	pub fn render(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		self.render_terrainmap(window, world, texture_state);
+		self.render_markers(window);
 		self.render_buildingmap(window, world);
 		self.render_unitmap(window, world);
 
 		self.render_hud(window, world);
-
-		self.render_marker(window, &MAIN_CURSOR_COLOR(), MARK_BORDER_SIZE, self.main_cursor);
-		if let Some(cursor) = self.second_cursor {
-			self.render_marker(window, &SECOND_CURSOR_COLOR(), MARK_BORDER_SIZE, cursor);
-		}
-		// TODO render marked_tiles
 	}
 
 	fn render_hud(&self, window: &mut RenderWindow, world: &World) {
 		let f = Font::from_file("/usr/share/fonts/TTF/DejaVuSerif.ttf").unwrap();
-
-		let pos = self.main_cursor;
-
-		let terrain = world.get_terrain(pos);
-		let building = world.get_building(pos);
-		let unit = world.get_unit(pos);
-
-		let s = format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}\n\n\n{}", world.active_player, terrain, building, unit, &self.text);
-		let t = Text::new(&s, &f, 15);
+		let t = Text::new(&self.text, &f, 15);
 		window.draw(&t);
 	}
 
@@ -139,6 +94,57 @@ impl View {
 					window.draw(&shape);
 				}
 			}
+		}
+	}
+}
+
+impl Marker {
+	fn render(&self, window: &mut RenderWindow, view: &View) {
+		let halfscreen = Vector2f::new(window.size().x as f32, window.size().y as f32) / 2.0;
+		let posf = vector_uf(self.position) * TILESIZE;
+
+		let left_top = (posf - view.focus_position * TILESIZE) + halfscreen;
+		let right_bot = left_top + TILESIZE_VEC();
+		let (left, top) = (left_top.x, left_top.y);
+		let (right, bot) = (right_bot.x, right_bot.y);
+
+		let mut shape = RectangleShape::new();
+		shape.set_fill_color(&self.get_effective_color());
+
+		match self.marker_type {
+			MarkerType::Transparent => {
+				shape.set_position(left_top);
+				shape.set_size(TILESIZE_VEC());
+				window.draw(&shape);
+			},
+			MarkerType::Border => {
+				// top
+				shape.set_position(left_top);
+				shape.set_size(Vector2f::new(TILESIZE as f32, MARKER_BORDER_SIZE));
+				window.draw(&shape);
+
+				// left
+				shape.set_position(left_top);
+				shape.set_size(Vector2f::new(MARKER_BORDER_SIZE, TILESIZE as f32));
+				window.draw(&shape);
+
+				// bot
+				shape.set_position(Vector2f::new(left, bot - MARKER_BORDER_SIZE));
+				shape.set_size(Vector2f::new(TILESIZE as f32, MARKER_BORDER_SIZE));
+				window.draw(&shape);
+
+				// right
+				shape.set_position(Vector2f::new(right - MARKER_BORDER_SIZE, top));
+				shape.set_size(Vector2f::new(MARKER_BORDER_SIZE, TILESIZE as f32));
+				window.draw(&shape);
+			},
+		}
+	}
+
+	fn get_effective_color(&self) -> Color {
+		match self.marker_type {
+			MarkerType::Transparent => *self.color - Color::rgba(0, 0, 0, 155),
+			MarkerType::Border => *self.color,
 		}
 	}
 }

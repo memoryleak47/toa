@@ -1,8 +1,9 @@
 use sfml::window::Key;
-use sfml::system::Vector2f;
+use sfml::system::{Vector2f, Vector2u};
+use sfml::graphics::Color;
 
 use player::Player;
-use view::View;
+use view::{View, Marker, MarkerType, CURSOR_COLOR};
 use input::Input;
 use world::{buildingmap::BUILDING_PLANS, World};
 use command::Command;
@@ -30,15 +31,41 @@ struct ActionInfo {
 }
 
 pub struct LocalPlayer {
+	player_id: u32,
 	unit_mode: Option<UnitMode>, // None -> no unit focused
+	focus_position: Vector2f,
+	cursor: Vector2u,
 }
 
 impl LocalPlayer {
-	pub fn new() -> LocalPlayer {
-		LocalPlayer { unit_mode: None }
+	pub fn new(player_id: u32) -> LocalPlayer {
+		LocalPlayer {
+			player_id,
+			unit_mode: None,
+			focus_position: Vector2f::new(0., 0.),
+			cursor: Vector2u::new(0, 0),
+		}
 	}
 
-	fn get_action_infos(&self, w: &World, view: &View) -> Vec<ActionInfo> {
+	fn get_text(&self, w: &World) -> String {
+		let default = View::default_text_at(self.cursor, w);
+		let action_infos = self.get_action_infos(w);
+
+		let v: Vec<_> = action_infos.iter()
+				.map(|x| x.get_text())
+				.collect();
+		format!("{}\n\nMode: {:?}\n{}", default, self.unit_mode, v.join("\n"))
+	}
+
+	fn get_markers(&self) -> Vec<Marker> {
+		vec![Marker {
+			position: self.cursor,
+			marker_type: MarkerType::Border,
+			color: &CURSOR_COLOR,
+		}]
+	}
+
+	fn get_action_infos(&self, w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -84,25 +111,25 @@ impl LocalPlayer {
 				});
 				v.push(ActionInfo {
 					text: "move up".to_string(),
-					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Up}),
+					action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Up}),
 					key_combination: vec![Key::W],
 					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move left".to_string(),
-					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Left}),
+					action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Left}),
 					key_combination: vec![Key::A],
 					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move down".to_string(),
-					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Down}),
+					action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Down}),
 					key_combination: vec![Key::S],
 					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move right".to_string(),
-					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Right}),
+					action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Right}),
 					key_combination: vec![Key::D],
 					fresh: false,
 				});
@@ -162,8 +189,8 @@ impl LocalPlayer {
 					key_combination: vec![Key::D],
 					fresh: false,
 				});
-				if w.get_unit(view.main_cursor)
-						.filter(|x| x.owner == w.active_player)
+				if w.get_unit(self.cursor)
+						.filter(|x| x.owner == self.player_id)
 						.is_some() {
 					v.push(ActionInfo {
 						text: "focus unit".to_string(),
@@ -176,7 +203,7 @@ impl LocalPlayer {
 		}
 
 		v = v.into_iter()
-			.filter(|x| x.is_valid(w))
+			.filter(|x| x.is_valid(self.player_id, w))
 			.collect();
 
 		v
@@ -184,22 +211,26 @@ impl LocalPlayer {
 }
 
 impl Player for LocalPlayer {
-	fn tick(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
-		let action_infos = self.get_action_infos(w, view);
-
-		let v: Vec<_> = action_infos.iter()
-				.map(|x| x.get_text())
-				.collect();
-		view.text = format!("Mode: {:?}\n{}", self.unit_mode, v.join("\n"));
+	fn tick(&mut self, w: &World, input: &Input) -> Option<Command> {
+		let action_infos = self.get_action_infos(w);
 
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
-				if let Some(x) = info.execute(self, view) {
+				if let Some(x) = info.execute(self) {
 					return Some(x);
 				}
 			}
 		}
 		None
+	}
+
+	fn get_view(&self, w: &World) -> View {
+		View {
+			markers: self.get_markers(),
+			focus_position: self.focus_position,
+			player: self.player_id,
+			text: self.get_text(w),
+		}
 	}
 
 	fn turn_start(&mut self) {
@@ -208,9 +239,9 @@ impl Player for LocalPlayer {
 }
 
 impl ActionInfo {
-	fn is_valid(&self, w: &World) -> bool {
+	fn is_valid(&self, player_id: u32, w: &World) -> bool {
 		if let Action::Command(ref c) = self.action {
-			w.is_valid_command(w.active_player, c)
+			w.is_valid_command(player_id, c)
 		} else {
 			true
 		}
@@ -233,12 +264,12 @@ impl ActionInfo {
 		}
 	}
 
-	fn execute(self, player: &mut LocalPlayer, view: &mut View) -> Option<Command> {
+	fn execute(self, player: &mut LocalPlayer) -> Option<Command> {
 		match self.action {
 			Action::Command(c) => return Some(c),
 			Action::ModeChange(m) => { player.unit_mode = m; },
-			Action::MoveCamera(d) => { view.focus_position = vector_if(d.to_vector()) / 2. + view.focus_position; },
-			Action::MoveCursor(d) => { view.move_cursor(d); },
+			Action::MoveCamera(d) => { player.focus_position = vector_if(d.to_vector()) / 2. + player.focus_position; },
+			Action::MoveCursor(d) => { player.cursor = d.plus_vector(player.cursor); },
 		}
 		None
 	}
