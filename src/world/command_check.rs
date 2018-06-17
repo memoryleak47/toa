@@ -68,7 +68,8 @@ impl World {
 				let to = direction.plus_vector(*from);
 				let stamina = self.required_walk_stamina(*from, *direction);
 
-				self.get_height(to).saturating_sub(self.get_height(*from)) != 2 // can't climb a wall!
+				self.get_unit(to).is_none()
+				&& self.get_height(to).saturating_sub(self.get_height(*from)) != 2 // can't climb a wall!
 				&& self.get_unit(*from)
 					.filter(|x| x.owner == player)
 					.filter(|x| x.stamina >= stamina)

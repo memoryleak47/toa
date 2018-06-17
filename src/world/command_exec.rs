@@ -16,7 +16,6 @@ impl World {
 			&Command::NextTurn => self.exec_next_turn(),
 			&Command::Build { at, plan } => self.exec_build(at, plan),
 			&Command::Work { at } => self.exec_work(at),
-			
 		}
 	}
 
