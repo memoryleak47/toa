@@ -25,6 +25,7 @@ struct ActionInfo {
 	text: String,
 	action: Action,
 	key_combination: Vec<Key>,
+	fresh: bool, // whether it requires fresh keys
 }
 
 pub struct LocalPlayer {
@@ -43,28 +44,33 @@ impl LocalPlayer {
 			text: "next turn".to_string(),
 			action: Action::Command(Command::NextTurn),
 			key_combination: vec![Key::N],
+			fresh: true,
 		});
 
 		// move camera:
 		v.push(ActionInfo {
 			text: "move camera up".to_string(),
 			action: Action::MoveCamera(Direction::Up),
-			key_combination: vec![Key::LControl, Key::W]
+			key_combination: vec![Key::LControl, Key::W],
+			fresh: false,
 		});
 		v.push(ActionInfo {
 			text: "move camera left".to_string(),
 			action: Action::MoveCamera(Direction::Left),
-			key_combination: vec![Key::LControl, Key::A]
+			key_combination: vec![Key::LControl, Key::A],
+			fresh: false,
 		});
 		v.push(ActionInfo {
 			text: "move camera down".to_string(),
 			action: Action::MoveCamera(Direction::Down),
-			key_combination: vec![Key::LControl, Key::S]
+			key_combination: vec![Key::LControl, Key::S],
+			fresh: false,
 		});
 		v.push(ActionInfo {
 			text: "move camera right".to_string(),
 			action: Action::MoveCamera(Direction::Right),
-			key_combination: vec![Key::LControl, Key::D]
+			key_combination: vec![Key::LControl, Key::D],
+			fresh: false,
 		});
 
 		match self.unit_mode {
@@ -72,75 +78,88 @@ impl LocalPlayer {
 				v.push(ActionInfo {
 					text: "unfocus unit".to_string(),
 					action: Action::ModeChange(None),
-					key_combination: vec![Key::Escape]
+					key_combination: vec![Key::Escape],
+					fresh: true,
 				});
 				v.push(ActionInfo {
 					text: "move up".to_string(),
 					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Up}),
-					key_combination: vec![Key::W]
+					key_combination: vec![Key::W],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move left".to_string(),
 					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Left}),
-					key_combination: vec![Key::A]
+					key_combination: vec![Key::A],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move down".to_string(),
 					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Down}),
-					key_combination: vec![Key::S]
+					key_combination: vec![Key::S],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move right".to_string(),
 					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Right}),
-					key_combination: vec![Key::D]
+					key_combination: vec![Key::D],
+					fresh: false,
 				});
 
 				v.push(ActionInfo {
 					text: "go to attack mode".to_string(),
 					action: Action::ModeChange(Some(UnitMode::Attack)),
-					key_combination: vec![Key::F]
+					key_combination: vec![Key::F],
+					fresh: false,
 				});
 
 				v.push(ActionInfo {
 					text: "go to build mode".to_string(),
 					action: Action::ModeChange(Some(UnitMode::Build)),
-					key_combination: vec![Key::B]
+					key_combination: vec![Key::B],
+					fresh: false,
 				});
 			},
 			Some(UnitMode::Attack) => {
 				v.push(ActionInfo {
 					text: "go to normal mode".to_string(),
 					action: Action::ModeChange(Some(UnitMode::Normal)),
-					key_combination: vec![Key::Escape]
+					key_combination: vec![Key::Escape],
+					fresh: false,
 				});
 			}
 			Some(UnitMode::Build) => {
 				v.push(ActionInfo {
 					text: "go to normal mode".to_string(),
 					action: Action::ModeChange(Some(UnitMode::Normal)),
-					key_combination: vec![Key::Escape]
+					key_combination: vec![Key::Escape],
+					fresh: false,
 				});
 			}
 			None => {
 				v.push(ActionInfo {
 					text: "move cursor up".to_string(),
 					action: Action::MoveCursor(Direction::Up),
-					key_combination: vec![Key::W]
+					key_combination: vec![Key::W],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move cursor left".to_string(),
 					action: Action::MoveCursor(Direction::Left),
-					key_combination: vec![Key::A]
+					key_combination: vec![Key::A],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move cursor down".to_string(),
 					action: Action::MoveCursor(Direction::Down),
-					key_combination: vec![Key::S]
+					key_combination: vec![Key::S],
+					fresh: false,
 				});
 				v.push(ActionInfo {
 					text: "move cursor right".to_string(),
 					action: Action::MoveCursor(Direction::Right),
-					key_combination: vec![Key::D]
+					key_combination: vec![Key::D],
+					fresh: false,
 				});
 				if w.get_unit(view.main_cursor)
 						.filter(|x| x.owner == w.active_player)
@@ -148,7 +167,8 @@ impl LocalPlayer {
 					v.push(ActionInfo {
 						text: "focus unit".to_string(),
 						action: Action::ModeChange(Some(UnitMode::Normal)),
-						key_combination: vec![Key::Return]
+						key_combination: vec![Key::Return],
+						fresh: false,
 					});
 				}
 			}
@@ -202,15 +222,19 @@ impl ActionInfo {
 	}
 
 	fn is_triggered(&self, input: &Input) -> bool {
-		self.key_combination.iter()
-			.all(|x| input.is_fresh_pressed(*x))
+		if self.fresh {
+			self.key_combination.iter()
+				.all(|x| input.is_fresh_pressed(*x))
+		} else {
+			input.are_pressed_mod(&self.key_combination[..], 3)
+		}
 	}
 
 	fn execute(self, player: &mut LocalPlayer, view: &mut View) -> Option<Command> {
 		match self.action {
 			Action::Command(c) => return Some(c),
 			Action::ModeChange(m) => { player.unit_mode = m; },
-			Action::MoveCamera(d) => { view.focus_position = vector_if(d.to_vector()) / 10. + view.focus_position; },
+			Action::MoveCamera(d) => { view.focus_position = vector_if(d.to_vector()) / 2. + view.focus_position; },
 			Action::MoveCursor(d) => { view.main_cursor = d.plus_vector(view.main_cursor); },
 		}
 		None

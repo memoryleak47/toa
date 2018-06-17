@@ -3,7 +3,6 @@ use sfml::window::Key;
 
 use misc::Direction;
 
-static KEYS: [Key; 13] = [Key::W, Key::A, Key::S, Key::D, Key::N, Key::Return, Key::Escape, Key::M, Key::F, Key::LControl, Key::RControl, Key::U, Key::J];
 const MOVE_WAIT_TIME: u32 = 7;
 
 struct KeyState {
@@ -40,10 +39,23 @@ impl Input {
 		state.pressed && state.time % modulo == 0
 	}
 
+	pub fn are_pressed_mod(&self, keys: &[Key], modulo: u32) -> bool {
+		keys.iter()
+			.map(|x| &self.keymap[x])
+			.all(|x| x.pressed)
+		&&
+		keys.iter()
+			.map(|x| &self.keymap[x])
+			.map(|x| x.time)
+			.min()
+			.filter(|m| m % modulo == 0)
+			.is_some()
+	}
+
 	fn tick_keys(&mut self) {
 		let mut keymap = HashMap::new();
 
-		for key in KEYS.iter() {
+		for key in get_all_keys().iter() {
 			let state = &self.keymap[&key];
 			if state.pressed == key.is_pressed() {
 				keymap.insert(*key, KeyState { time: state.time + 1, pressed: state.pressed });
@@ -68,9 +80,19 @@ impl Input {
 fn new_keymap() -> HashMap<Key, KeyState> {
 	let mut keymap = HashMap::new();
 
-	for key in KEYS.iter() {
+	for key in get_all_keys().iter() {
 		keymap.insert(*key, KeyState { time: 0, pressed: key.is_pressed() });
 	}
 
 	keymap
+}
+
+fn get_all_keys() -> Vec<Key> {
+	let mut v = Vec::new();
+
+	for x in (Key::Unknown as i32)..(Key::Count as i32) {
+		v.push(unsafe { ::std::mem::transmute(x) });
+	}
+
+	v
 }
