@@ -207,6 +207,15 @@ impl LocalPlayer {
 
 		v
 	}
+
+	fn apply_view_command(&mut self, command: &Command) {
+		match command {
+			Command::Move { from, direction } => {
+				self.cursor = direction.plus_vector(self.cursor);
+			},
+			_ => {}
+		}
+	}
 }
 
 impl Player for LocalPlayer {
@@ -223,6 +232,7 @@ impl Player for LocalPlayer {
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
 				if let Some(x) = info.execute(self) {
+					self.apply_view_command(&x);
 					return Some(x);
 				}
 			}
