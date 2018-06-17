@@ -194,7 +194,9 @@ impl Player for LocalPlayer {
 
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
-				return info.execute(self, view);
+				if let Some(x) = info.execute(self, view) {
+					return Some(x);
+				}
 			}
 		}
 		None
