@@ -211,6 +211,13 @@ impl LocalPlayer {
 
 impl Player for LocalPlayer {
 	fn tick(&mut self, w: &World, input: &Input) -> Option<Command> {
+		// in case the cursored unit died
+		if w.get_unit(self.cursor)
+				.filter(|x| x.owner == self.player_id)
+				.is_none() {
+			self.unit_mode = None;
+		}
+
 		let action_infos = self.get_action_infos(w);
 
 		for info in action_infos.into_iter() {
