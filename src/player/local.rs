@@ -20,6 +20,7 @@ enum Action {
 	Command(Command),
 	MoveCamera(Direction),
 	MoveCursor(Direction),
+	NextUnit,
 }
 
 struct ActionInfo {
@@ -71,6 +72,13 @@ impl LocalPlayer {
 			text: "next turn".to_string(),
 			action: Action::Command(Command::NextTurn),
 			key_combination: vec![Key::N],
+			fresh: true,
+		});
+
+		v.push(ActionInfo {
+			text: "next unit".to_string(),
+			action: Action::NextUnit,
+			key_combination: vec![Key::U],
 			fresh: true,
 		});
 
@@ -231,7 +239,7 @@ impl Player for LocalPlayer {
 
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
-				if let Some(x) = info.execute(self) {
+				if let Some(x) = info.execute(self, w) {
 					self.apply_view_command(&x);
 					return Some(x);
 				}
@@ -280,9 +288,14 @@ impl ActionInfo {
 		}
 	}
 
-	fn execute(self, player: &mut LocalPlayer) -> Option<Command> {
+	fn execute(self, player: &mut LocalPlayer, w: &World) -> Option<Command> {
 		match self.action {
 			Action::Command(c) => return Some(c),
+			Action::NextUnit => {
+				for x in w.find_next_unit_tile(player.cursor, player.player_id) {
+					player.cursor = x;
+				}
+			}
 			Action::ModeChange(m) => { player.unit_mode = m; },
 			Action::MoveCamera(d) => { player.focus_position = vector_if(d.to_vector()) / 2. + player.focus_position; },
 			Action::MoveCursor(d) => { player.cursor = d.plus_vector(player.cursor); },
