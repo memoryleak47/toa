@@ -1,8 +1,5 @@
 mod action_info;
 
-use self::action_info::{Action, ActionInfo};
-
-use sfml::window::Key;
 use sfml::system::{Vector2f, Vector2u};
 
 use player::Player;
@@ -17,6 +14,15 @@ pub enum UnitMode {
 	Normal,
 	Attack { target_cursor: Vector2u },
 	Build
+}
+
+pub enum Action {
+	ModeChange(Option<UnitMode>),
+	Command(Command),
+	MoveCamera(Direction),
+	MoveCursor(Direction),
+	MoveTargetCursor(Direction),
+	NextUnit,
 }
 
 pub struct LocalPlayer {
@@ -89,7 +95,7 @@ impl Player for LocalPlayer {
 
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
-				if let Some(x) = info.execute(self, w) {
+				if let Some(x) = info.action.execute(self, w) {
 					self.apply_view_command(&x);
 					return Some(x);
 				}
@@ -112,3 +118,24 @@ impl Player for LocalPlayer {
 	}
 }
 
+impl Action {
+	pub fn execute(self, player: &mut LocalPlayer, w: &World) -> Option<Command> {
+		match self {
+			Action::Command(c) => return Some(c),
+			Action::NextUnit => {
+				for x in w.find_next_unit_tile(player.cursor, player.player_id) {
+					player.cursor = x;
+				}
+			}
+			Action::ModeChange(m) => { player.unit_mode = m; },
+			Action::MoveTargetCursor(d) => {
+				if let Some(UnitMode::Attack { ref mut target_cursor }) = player.unit_mode.as_mut() {
+					*target_cursor = d.plus_vector(*target_cursor);
+				} else { assert!(false); }
+			},
+			Action::MoveCamera(d) => { player.focus_position = vector_if(d.to_vector()) / 2. + player.focus_position; },
+			Action::MoveCursor(d) => { player.cursor = d.plus_vector(player.cursor); },
+		}
+		None
+	}
+}
