@@ -10,6 +10,7 @@ use graphics::TextureState;
 const MARKER_BORDER_SIZE: f32 = 5.;
 lazy_static! {
 	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
+	pub static ref TARGET_CURSOR_COLOR: Color = Color::rgb(200, 20, 20);
 }
 
 pub enum MarkerType {
