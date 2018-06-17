@@ -3,7 +3,7 @@ use sfml::system::{Vector2u, Vector2i, Vector2f};
 
 use world::{MAP_SIZE_X, MAP_SIZE_Y};
 
-#[derive(Copy, Clone)]
+#[derive(PartialEq, Copy, Clone)]
 pub enum Direction {
 	Up, Left, Down, Right
 }
@@ -20,6 +20,10 @@ pub fn vector_ui(v: Vector2u) -> Vector2i {
 }
 
 pub fn vector_uf(v: Vector2u) -> Vector2f {
+	Vector2f::new(v.x as f32, v.y as f32)
+}
+
+pub fn vector_if(v: Vector2i) -> Vector2f {
 	Vector2f::new(v.x as f32, v.y as f32)
 }
 

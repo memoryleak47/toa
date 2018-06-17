@@ -6,93 +6,213 @@ use view::View;
 use input::Input;
 use world::{buildingmap::BUILDING_PLANS, World};
 use command::Command;
+use misc::{Direction, vector_if};
+
+enum UnitMode {
+	Normal,
+	Attack,
+	Build
+}
+
+enum Action {
+	ModeChange(Option<UnitMode>),
+	Command(Command),
+	MoveCamera(Direction),
+	MoveCursor(Direction),
+}
+
+struct ActionInfo {
+	text: String,
+	action: Action,
+	key_combination: Vec<Key>,
+}
 
 pub struct LocalPlayer {
-	marking_unit: bool,
+	unit_mode: Option<UnitMode>, // None -> no unit focused
 }
 
 impl LocalPlayer {
 	pub fn new() -> LocalPlayer {
-		LocalPlayer { marking_unit: false }
+		LocalPlayer { unit_mode: None }
 	}
 
-	fn get_hotkey_text(&self, w: &World, view: &View) -> String {
-		let mut v = w.get_unitless_commands(w.active_player);
+	fn get_action_infos(&self, w: &World, view: &View) -> Vec<ActionInfo> {
+		let mut v = Vec::new();
 
-		if self.marking_unit {
-			v.extend(w.get_commands_by_unit(w.active_player, view.main_cursor));
-		}
+		v.push(ActionInfo {
+			text: "next turn".to_string(),
+			action: Action::Command(Command::NextTurn),
+			key_combination: vec![Key::N],
+		});
 
-		let info_strings: Vec<_> = v.iter()
-			.map(|x| x.get_info_string())
-			.collect();
+		// move camera:
+		v.push(ActionInfo {
+			text: "move camera up".to_string(),
+			action: Action::MoveCamera(Direction::Up),
+			key_combination: vec![Key::LControl, Key::W]
+		});
+		v.push(ActionInfo {
+			text: "move camera left".to_string(),
+			action: Action::MoveCamera(Direction::Left),
+			key_combination: vec![Key::LControl, Key::A]
+		});
+		v.push(ActionInfo {
+			text: "move camera down".to_string(),
+			action: Action::MoveCamera(Direction::Down),
+			key_combination: vec![Key::LControl, Key::S]
+		});
+		v.push(ActionInfo {
+			text: "move camera right".to_string(),
+			action: Action::MoveCamera(Direction::Right),
+			key_combination: vec![Key::LControl, Key::D]
+		});
 
-		let mut unique = Vec::new();
+		match self.unit_mode {
+			Some(UnitMode::Normal) => {
+				v.push(ActionInfo {
+					text: "unfocus unit".to_string(),
+					action: Action::ModeChange(None),
+					key_combination: vec![Key::Escape]
+				});
+				v.push(ActionInfo {
+					text: "move up".to_string(),
+					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Up}),
+					key_combination: vec![Key::W]
+				});
+				v.push(ActionInfo {
+					text: "move left".to_string(),
+					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Left}),
+					key_combination: vec![Key::A]
+				});
+				v.push(ActionInfo {
+					text: "move down".to_string(),
+					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Down}),
+					key_combination: vec![Key::S]
+				});
+				v.push(ActionInfo {
+					text: "move right".to_string(),
+					action: Action::Command(Command::Move { from: view.main_cursor, direction: Direction::Right}),
+					key_combination: vec![Key::D]
+				});
 
-		for s in info_strings.into_iter() {
-			if !unique.contains(&s) {
-				unique.push(s);
+				v.push(ActionInfo {
+					text: "go to attack mode".to_string(),
+					action: Action::ModeChange(Some(UnitMode::Attack)),
+					key_combination: vec![Key::F]
+				});
+
+				v.push(ActionInfo {
+					text: "go to build mode".to_string(),
+					action: Action::ModeChange(Some(UnitMode::Build)),
+					key_combination: vec![Key::B]
+				});
+			},
+			Some(UnitMode::Attack) => {
+				v.push(ActionInfo {
+					text: "go to normal mode".to_string(),
+					action: Action::ModeChange(Some(UnitMode::Normal)),
+					key_combination: vec![Key::Escape]
+				});
 			}
-		}
-
-		unique.join("\n")
-	}
-
-	fn handle_keys(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
-		if input.is_pressed(Key::Escape) {
-			self.marking_unit = false;
-		}
-
-		// move main_cursor
-		if let Some(direction) = input.move_direction() {
-			if input.is_pressed(Key::LControl) || input.is_pressed(Key::RControl) {
-				let v = direction.to_vector();
-				view.focus_position += Vector2f::new(v.x as f32, v.y as f32);
-			} else if !self.marking_unit {
-				view.move_cursor(direction);
+			Some(UnitMode::Build) => {
+				v.push(ActionInfo {
+					text: "go to normal mode".to_string(),
+					action: Action::ModeChange(Some(UnitMode::Normal)),
+					key_combination: vec![Key::Escape]
+				});
 			}
-		}
-
-		if input.is_fresh_pressed(Key::Return) && !self.marking_unit {
-			if let Some(unit) = w.get_unit(view.main_cursor) {
-				if unit.owner == w.active_player {
-					self.marking_unit = true;
+			None => {
+				v.push(ActionInfo {
+					text: "move cursor up".to_string(),
+					action: Action::MoveCursor(Direction::Up),
+					key_combination: vec![Key::W]
+				});
+				v.push(ActionInfo {
+					text: "move cursor left".to_string(),
+					action: Action::MoveCursor(Direction::Left),
+					key_combination: vec![Key::A]
+				});
+				v.push(ActionInfo {
+					text: "move cursor down".to_string(),
+					action: Action::MoveCursor(Direction::Down),
+					key_combination: vec![Key::S]
+				});
+				v.push(ActionInfo {
+					text: "move cursor right".to_string(),
+					action: Action::MoveCursor(Direction::Right),
+					key_combination: vec![Key::D]
+				});
+				if w.get_unit(view.main_cursor)
+						.filter(|x| x.owner == w.active_player)
+						.is_some() {
+					v.push(ActionInfo {
+						text: "focus unit".to_string(),
+						action: Action::ModeChange(Some(UnitMode::Normal)),
+						key_combination: vec![Key::Return]
+					});
 				}
 			}
 		}
 
-		if input.is_fresh_pressed(Key::N) {
-			return Some(Command::NextTurn);
-		}
+		v = v.into_iter()
+			.filter(|x| x.is_valid(w))
+			.collect();
 
-		if self.marking_unit {
-			if let Some(direction) = input.move_direction() {
-				return Some(Command::Move { from: view.main_cursor, direction });
-			}
-
-			if input.is_fresh_pressed(Key::F) && w.get_building(view.main_cursor).is_none() {
-				return Some(Command::Build { at: view.main_cursor, plan: &BUILDING_PLANS[0]})
-			}
-
-			if input.is_fresh_pressed(Key::J) {
-				return Some(Command::Work { at: view.main_cursor})
-			}
-		} else if input.is_fresh_pressed(Key::U) {
-			view.main_cursor = w.find_next_unit_tile(view.main_cursor, w.active_player).unwrap();
-		}
-
-		None
+		v
 	}
 }
 
 impl Player for LocalPlayer {
 	fn tick(&mut self, w: &World, view: &mut View, input: &Input) -> Option<Command> {
-		let ret = self.handle_keys(w, view, input);
-		view.text = self.get_hotkey_text(w, view);
-		ret
+		let action_infos = self.get_action_infos(w, view);
+
+		let v: Vec<_> = action_infos.iter()
+				.map(|x| x.get_text())
+				.collect();
+		view.text = v.join("\n");
+
+		for info in action_infos.into_iter() {
+			if info.is_triggered(input) {
+				return info.execute(self, view);
+			}
+		}
+		None
 	}
 
 	fn turn_start(&mut self) {
-		self.marking_unit = false;
+		self.unit_mode = None;
+	}
+}
+
+impl ActionInfo {
+	fn is_valid(&self, w: &World) -> bool {
+		if let Action::Command(ref c) = self.action {
+			w.is_valid_command(w.active_player, c)
+		} else {
+			true
+		}
+	}
+
+	fn get_text(&self) -> String {
+		let v: Vec<_> = self.key_combination.iter()
+			.map(|x| format!("{:?}", x))
+			.collect();
+		let key_string = v.join("+");
+		format!("[{}]: {}", key_string, self.text)
+	}
+
+	fn is_triggered(&self, input: &Input) -> bool {
+		self.key_combination.iter()
+			.all(|x| input.is_fresh_pressed(*x))
+	}
+
+	fn execute(self, player: &mut LocalPlayer, view: &mut View) -> Option<Command> {
+		match self.action {
+			Action::Command(c) => return Some(c),
+			Action::ModeChange(m) => { player.unit_mode = m; },
+			Action::MoveCamera(d) => { view.focus_position = vector_if(d.to_vector()) / 10. + view.focus_position; },
+			Action::MoveCursor(d) => { view.main_cursor = d.plus_vector(view.main_cursor); },
+		}
+		None
 	}
 }
