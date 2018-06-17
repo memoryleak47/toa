@@ -1,11 +1,10 @@
 use sfml::window::Key;
 use sfml::system::{Vector2f, Vector2u};
-use sfml::graphics::Color;
 
 use player::Player;
 use view::{View, Marker, MarkerType, CURSOR_COLOR};
 use input::Input;
-use world::{buildingmap::BUILDING_PLANS, World};
+use world::World;
 use command::Command;
 use misc::{Direction, vector_if};
 

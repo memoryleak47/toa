@@ -2,9 +2,8 @@ use sfml::graphics::{RenderWindow, Color, RenderTarget};
 use sfml::window::{Event::*, Style, VideoMode};
 
 use input::Input;
-use player::{Player, LocalPlayer};
+use player::{Player, LocalPlayer, AiPlayer};
 use world::World;
-use view::View;
 use command::Command;
 use graphics::TextureState;
 
@@ -23,11 +22,23 @@ pub struct App {
 	texture_state: TextureState,
 }
 
+enum GameMode {
+	LocalPvp,
+	LocalVsAi,
+}
+
+fn get_players(mode: GameMode) -> [Box<Player>; 2] {
+	match mode {
+		GameMode::LocalPvp => [Box::new(LocalPlayer::new(0)), Box::new(LocalPlayer::new(1))],
+		GameMode::LocalVsAi => [Box::new(LocalPlayer::new(0)), Box::new(AiPlayer::new(1))],
+	}
+}
+
 impl App {
 	pub fn new() -> App {
 		App {
 			state: AppState::InGame {
-				players: [Box::new(LocalPlayer::new(0)), Box::new(LocalPlayer::new(1))],
+				players: get_players(GameMode::LocalPvp),
 				world: World::gen(),
 			},
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),

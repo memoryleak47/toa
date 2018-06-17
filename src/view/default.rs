@@ -1,6 +1,5 @@
 use sfml::system::{Vector2f, Vector2u};
 use sfml::window::Key;
-use sfml::graphics::Color;
 
 use input::Input;
 use view::{View, Marker, MarkerType, CURSOR_COLOR};
