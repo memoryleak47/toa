@@ -39,7 +39,15 @@ impl Input {
 		state.pressed && state.time % modulo == 0
 	}
 
+	fn check_modifiers(&self, keys: &[Key]) -> bool {
+		get_all_keys().iter()
+			.filter(|x| is_modifier(**x))
+			.all(|m| self.is_pressed(*m) == keys.contains(m))
+	}
+
 	pub fn are_pressed_mod(&self, keys: &[Key], modulo: u32) -> bool {
+		if !self.check_modifiers(keys) { return false; }
+
 		keys.iter()
 			.map(|x| &self.keymap[x])
 			.all(|x| x.pressed)
@@ -95,4 +103,11 @@ fn get_all_keys() -> Vec<Key> {
 	}
 
 	v
+}
+
+fn is_modifier(key: Key) -> bool {
+	match key {
+		Key::LControl | Key::RControl | Key::LShift | Key::RShift => true,
+		_ => false,
+	}
 }
