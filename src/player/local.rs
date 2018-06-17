@@ -8,6 +8,7 @@ use world::{buildingmap::BUILDING_PLANS, World};
 use command::Command;
 use misc::{Direction, vector_if};
 
+#[derive(Debug)]
 enum UnitMode {
 	Normal,
 	Attack,
@@ -189,7 +190,7 @@ impl Player for LocalPlayer {
 		let v: Vec<_> = action_infos.iter()
 				.map(|x| x.get_text())
 				.collect();
-		view.text = v.join("\n");
+		view.text = format!("Mode: {:?}\n{}", self.unit_mode, v.join("\n"));
 
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
