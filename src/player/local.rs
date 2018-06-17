@@ -236,7 +236,7 @@ impl ActionInfo {
 			Action::Command(c) => return Some(c),
 			Action::ModeChange(m) => { player.unit_mode = m; },
 			Action::MoveCamera(d) => { view.focus_position = vector_if(d.to_vector()) / 2. + view.focus_position; },
-			Action::MoveCursor(d) => { view.main_cursor = d.plus_vector(view.main_cursor); },
+			Action::MoveCursor(d) => { view.move_cursor(d); },
 		}
 		None
 	}
