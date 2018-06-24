@@ -40,11 +40,11 @@ impl Inventory {
 		true
 	}
 
-	pub fn iter(&self) -> &[Item] {
-		&self.items[..]
+	pub fn as_ref(&self) -> &[Item] {
+		self.items.as_ref()
 	}
 
-	pub fn iter_mut(&mut self) -> &mut [Item] {
-		&mut self.items[..]
+	pub fn as_mut(&mut self) -> &mut [Item] {
+		self.items.as_mut()
 	}
 }

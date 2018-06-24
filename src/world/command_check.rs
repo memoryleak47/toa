@@ -88,7 +88,7 @@ impl World {
 					.filter(|x| x.owner == player)
 					.filter(|x| x.inventory.contains_all(
 						class.get_build_cost()
-							.iter()
+							.as_ref()
 							.iter()
 							.map(|x| x.kind)
 							.collect::<Vec<_>>()

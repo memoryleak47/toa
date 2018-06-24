@@ -20,7 +20,7 @@ impl World {
 	fn damage_items_on_ground(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				for item in self.itemmap[x][y].iter_mut() {
+				for item in self.itemmap[x][y].as_mut() {
 					item.health -= 3;
 				}
 				// TODO remove dead items
