@@ -8,7 +8,7 @@ use world::terrainmap::Terrain;
 lazy_static! {
 	static ref TEAM_SPAWNER_COLOR: [Color; 2] = [Color::rgb(100, 0, 0), Color::rgb(0, 100, 0)];
 }
-static SPAWNER_CLASS: SpawnerClass = SpawnerClass;
+pub static SPAWNER_CLASS: SpawnerClass = SpawnerClass;
 
 pub struct SpawnerClass;
 

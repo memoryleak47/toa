@@ -1,6 +1,7 @@
 use sfml::system::{Vector2u, Vector2i};
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use world::buildingmap::BUILDABLE_CLASSES;
 use command::Command;
 use misc::*;
 
@@ -27,7 +28,9 @@ impl World {
 			}
 		}
 
-		// TODO add Build commands
+		for c in &BUILDABLE_CLASSES[..] {
+			v.push(Command::Build { class: *c, at: pos });
+		}
 
 		// add Work
 		v.push(Command::Work { at: pos });

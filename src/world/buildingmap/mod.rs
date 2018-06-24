@@ -10,6 +10,8 @@ use world::terrainmap::Terrain;
 use world::unitmap::Unit;
 use item::Inventory;
 
+pub static BUILDABLE_CLASSES: [&BuildingClass; 1] = [&spawner::SPAWNER_CLASS];
+
 pub trait Building {
 	fn get_health(&self) -> u32;
 	fn get_class(&self) -> &'static BuildingClass;
@@ -18,7 +20,7 @@ pub trait Building {
 	fn get_color(&self) -> &'static Color;
 }
 
-pub trait BuildingClass {
+pub trait BuildingClass: Sync {
 	fn get_required_terrain(&self) -> Option<Terrain>;
 	fn get_build_cost(&self) -> Inventory;
 	fn get_height(&self) -> u32;
