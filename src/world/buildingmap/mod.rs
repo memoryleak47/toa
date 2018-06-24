@@ -1,4 +1,5 @@
 mod spawner;
+mod farm;
 
 use self::spawner::Spawner;
 
@@ -8,9 +9,9 @@ use sfml::system::Vector2u;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::terrainmap::Terrain;
 use world::unitmap::Unit;
-use item::Inventory;
+use item::ItemKind;
 
-pub static BUILDABLE_CLASSES: [&BuildingClass; 1] = [&spawner::SPAWNER_CLASS];
+pub static BUILDABLE_CLASSES: [&BuildingClass; 1] = [&farm::FARM_CLASS];
 
 pub trait Building {
 	fn get_health(&self) -> u32;
@@ -22,7 +23,7 @@ pub trait Building {
 
 pub trait BuildingClass: Sync {
 	fn get_required_terrain(&self) -> Option<Terrain>;
-	fn get_build_cost(&self) -> Inventory;
+	fn get_build_cost(&self) -> &'static [ItemKind];
 	fn get_height(&self) -> u32;
 	fn build(&self) -> Box<Building>;
 }

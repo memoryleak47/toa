@@ -20,7 +20,7 @@ pub struct Spawner {
 
 impl BuildingClass for SpawnerClass {
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
-	fn get_build_cost(&self) -> Inventory {
+	fn get_build_cost(&self) -> &'static [ItemKind] {
 		panic!("you should call get_build_cost() on Spawner!")
 	}
 	fn get_height(&self) -> u32 { 0 }
