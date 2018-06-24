@@ -40,9 +40,9 @@ impl View {
 
 	pub fn render(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		self.render_terrainmap(window, world, texture_state);
-		self.render_markers(window);
 		self.render_buildingmap(window, world);
 		self.render_unitmap(window, world);
+		self.render_markers(window);
 
 		self.render_hud(window, world);
 	}
