@@ -3,8 +3,7 @@ use sfml::system::Vector2u;
 use world::World;
 use command::Command;
 use misc::Direction;
-use world::buildingmap::{Building, BuildingPlan, BuildingKind};
-use world::terrainmap::Terrain;
+use world::buildingmap::BuildingClass;
 
 impl World {
 	pub fn exec(&mut self, command: &Command) {
@@ -14,7 +13,7 @@ impl World {
 			&Command::Move { from, direction } => self.exec_move(from, direction),
 			&Command::Attack { from, to } => self.exec_attack(from, to),
 			&Command::NextTurn => self.exec_next_turn(),
-			&Command::Build { at, plan } => self.exec_build(at, plan),
+			&Command::Build { at, class }  => self.exec_build(at, class),
 			&Command::Work { at } => self.exec_work(at),
 		}
 	}
@@ -44,15 +43,8 @@ impl World {
 		self.on_turn_start();
 	}
 
-	fn exec_build(&mut self, at: Vector2u, plan: &'static BuildingPlan<'static>) {
-		match plan.building.kind {
-			BuildingKind::Farm { .. } => {
-				if *self.get_terrain(at) != Terrain::GRASS { return; }
-				let construction = BuildingKind::InConstruction { required_stamina: plan.required_stamina, building: plan.building.clone() };
-				self.buildingmap[at.x as usize][at.y as usize] = Some(Building { health: 10, kind: construction })
-			},
-			_ => { /* TODO */ },
-		}
+	fn exec_build(&mut self, at: Vector2u, class: &BuildingClass) {
+		self.buildingmap[at.x as usize][at.y as usize] = Some(class.build());
 	}
 
 	fn exec_work(&mut self, at: Vector2u) {
@@ -61,8 +53,6 @@ impl World {
 		if let Some(unit) = self.get_unit_mut(at) {
 			unit.stamina -= 10;
 		}
-		if let Some(building) = self.get_building_mut(at) {
-			building.work();
-		}
+		// TODO work building!
 	}
 }

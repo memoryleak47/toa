@@ -4,7 +4,7 @@ use player::local::{LocalPlayer, UnitMode, Action};
 use input::Input;
 use world::World;
 use command::Command;
-use misc::{Direction};
+use misc::Direction;
 
 pub struct ActionInfo {
 	pub text: String,

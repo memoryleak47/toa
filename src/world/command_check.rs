@@ -1,6 +1,6 @@
 use sfml::system::{Vector2u, Vector2i};
 
-use world::{World, MAP_SIZE_X, MAP_SIZE_Y, buildingmap::BUILDING_PLANS};
+use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use command::Command;
 use misc::*;
 
@@ -27,10 +27,7 @@ impl World {
 			}
 		}
 
-		// add Build
-		for plan in BUILDING_PLANS.iter() {
-			v.push(Command::Build { at: pos, plan });
-		}
+		// TODO add Build commands
 
 		// add Work
 		v.push(Command::Work { at: pos });
@@ -85,14 +82,22 @@ impl World {
 					.is_some()
 			},
 			Command::NextTurn => true,
-			Command::Build { at, plan } => {
+			Command::Build { at, class } => {
+				let req_terrain = class.get_required_terrain();
 				self.get_unit(*at)
 					.filter(|x| x.owner == player)
-					.filter(|x| x.inventory.contains_all(plan.required_resources))
+					.filter(|x| x.inventory.contains_all(
+						class.get_build_cost()
+							.iter()
+							.iter()
+							.map(|x| x.kind)
+							.collect::<Vec<_>>()
+							.as_ref()
+					))
 					.is_some()
 				&&
-				(plan.required_terrain.is_none() || plan.required_terrain.as_ref() == Some(self.get_terrain(*at)))
-			}
+				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(*at)))
+			},
 			Command::Work { at } => {
 				let stamina = self.required_work_stamina(*at);
 				self.get_unit(*at)
@@ -101,8 +106,7 @@ impl World {
 					.is_some()
 				&&
 				self.get_building(*at)
-					.filter(|x| x.is_workable())
-					.is_some()
+					.is_some() // TODO check whether workable
 			}
 		}
 	}

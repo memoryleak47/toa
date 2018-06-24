@@ -58,6 +58,6 @@ impl View {
 		let building = world.get_building(pos);
 		let unit = world.get_unit(pos);
 
-		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {:?}\nUnit: {:?}", world.active_player, terrain, building, unit)
+		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {}\nUnit: {:?}", world.active_player, terrain, building.map(|_| "<building>").unwrap_or("<none>"), unit)
 	}
 }

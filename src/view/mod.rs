@@ -85,11 +85,13 @@ impl View {
 	fn render_buildingmap(&self, window: &mut RenderWindow, world: &World) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(building) = world.buildingmap[x][y].as_ref() {
+				if let Some(building) = world.buildingmap[x][y]
+							.as_ref()
+							.map(|x| x.as_ref()) {
 					let posf = Vector2f::new(x as f32, y as f32);
 
 					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&building.kind.get_color());
+					shape.set_fill_color(&building.get_color());
 					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 					shape.set_size(TILESIZE_VEC());
 					window.draw(&shape);

@@ -12,6 +12,8 @@ pub use self::buildingmap::*;
 pub use self::unitmap::*;
 pub use self::itemmap::*;
 
+use self::buildingmap::{Building, BuildingClass};
+
 use sfml::system::{Vector2f, Vector2u};
 
 use misc::Direction;
@@ -29,7 +31,7 @@ pub fn TILESIZE_VEC() -> Vector2f {
 // represents the current world situation
 pub struct World {
 	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub buildingmap: [[Option<Building>; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub buildingmap: [[Option<Box<Building>>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub itemmap: [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub active_player: u32,
@@ -57,7 +59,7 @@ impl World {
 
 	fn get_height(&self, pos: Vector2u) -> u32 {
 		self.get_building(pos)
-			.map(|x| x.get_height())
+			.map(|x| x.get_class().get_height())
 			.unwrap_or(0)
 	}
 
