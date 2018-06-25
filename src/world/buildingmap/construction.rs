@@ -44,3 +44,13 @@ impl Building for Construction {
 		&CONSTRUCTION_COLOR
 	}
 }
+
+impl Construction {
+	pub fn new(class: &'static BuildingClass) -> Construction {
+		Construction {
+			health: 100, // TODO un-hardcode
+			invested_stamina: 0,
+			build_class: class,
+		}
+	}
+}

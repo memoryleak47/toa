@@ -4,6 +4,7 @@ use world::World;
 use command::Command;
 use misc::Direction;
 use world::buildingmap::BuildingClass;
+use world::buildingmap::construction::Construction;
 
 impl World {
 	pub fn exec(&mut self, command: &Command) {
@@ -43,8 +44,10 @@ impl World {
 		self.on_turn_start();
 	}
 
-	fn exec_build(&mut self, at: Vector2u, class: &BuildingClass) {
-		self.buildingmap[at.x as usize][at.y as usize] = Some(class.build());
+	fn exec_build(&mut self, at: Vector2u, class: &'static BuildingClass) {
+		let construction = Construction::new(class);
+		let boxed = Box::new(construction);
+		self.buildingmap[at.x as usize][at.y as usize] = Some(boxed);
 	}
 
 	fn exec_work(&mut self, at: Vector2u) {
