@@ -26,6 +26,7 @@ pub trait BuildingClass: Sync {
 	fn get_build_cost(&self) -> &'static [ItemKind];
 	fn get_height(&self) -> u32;
 	fn build(&self) -> Box<Building>;
+	fn get_name(&self) -> &'static str;
 }
 
 pub fn new_buildingmap() -> [[Option<Box<Building>>; MAP_SIZE_Y]; MAP_SIZE_X] {

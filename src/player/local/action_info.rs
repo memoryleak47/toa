@@ -167,7 +167,7 @@ impl LocalPlayer {
 
 		for (b, key) in KEYED_BUILDABLE_CLASSES.iter() {
 			v.push(ActionInfo {
-				text: "build <building>".to_string(), 
+				text: format!("build {}", b.get_name()),
 				action: Action::Command(Command::Build { class: *b, at: self.cursor }),
 				key_combination: vec![*key],
 				fresh: true,

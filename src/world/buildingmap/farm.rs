@@ -26,6 +26,9 @@ impl BuildingClass for FarmClass {
 	fn build(&self) -> Box<Building> {
 		Box::new(Farm { health: 100 })
 	}
+	fn get_name(&self) -> &'static str {
+		"Farm"
+	}
 }
 
 impl Building for Farm {

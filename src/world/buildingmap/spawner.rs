@@ -28,6 +28,9 @@ impl BuildingClass for SpawnerClass {
 	fn build(&self) -> Box<Building> {
 		panic!("you should never call build() on Spawner!")
 	}
+	fn get_name(&self) -> &'static str {
+		"Spawner"
+	}
 }
 
 impl Building for Spawner {
