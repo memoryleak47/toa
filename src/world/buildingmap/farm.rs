@@ -1,6 +1,6 @@
 use sfml::graphics::Color;
 
-use item::{Inventory, ItemKind};
+use item::ItemKind;
 use super::{BuildingClass, Building};
 use world::unitmap::Unit;
 use world::terrainmap::Terrain;

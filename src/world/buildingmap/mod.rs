@@ -1,5 +1,5 @@
-mod spawner;
-mod farm;
+pub mod spawner;
+pub mod farm;
 
 use self::spawner::Spawner;
 

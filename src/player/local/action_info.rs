@@ -2,9 +2,13 @@ use sfml::window::Key;
 
 use player::local::{LocalPlayer, UnitMode, Action};
 use input::Input;
-use world::World;
+use world::{World, buildingmap::BuildingClass};
+use world::buildingmap::farm::FARM_CLASS;
+use world::buildingmap::BUILDABLE_CLASSES;
 use command::Command;
 use misc::Direction;
+
+pub static KEYED_BUILDABLE_CLASSES: [(&BuildingClass, Key); 1] = [(&FARM_CLASS, Key::J)];
 
 pub struct ActionInfo {
 	pub text: String,
@@ -15,6 +19,8 @@ pub struct ActionInfo {
 
 impl LocalPlayer {
 	fn get_general_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_CLASSES.len());
+
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -159,7 +165,14 @@ impl LocalPlayer {
 			fresh: false,
 		});
 
-		// TODO
+		for (b, key) in KEYED_BUILDABLE_CLASSES.iter() {
+			v.push(ActionInfo {
+				text: "build <building>".to_string(), 
+				action: Action::Command(Command::Build { class: *b, at: self.cursor }),
+				key_combination: vec![*key],
+				fresh: true,
+			});
+		}
 
 		v
 	}

@@ -12,7 +12,7 @@ pub use self::buildingmap::*;
 pub use self::unitmap::*;
 pub use self::itemmap::*;
 
-use self::buildingmap::{Building, BuildingClass};
+use self::buildingmap::Building;
 
 use sfml::system::{Vector2f, Vector2u};
 
