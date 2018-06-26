@@ -68,15 +68,15 @@ impl World {
 	fn apply_hunger_consequences(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let opt = &mut self.unitmap[x][y];
-				if let Some(ref mut unit) = opt {
-					if unit.food == 0 {
-						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
-						if unit.health == 0 {
-							*opt = None;
-						}
+				let apply_hunger = |mut x: Unit| -> Unit {
+					if x.food == 0 {
+						x.health = x.health.saturating_sub(HUNGER_DAMAGE);
 					}
-				}
+					x
+				};
+				self.unitmap[x][y] = self.unitmap[x][y].clone()
+					.map(apply_hunger)
+					.filter(|x| x.health > 0);
 			}
 		}
 	}
