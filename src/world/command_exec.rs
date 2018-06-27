@@ -56,6 +56,10 @@ impl World {
 		if let Some(unit) = self.get_unit_mut(at) {
 			unit.stamina -= 10;
 		}
-		// TODO work building!
+		let f = self.get_building_mut(at)
+			.unwrap()
+			.get_class()
+			.get_work_fn();
+		f(self, at);
 	}
 }
