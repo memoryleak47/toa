@@ -23,7 +23,8 @@ pub struct Farm {
 impl BuildingClass for FarmClass {
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost(&self) -> &'static [ItemKind] {
-		&[ItemKind::Wood, ItemKind::Wood]
+		//&[ItemKind::Wood, ItemKind::Wood]
+		&[] // TODO change back!
 	}
 	fn get_build_stamina_cost(&self) -> u32 { 20 }
 	fn get_height(&self) -> u32 { 0 }

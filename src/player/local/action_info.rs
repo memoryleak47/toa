@@ -37,6 +37,13 @@ impl LocalPlayer {
 			fresh: true,
 		});
 
+		v.push(ActionInfo {
+			text: "work".to_string(),
+			action: Action::Command(Command::Work { at: self.cursor }),
+			key_combination: vec![Key::Q],
+			fresh: true,
+		});
+
 		// move camera:
 		v.push(ActionInfo {
 			text: "move camera up".to_string(),
