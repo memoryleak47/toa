@@ -96,13 +96,15 @@ impl World {
 			},
 			Command::Work { at } => {
 				let stamina = self.required_work_stamina(*at);
-				self.get_unit(*at)
-					.filter(|x| x.owner == player)
-					.filter(|x| x.stamina >= stamina)
-					.is_some()
-				&&
 				self.get_building(*at)
-					.is_some() // TODO check whether workable
+					.filter(|b| {
+						self.get_unit(*at)
+							.filter(|u| u.owner == player)
+							.filter(|u| u.stamina >= stamina)
+							.filter(|u| b.is_workable(u))
+							.is_some()
+					})
+					.is_some()
 			}
 		}
 	}
