@@ -12,7 +12,7 @@ use world::terrainmap::Terrain;
 lazy_static! {
 	static ref CONSTRUCTION_COLOR: Color = Color::rgb(90, 90, 40);
 	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let s = w.required_work_stamina(p);
+		let s = 10; // TODO un-hardcode
 		let mut u = w.get_unit_mut(p).unwrap();
 		u.stamina = u.stamina.saturating_sub(s);
 

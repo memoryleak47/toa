@@ -95,12 +95,10 @@ impl World {
 				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(*at)))
 			},
 			Command::Work { at } => {
-				let stamina = self.required_work_stamina(*at);
 				self.get_building(*at)
 					.filter(|b| {
 						self.get_unit(*at)
 							.filter(|u| u.owner == player)
-							.filter(|u| u.stamina >= stamina)
 							.filter(|u| b.is_workable(u))
 							.is_some()
 					})

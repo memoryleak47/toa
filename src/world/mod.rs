@@ -74,8 +74,4 @@ impl World {
 	fn required_attack_stamina(&self, pos: Vector2u, to: Vector2u) -> u32 {
 		10
 	}
-
-	fn required_work_stamina(&self, pos: Vector2u) -> u32 {
-		10
-	}
 }
