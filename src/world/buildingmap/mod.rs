@@ -58,4 +58,8 @@ impl World {
 			None
 		}
 	}
+
+	pub fn set_building(&mut self, p: Vector2u, b: Option<Box<Building>>) {
+		self.buildingmap[p.x as usize][p.y as usize] = b;
+	}
 }

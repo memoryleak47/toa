@@ -1,3 +1,5 @@
+#![feature(nll)]
+
 extern crate sfml;
 extern crate rand;
 
