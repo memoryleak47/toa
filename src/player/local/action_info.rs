@@ -8,7 +8,7 @@ use world::buildingmap::BUILDABLE_CLASSES;
 use command::Command;
 use misc::Direction;
 
-pub static KEYED_BUILDABLE_CLASSES: [(&BuildingClass, Key); 1] = [(&FARM_CLASS, Key::J)];
+pub static KEYED_BUILDABLE_CLASSES: [(&BuildingClass, Key); 1] = [(&FARM_CLASS, Key::F)];
 
 pub struct ActionInfo {
 	pub text: String,
