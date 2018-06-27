@@ -89,7 +89,7 @@ impl World {
 				let req_terrain = class.get_required_terrain();
 				self.get_unit(*at)
 					.filter(|x| x.owner == player)
-					.filter(|x| x.inventory.contains_all(class.get_build_cost()))
+					.filter(|x| x.inventory.contains_all(class.get_build_item_cost()))
 					.is_some()
 				&&
 				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(*at)))

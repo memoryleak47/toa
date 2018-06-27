@@ -1,12 +1,34 @@
+use std::any::Any;
+
 use sfml::graphics::Color;
+use sfml::system::Vector2u;
 
 use item::ItemKind;
 use super::{BuildingClass, Building};
+use world::World;
 use world::unitmap::Unit;
 use world::terrainmap::Terrain;
 
 lazy_static! {
 	static ref CONSTRUCTION_COLOR: Color = Color::rgb(90, 90, 40);
+	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
+		let s = w.required_work_stamina(p);
+		{
+			let mut u = w.get_unit_mut(p).unwrap();
+			u.stamina = u.stamina.saturating_sub(s);
+		}
+
+		let mut construction: &mut Construction = w.get_building_mut(p)
+				.unwrap()
+				.as_any_mut()
+				.downcast_mut()
+				.unwrap();
+
+		construction.invested_stamina += s;
+		if construction.invested_stamina >= construction.build_class.get_build_stamina_cost() {
+			// TODO set building
+		}
+	};
 }
 pub static CONSTRUCTION_CLASS: ConstructionClass = ConstructionClass;
 
@@ -22,8 +44,11 @@ impl BuildingClass for ConstructionClass {
 	fn get_required_terrain(&self) -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
 	}
-	fn get_build_cost(&self) -> &'static [ItemKind] {
-		panic!("get_build_cost() should not be called on a Construction")
+	fn get_build_item_cost(&self) -> &'static [ItemKind] {
+		panic!("get_build_item_cost() should not be called on a Construction")
+	}
+	fn get_build_stamina_cost(&self) -> u32 {
+		panic!("get_build_stamina_cost() should not be called on a Construction")
 	}
 	fn get_height(&self) -> u32 { 0 }
 
@@ -33,9 +58,13 @@ impl BuildingClass for ConstructionClass {
 	fn get_name(&self) -> &'static str {
 		"Construction"
 	}
+	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u) {
+		&WORK_FN
+	}
 }
 
 impl Building for Construction {
+	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { &CONSTRUCTION_CLASS }
 	fn is_burnable(&self, unit: &Unit) -> bool { true }

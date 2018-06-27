@@ -1,12 +1,19 @@
+use std::any::Any;
+
 use sfml::graphics::Color;
+use sfml::system::Vector2u;
 
 use item::ItemKind;
 use super::{BuildingClass, Building};
+use world::World;
 use world::unitmap::Unit;
 use world::terrainmap::Terrain;
 
 lazy_static! {
 	static ref TEAM_SPAWNER_COLOR: [Color; 2] = [Color::rgb(100, 0, 0), Color::rgb(0, 100, 0)];
+	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
+		// TODO reduce food, create new dude
+	};
 }
 pub static SPAWNER_CLASS: SpawnerClass = SpawnerClass;
 
@@ -20,8 +27,11 @@ pub struct Spawner {
 
 impl BuildingClass for SpawnerClass {
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
-	fn get_build_cost(&self) -> &'static [ItemKind] {
-		panic!("you should call get_build_cost() on Spawner!")
+	fn get_build_item_cost(&self) -> &'static [ItemKind] {
+		panic!("you should call get_build_item_cost() on Spawner!")
+	}
+	fn get_build_stamina_cost(&self) -> u32 {
+		panic!("you should call get_build_stamina_cost() on Spawner!")
 	}
 	fn get_height(&self) -> u32 { 0 }
 
@@ -31,9 +41,14 @@ impl BuildingClass for SpawnerClass {
 	fn get_name(&self) -> &'static str {
 		"Spawner"
 	}
+
+	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u) {
+		&WORK_FN
+	}
 }
 
 impl Building for Spawner {
+	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { &SPAWNER_CLASS }
 	fn is_burnable(&self, unit: &Unit) -> bool { false }
