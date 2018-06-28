@@ -87,6 +87,8 @@ impl World {
 			Command::NextTurn => true,
 			Command::Build { at, class } => {
 				let req_terrain = class.get_required_terrain();
+				self.get_building(*at).is_none()
+				&&
 				self.get_unit(*at)
 					.filter(|x| x.owner == player)
 					.filter(|x| x.inventory.contains_all(class.get_build_item_cost()))
