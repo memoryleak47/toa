@@ -3,6 +3,9 @@ use rand::{RngCore, thread_rng};
 
 use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use world::REQUIRED_UNREFINED_WORK_STAMINA;
+use world::unitmap::Unit;
+use item::{Item, ItemKind};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Terrain {
@@ -28,6 +31,23 @@ impl Terrain {
 			Terrain::FOREST => 20,
 			Terrain::STONE => 20,
 			Terrain::IRON => 20,
+		}
+	}
+
+	pub fn is_unrefined_workable(&self, unit: &Unit) -> bool {
+		(match self {
+			Terrain::GRASS | Terrain::FOREST => true,
+			_ => false,
+		})
+		&&
+		(unit.stamina >= REQUIRED_UNREFINED_WORK_STAMINA)
+	}
+
+	pub fn get_item(&self) -> Item {
+		match self {
+			Terrain::GRASS => Item { kind: ItemKind::Food, health: 3 },
+			Terrain::FOREST => Item { kind: ItemKind::Wood, health: 3 },
+			_ => panic!("get_item() can only be called on GRASS/FOREST"),
 		}
 	}
 }

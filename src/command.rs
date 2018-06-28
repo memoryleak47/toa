@@ -8,5 +8,6 @@ pub enum Command {
 	Attack { from: Vector2u, to: Vector2u },
 	NextTurn,
 	Build { at: Vector2u, class: &'static BuildingClass },
-	Work { at: Vector2u }
+	Work { at: Vector2u }, // building-work
+	UnrefinedWork { at : Vector2u }, // terrain-work
 }

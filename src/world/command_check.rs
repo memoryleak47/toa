@@ -1,6 +1,7 @@
 use sfml::system::{Vector2u, Vector2i};
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::buildingmap::BUILDABLE_CLASSES;
 use command::Command;
 use misc::*;
@@ -105,6 +106,13 @@ impl World {
 							.is_some()
 					})
 					.is_some()
+			},
+			Command::UnrefinedWork { at } => {
+				self.get_unit(*at)
+					.filter(|u| u.stamina >= REQUIRED_UNREFINED_WORK_STAMINA)
+					.filter(|u| self.get_terrain(*at)
+						.is_unrefined_workable(u)
+					).is_some()
 			}
 		}
 	}

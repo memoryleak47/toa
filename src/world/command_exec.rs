@@ -1,8 +1,9 @@
 use sfml::system::Vector2u;
 
-use world::World;
 use command::Command;
 use misc::Direction;
+use world::World;
+use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::buildingmap::BuildingClass;
 use world::buildingmap::construction::Construction;
 
@@ -16,6 +17,7 @@ impl World {
 			&Command::NextTurn => self.exec_next_turn(),
 			&Command::Build { at, class }  => self.exec_build(at, class),
 			&Command::Work { at } => self.exec_work(at),
+			&Command::UnrefinedWork { at } => self.exec_unrefined_work(at),
 		}
 	}
 
@@ -56,5 +58,12 @@ impl World {
 			.get_class()
 			.get_work_fn();
 		f(self, at);
+	}
+
+	fn exec_unrefined_work(&mut self, at: Vector2u) {
+		let item = self.get_terrain(at).get_item();
+		let mut u = self.get_unit_mut(at).unwrap();
+		u.inventory.push(item);
+		u.stamina -= REQUIRED_UNREFINED_WORK_STAMINA;
 	}
 }
