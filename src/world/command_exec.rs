@@ -51,11 +51,6 @@ impl World {
 	}
 
 	fn exec_work(&mut self, at: Vector2u) {
-		if !self.get_unit(at).is_some() || ! (self.get_unit(at).unwrap().stamina >= 10) || !self.get_building(at).is_some() { return; }
-
-		if let Some(unit) = self.get_unit_mut(at) {
-			unit.stamina -= 10;
-		}
 		let f = self.get_building_mut(at)
 			.unwrap()
 			.get_class()
