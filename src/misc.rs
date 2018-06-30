@@ -1,4 +1,6 @@
 use std::cmp::{min, max};
+use std::path::PathBuf;
+
 use sfml::system::{Vector2u, Vector2i, Vector2f};
 
 use world::{MAP_SIZE_X, MAP_SIZE_Y};
@@ -57,4 +59,19 @@ macro_rules! init2d {
 			arr
 		}
 	}
+}
+
+pub fn res_dir() -> PathBuf {
+	use std::env;
+
+	let s = env::args()
+		.next()
+		.unwrap();
+
+	let mut p = PathBuf::from(s);
+	p.pop();
+	p.pop();
+	p.pop();
+	p.push("res");
+	p
 }

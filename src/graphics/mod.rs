@@ -20,13 +20,18 @@ pub struct TextureState {
 
 impl TextureState {
 	pub fn new() -> TextureState {
+		let dir = ::misc::res_dir();
+		let path_string = dir.to_str().unwrap();
+
 		unsafe {
 			let mut wrappers: [Texture; TEXTURE_COUNT] = mem::uninitialized();
 
 			macro_rules! load {
-				($a: expr, $b: expr) => {
-					ptr::write(&mut wrappers[$a as usize], Texture::from_file(&format!("res/{}", $b)).unwrap());
-				}
+				($a: expr, $b: expr) => {{
+					let s = format!("{}/{}", path_string, $b);
+					let texture = Texture::from_file(&s).unwrap();
+					ptr::write(&mut wrappers[$a as usize], texture);
+				}}
 			}
 
 			load!(TextureId::GrassTile, "tile/grass.png");
