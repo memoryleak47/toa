@@ -4,12 +4,15 @@ use sfml::window::Key;
 
 use player::local::{LocalPlayer, UnitMode, Action};
 use input::Input;
-use world::{World, buildingmap::BuildingClass}; use world::buildingmap::farm::FARM_CLASS;
+use world::{World, buildingmap::BuildingClass};
+use world::buildingmap::farm::FarmClass;
 use world::buildingmap::BUILDABLE_CLASSES;
 use command::Command;
 use misc::Direction;
 
-pub static KEYED_BUILDABLE_CLASSES: [(&BuildingClass, Key); 1] = [(&FARM_CLASS, Key::F)];
+lazy_static! {
+	pub static ref KEYED_BUILDABLE_CLASSES: [(&'static BuildingClass, Key); 1] = [(FarmClass.get_ref(), Key::F)];
+}
 
 pub struct ActionInfo {
 	pub text: String,

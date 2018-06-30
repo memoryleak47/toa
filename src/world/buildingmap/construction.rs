@@ -29,7 +29,6 @@ lazy_static! {
 		}
 	};
 }
-pub static CONSTRUCTION_CLASS: ConstructionClass = ConstructionClass;
 
 pub struct ConstructionClass;
 
@@ -40,6 +39,7 @@ pub struct Construction {
 }
 
 impl BuildingClass for ConstructionClass {
+	fn get_ref(&self) -> &'static BuildingClass { &ConstructionClass }
 	fn get_required_terrain(&self) -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
 	}
@@ -65,7 +65,7 @@ impl BuildingClass for ConstructionClass {
 impl Building for Construction {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
-	fn get_class(&self) -> &'static BuildingClass { &CONSTRUCTION_CLASS }
+	fn get_class(&self) -> &'static BuildingClass { ConstructionClass.get_ref() }
 	fn is_burnable(&self, unit: &Unit) -> bool { true }
 	fn is_workable(&self, unit: &Unit) -> bool { true }
 	fn get_color(&self) -> &'static Color {

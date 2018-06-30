@@ -12,7 +12,6 @@ use world::terrainmap::Terrain;
 lazy_static! {
 	static ref FARM_COLOR: Color = Color::rgb(100, 100, 0);
 }
-pub static FARM_CLASS: FarmClass = FarmClass;
 
 pub struct FarmClass;
 
@@ -21,6 +20,7 @@ pub struct Farm {
 }
 
 impl BuildingClass for FarmClass {
+	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost(&self) -> &'static [ItemKind] {
 		//&[ItemKind::Wood, ItemKind::Wood]
@@ -43,7 +43,7 @@ impl BuildingClass for FarmClass {
 impl Building for Farm {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
-	fn get_class(&self) -> &'static BuildingClass { &FARM_CLASS }
+	fn get_class(&self) -> &'static BuildingClass { FarmClass.get_ref() }
 	fn is_burnable(&self, unit: &Unit) -> bool { true }
 	fn is_workable(&self, unit: &Unit) -> bool { true }
 	fn get_color(&self) -> &'static Color {

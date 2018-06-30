@@ -15,7 +15,6 @@ lazy_static! {
 		// TODO reduce food, create new dude
 	};
 }
-pub static SPAWNER_CLASS: SpawnerClass = SpawnerClass;
 
 pub struct SpawnerClass;
 
@@ -26,6 +25,7 @@ pub struct Spawner {
 }
 
 impl BuildingClass for SpawnerClass {
+	fn get_ref(&self) -> &'static BuildingClass { &SpawnerClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
 	fn get_build_item_cost(&self) -> &'static [ItemKind] {
 		panic!("you should call get_build_item_cost() on Spawner!")
@@ -50,7 +50,7 @@ impl BuildingClass for SpawnerClass {
 impl Building for Spawner {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
-	fn get_class(&self) -> &'static BuildingClass { &SPAWNER_CLASS }
+	fn get_class(&self) -> &'static BuildingClass { SpawnerClass.get_ref() }
 	fn is_burnable(&self, unit: &Unit) -> bool { false }
 	fn is_workable(&self, unit: &Unit) -> bool {
 		unit.inventory.contains_all(&[ItemKind::Food][..])
