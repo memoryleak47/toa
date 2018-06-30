@@ -60,6 +60,14 @@ impl Input {
 			.is_some()
 	}
 
+	pub fn are_pressed(&self, keys: &[Key]) -> bool {
+		if !self.check_modifiers(keys) { return false; }
+
+		keys.iter()
+			.map(|x| &self.keymap[x])
+			.all(|x| x.pressed)
+	}
+
 	fn tick_keys(&mut self) {
 		let mut keymap = HashMap::new();
 
