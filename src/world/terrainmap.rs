@@ -5,7 +5,8 @@ use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::unitmap::Unit;
-use item::{Item, ItemKind};
+use item;
+use item::ItemClass;
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Terrain {
@@ -43,10 +44,10 @@ impl Terrain {
 		(unit.stamina >= REQUIRED_UNREFINED_WORK_STAMINA)
 	}
 
-	pub fn get_item(&self) -> Item {
+	pub fn get_item_class(&self) -> &'static ItemClass {
 		match self {
-			Terrain::GRASS => Item { kind: ItemKind::Food, health: 3 },
-			Terrain::FOREST => Item { kind: ItemKind::Wood, health: 3 },
+			Terrain::GRASS => item::food::FoodClass.get_ref(),
+			Terrain::FOREST => item::wood::WoodClass.get_ref(),
 			_ => panic!("get_item() can only be called on GRASS/FOREST"),
 		}
 	}

@@ -3,7 +3,7 @@ use std::any::Any;
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
-use item::ItemKind;
+use item::ItemClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
@@ -22,7 +22,7 @@ pub struct Farm {
 impl BuildingClass for FarmClass {
 	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
-	fn get_build_item_cost(&self) -> &'static [ItemKind] {
+	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
 		//&[ItemKind::Wood, ItemKind::Wood]
 		&[] // TODO change back!
 	}

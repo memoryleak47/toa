@@ -10,7 +10,6 @@ const FULL_FOOD: u32 = 100;
 const FOOD_PER_TURN: u32 = 4;
 const HUNGER_DAMAGE: u32 = 10;
 
-#[derive(Clone, Debug)]
 pub struct Unit {
 	pub owner: u32,
 	pub stamina: u32,
@@ -68,18 +67,15 @@ impl World {
 	fn apply_hunger_consequences(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let apply_hunger = |mut x: Unit| -> Unit {
-					if x.food == 0 {
-						x.health = x.health.saturating_sub(HUNGER_DAMAGE);
+				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
+					if unit.food == 0 {
+						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
 					}
-					x
-				};
-				self.unitmap[x][y] = self.unitmap[x][y].clone()
-					.map(apply_hunger)
-					.filter(|x| x.health > 0);
+				}
 			}
 		}
 	}
+
 
 	pub fn refill_stamina(&mut self) {
 		for x in 0..MAP_SIZE_X {

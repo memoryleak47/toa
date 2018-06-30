@@ -22,15 +22,7 @@ impl World {
 	}
 
 	fn exec_move(&mut self, from: Vector2u, direction: Direction) {
-		let to = direction.plus_vector(from);
-
-		let stamina_cost = self.required_walk_stamina(from, direction);
-
-		if let Some(mut unit) = self.get_unit(from).cloned() {
-			unit.stamina -= stamina_cost;
-			self.unitmap[to.x as usize][to.y as usize] = Some(unit);
-			self.unitmap[from.x as usize][from.y as usize] = None;
-		}
+		// TODO remove stamina, move unit
 	}
 
 	fn exec_attack(&mut self, from: Vector2u, to: Vector2u) {
@@ -61,9 +53,9 @@ impl World {
 	}
 
 	fn exec_unrefined_work(&mut self, at: Vector2u) {
-		let item = self.get_terrain(at).get_item();
+		let item_class = self.get_terrain(at).get_item_class();
 		let mut u = self.get_unit_mut(at).unwrap();
-		u.inventory.push(item);
-		u.stamina -= REQUIRED_UNREFINED_WORK_STAMINA;
+		u.inventory.push(item_class.build());
+		u.stamina = u.stamina.saturating_sub(REQUIRED_UNREFINED_WORK_STAMINA);
 	}
 }

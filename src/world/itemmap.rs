@@ -4,15 +4,6 @@ use item::{Item, Inventory};
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 
 impl World {
-	pub fn drop_item(&mut self, item: Item, here: Vector2u) {
-		if let Some(ref mut x) = self.get_unit_mut(here) {
-			x.inventory.push(item);
-			return;
-		}
-
-		self.get_inventory_mut(here).push(item);
-	}
-
 	pub fn tick_itemmap(&mut self) {
 		self.damage_items_on_ground();
 	}
@@ -21,7 +12,7 @@ impl World {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				for item in self.itemmap[x][y].as_mut() {
-					item.health -= 3;
+					item.damage();
 				}
 				// TODO remove dead items
 			}

@@ -12,7 +12,7 @@ use sfml::system::Vector2u;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::terrainmap::Terrain;
 use world::unitmap::Unit;
-use item::ItemKind;
+use item::ItemClass;
 
 lazy_static! {
 	pub static ref BUILDABLE_CLASSES: [&'static BuildingClass; 1] = [farm::FarmClass.get_ref()];
@@ -30,7 +30,7 @@ pub trait Building {
 pub trait BuildingClass: Sync {
 	fn get_ref(&self) -> &'static BuildingClass;
 	fn get_required_terrain(&self) -> Option<Terrain>;
-	fn get_build_item_cost(&self) -> &'static [ItemKind];
+	fn get_build_item_cost(&self) -> &'static [&'static ItemClass];
 	fn get_build_stamina_cost(&self) -> u32;
 	fn get_height(&self) -> u32;
 	fn build(&self) -> Box<Building>;

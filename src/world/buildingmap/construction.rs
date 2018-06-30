@@ -3,7 +3,7 @@ use std::any::Any;
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
-use item::ItemKind;
+use item::ItemClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
@@ -43,7 +43,7 @@ impl BuildingClass for ConstructionClass {
 	fn get_required_terrain(&self) -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
 	}
-	fn get_build_item_cost(&self) -> &'static [ItemKind] {
+	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
 		panic!("get_build_item_cost() should not be called on a Construction")
 	}
 	fn get_build_stamina_cost(&self) -> u32 {

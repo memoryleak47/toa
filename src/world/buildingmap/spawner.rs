@@ -3,7 +3,8 @@ use std::any::Any;
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
-use item::ItemKind;
+use item;
+use item::ItemClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
@@ -27,7 +28,7 @@ pub struct Spawner {
 impl BuildingClass for SpawnerClass {
 	fn get_ref(&self) -> &'static BuildingClass { &SpawnerClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
-	fn get_build_item_cost(&self) -> &'static [ItemKind] {
+	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
 		panic!("you should call get_build_item_cost() on Spawner!")
 	}
 	fn get_build_stamina_cost(&self) -> u32 {
@@ -53,7 +54,7 @@ impl Building for Spawner {
 	fn get_class(&self) -> &'static BuildingClass { SpawnerClass.get_ref() }
 	fn is_burnable(&self, unit: &Unit) -> bool { false }
 	fn is_workable(&self, unit: &Unit) -> bool {
-		unit.inventory.contains_all(&[ItemKind::Food][..])
+		unit.inventory.contains_all(&[item::food::FoodClass.get_ref()][..])
 	}
 	fn get_color(&self) -> &'static Color {
 		&TEAM_SPAWNER_COLOR[self.player as usize]
