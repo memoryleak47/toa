@@ -19,7 +19,7 @@ use sfml::system::{Vector2f, Vector2u};
 use misc::Direction;
 use item::Inventory;
 
-pub const TILESIZE: f32 = 20.;
+pub const TILESIZE: f32 = 40.;
 pub const MAP_SIZE_X: usize = 42;
 pub const MAP_SIZE_Y: usize = 54;
 
