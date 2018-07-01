@@ -1,8 +1,11 @@
+use std::mem;
+
 use sfml::system::Vector2u;
 
 use command::Command;
 use misc::Direction;
 use world::World;
+use world::unitmap::Unit;
 use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::buildingmap::BuildingClass;
 use world::buildingmap::construction::Construction;
@@ -22,7 +25,20 @@ impl World {
 	}
 
 	fn exec_move(&mut self, from: Vector2u, direction: Direction) {
-		// TODO remove stamina, move unit
+		let s = self.required_walk_stamina(from, direction);
+
+		let x1 = from.x as usize;
+		let y1 = from.y as usize;
+
+		let p = direction.plus_vector(from);
+
+		let x2 = p.x as usize;
+		let y2 = p.y as usize;
+
+		let mut tmp: Option<Unit> = None;
+		mem::swap(&mut tmp, &mut self.unitmap[x1][y1]);
+		for x in tmp.iter_mut() { x.stamina -= s; }
+		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
 	}
 
 	fn exec_attack(&mut self, from: Vector2u, to: Vector2u) {
