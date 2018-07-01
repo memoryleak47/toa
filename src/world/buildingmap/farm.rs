@@ -13,9 +13,7 @@ use world::terrainmap::Terrain;
 lazy_static! {
 	static ref FARM_COLOR: Color = Color::rgb(100, 100, 0);
 	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let s = 40; // TODO un-hardcode
 		let mut u = w.get_unit_mut(p).unwrap();
-		u.stamina = u.stamina.saturating_sub(s);
 		u.inventory.push(item::food::FoodClass.get_ref().build());
 	};
 }

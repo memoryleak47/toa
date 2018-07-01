@@ -7,7 +7,7 @@ use input::Input;
 use world::{World, buildingmap::BuildingClass};
 use world::buildingmap::farm::FarmClass;
 use world::buildingmap::BUILDABLE_CLASSES;
-use command::Command;
+use command::{Command, UnitCommand};
 use misc::Direction;
 
 lazy_static! {
@@ -57,14 +57,14 @@ impl LocalPlayer {
 
 		v.push(ActionInfo {
 			text: "work".to_string(),
-			action: Action::Command(Command::Work { at: self.cursor }),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Work }),
 			key_combination: &[Key::Q],
 			triggered: trigger::FRESH,
 		});
 
 		v.push(ActionInfo {
 			text: "unrefined work".to_string(),
-			action: Action::Command(Command::UnrefinedWork { at: self.cursor }),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::UnrefinedWork }),
 			key_combination: &[Key::H],
 			triggered: trigger::FRESH,
 		});
@@ -110,25 +110,25 @@ impl LocalPlayer {
 		});
 		v.push(ActionInfo {
 			text: "move up".to_string(),
-			action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Up}),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Up)}),
 			key_combination: &[Key::W],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move left".to_string(),
-			action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Left}),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Left)}),
 			key_combination: &[Key::A],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move down".to_string(),
-			action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Down}),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Down)}),
 			key_combination: &[Key::S],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move right".to_string(),
-			action: Action::Command(Command::Move { from: self.cursor, direction: Direction::Right}),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Right)}),
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});
@@ -200,7 +200,7 @@ impl LocalPlayer {
 		for (b, key) in KEYED_BUILDABLE_CLASSES.iter() {
 			v.push(ActionInfo {
 				text: format!("build {}", b.get_name()),
-				action: Action::Command(Command::Build { class: *b, at: self.cursor }),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Build(*b)}),
 				key_combination: slice::from_ref(key),
 				triggered: trigger::FRESH,
 			});

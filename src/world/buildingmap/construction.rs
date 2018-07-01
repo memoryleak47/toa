@@ -12,17 +12,13 @@ use world::terrainmap::Terrain;
 lazy_static! {
 	static ref CONSTRUCTION_COLOR: Color = Color::rgb(90, 90, 40);
 	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let s = 10; // TODO un-hardcode
-		let mut u = w.get_unit_mut(p).unwrap();
-		u.stamina = u.stamina.saturating_sub(s);
-
 		let mut construction: &mut Construction = w.get_building_mut(p)
 				.unwrap()
 				.as_any_mut()
 				.downcast_mut()
 				.unwrap();
 
-		construction.invested_stamina += s;
+		construction.invested_stamina += 10; // TODO make correct
 		if construction.invested_stamina >= construction.build_class.get_build_stamina_cost() {
 			let b = construction.build_class.build();
 			w.set_building(p, Some(b));

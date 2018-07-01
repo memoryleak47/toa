@@ -6,7 +6,7 @@ use player::Player;
 use view::{View, Marker, MarkerType, CURSOR_COLOR, TARGET_CURSOR_COLOR};
 use input::Input;
 use world::World;
-use command::Command;
+use command::{Command, UnitCommand};
 use misc::{Direction, vector_if};
 
 #[derive(Debug)]
@@ -74,7 +74,7 @@ impl LocalPlayer {
 
 	fn apply_view_command(&mut self, command: &Command) {
 		match command {
-			Command::Move { from, direction } => {
+			Command::UnitCommand { pos, command: UnitCommand::Move(direction)} => {
 				self.cursor = direction.plus_vector(self.cursor);
 			},
 			_ => {}

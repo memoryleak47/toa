@@ -3,7 +3,6 @@ use rand::{RngCore, thread_rng};
 
 use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::unitmap::Unit;
 use item;
 use item::ItemClass;
@@ -36,12 +35,10 @@ impl Terrain {
 	}
 
 	pub fn is_unrefined_workable(&self, unit: &Unit) -> bool {
-		(match self {
+		match self {
 			Terrain::GRASS | Terrain::FOREST => true,
 			_ => false,
-		})
-		&&
-		(unit.stamina >= REQUIRED_UNREFINED_WORK_STAMINA)
+		}
 	}
 
 	pub fn get_item_class(&self) -> &'static ItemClass {

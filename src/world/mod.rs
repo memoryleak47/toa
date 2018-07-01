@@ -23,8 +23,6 @@ pub const TILESIZE: f32 = 40.;
 pub const MAP_SIZE_X: usize = 42;
 pub const MAP_SIZE_Y: usize = 54;
 
-pub const REQUIRED_UNREFINED_WORK_STAMINA: u32 = 50;
-
 #[allow(non_snake_case)]
 pub fn TILESIZE_VEC() -> Vector2f {
 	Vector2f::new(TILESIZE, TILESIZE)
@@ -59,21 +57,9 @@ impl World {
 		self.refill_stamina();
 	}
 
-	fn get_height(&self, pos: Vector2u) -> u32 {
+	pub fn get_height(&self, pos: Vector2u) -> u32 {
 		self.get_building(pos)
 			.map(|x| x.get_class().get_height())
 			.unwrap_or(0)
-	}
-
-	// TODO use mass in calculation
-	fn required_walk_stamina(&self, pos: Vector2u, direction: Direction) -> u32 {
-		let to = direction.plus_vector(pos);
-		let terrain_summand = (self.get_terrain(pos).get_stamina_cost() + self.get_terrain(to).get_stamina_cost()) / 2;
-		let height_summand = 10 * (self.get_height(pos) as i32 - self.get_height(to) as i32).abs() as u32;
-		terrain_summand + height_summand
-	}
-
-	fn required_attack_stamina(&self, pos: Vector2u, to: Vector2u) -> u32 {
-		10
 	}
 }

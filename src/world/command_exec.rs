@@ -2,11 +2,10 @@ use std::mem;
 
 use sfml::system::Vector2u;
 
-use command::Command;
+use command::{Command, UnitCommand};
 use misc::Direction;
 use world::World;
 use world::unitmap::Unit;
-use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::buildingmap::BuildingClass;
 use world::buildingmap::construction::Construction;
 
@@ -15,18 +14,27 @@ impl World {
 		assert!(self.is_valid_command(self.active_player, command));
 
 		match command {
-			&Command::Move { from, direction } => self.exec_move(from, direction),
-			&Command::Attack { from, to } => self.exec_attack(from, to),
 			&Command::NextTurn => self.exec_next_turn(),
-			&Command::Build { at, class }  => self.exec_build(at, class),
-			&Command::Work { at } => self.exec_work(at),
-			&Command::UnrefinedWork { at } => self.exec_unrefined_work(at),
+			&Command::UnitCommand { pos, ref command } => self.exec_unit_command(pos, command),
+		}
+	}
+
+	fn exec_unit_command(&mut self, pos: Vector2u, command: &UnitCommand) {
+		let s = command.get_stamina_cost(pos, self);
+		for u in self.unitmap[pos.x as usize][pos.y as usize].iter_mut() {
+			u.stamina -= s;
+		}
+			
+		match command {
+			&UnitCommand::Move(direction) => self.exec_move(pos, direction),
+			&UnitCommand::Attack(to) => self.exec_attack(pos, to),
+			&UnitCommand::Build(class)  => self.exec_build(pos, class),
+			&UnitCommand::Work => self.exec_work(pos),
+			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
 		}
 	}
 
 	fn exec_move(&mut self, from: Vector2u, direction: Direction) {
-		let s = self.required_walk_stamina(from, direction);
-
 		let x1 = from.x as usize;
 		let y1 = from.y as usize;
 
@@ -37,7 +45,6 @@ impl World {
 
 		let mut tmp: Option<Unit> = None;
 		mem::swap(&mut tmp, &mut self.unitmap[x1][y1]);
-		for x in tmp.iter_mut() { x.stamina -= s; }
 		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
 	}
 
@@ -72,6 +79,5 @@ impl World {
 		let item_class = self.get_terrain(at).get_item_class();
 		let mut u = self.get_unit_mut(at).unwrap();
 		u.inventory.push(item_class.build());
-		u.stamina = u.stamina.saturating_sub(REQUIRED_UNREFINED_WORK_STAMINA);
 	}
 }

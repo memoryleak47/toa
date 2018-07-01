@@ -1,9 +1,8 @@
 use sfml::system::{Vector2u, Vector2i};
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use world::REQUIRED_UNREFINED_WORK_STAMINA;
 use world::buildingmap::BUILDABLE_CLASSES;
-use command::Command;
+use command::{Command, UnitCommand};
 use misc::*;
 
 impl World {
@@ -16,7 +15,7 @@ impl World {
 
 		// add Move
 		for d in [Direction::Left, Direction::Right, Direction::Up, Direction::Down].into_iter() {
-			v.push(Command::Move { from: pos, direction: *d });
+			v.push(Command::UnitCommand { pos, command: UnitCommand::Move(*d) });
 		}
 
 		// add Attack
@@ -25,16 +24,16 @@ impl World {
 		for rx in -MAX_RANGE..=MAX_RANGE {
 			for ry in -MAX_RANGE..=MAX_RANGE {
 				let target = vector_iu(vector_ui(pos) + Vector2i::new(rx, ry));
-				v.push(Command::Attack { from: pos, to: target });
+				v.push(Command::UnitCommand { pos, command: UnitCommand::Attack(target)});
 			}
 		}
 
 		for c in &BUILDABLE_CLASSES[..] {
-			v.push(Command::Build { class: *c, at: pos });
+			v.push(Command::UnitCommand { pos, command: UnitCommand::Build(*c) });
 		}
 
 		// add Work
-		v.push(Command::Work { at: pos });
+		v.push(Command::UnitCommand { pos, command: UnitCommand::Work});
 
 		v
 	}
@@ -63,57 +62,64 @@ impl World {
 		v
 	}
 
-	pub fn is_valid_command(&self, player: u32, command: &Command) -> bool {
+	fn is_valid_unit_command(&self, player: u32, pos: Vector2u, command: &UnitCommand) -> bool {
+		self.unitmap[pos.x as usize][pos.y as usize]
+		.as_ref()
+		.filter(|x| x.owner == player)
+		.filter(|x| x.stamina >= command.get_stamina_cost(pos, self))
+		.is_some()
+		&&
 		match command {
-			Command::Move { from, direction } => {
-				let to = direction.plus_vector(*from);
-				let stamina = self.required_walk_stamina(*from, *direction);
+			UnitCommand::Move(direction) => {
+				let to = direction.plus_vector(pos);
 
 				self.get_unit(to).is_none()
-				&& self.get_height(to).saturating_sub(self.get_height(*from)) != 2 // can't climb a wall!
-				&& self.get_unit(*from)
+				&& self.get_height(to).saturating_sub(self.get_height(pos)) != 2 // can't climb a wall!
+				&& self.get_unit(pos)
 					.filter(|x| x.owner == player)
-					.filter(|x| x.stamina >= stamina)
 					.is_some()
 			},
-			Command::Attack { from, to } => {
+			UnitCommand::Attack(to) => {
 				// TODO in range-check
 
-				let stamina = self.required_attack_stamina(*from, *to);
-				self.get_unit(*from)
+				self.get_unit(pos)
 					.filter(|x| x.owner == player)
-					.filter(|x| x.stamina >= stamina)
 					.is_some()
 			},
-			Command::NextTurn => true,
-			Command::Build { at, class } => {
+			UnitCommand::Build(class) => {
 				let req_terrain = class.get_required_terrain();
-				self.get_building(*at).is_none()
+				self.get_building(pos).is_none()
 				&&
-				self.get_unit(*at)
+				self.get_unit(pos)
 					.filter(|x| x.owner == player)
 					.filter(|x| x.inventory.contains_all(class.get_build_item_cost()))
 					.is_some()
 				&&
-				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(*at)))
+				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(pos)))
 			},
-			Command::Work { at } => {
-				self.get_building(*at)
+			UnitCommand::Work => {
+				self.get_building(pos)
 					.filter(|b| {
-						self.get_unit(*at)
+						self.get_unit(pos)
 							.filter(|u| u.owner == player)
 							.filter(|u| b.is_workable(u))
 							.is_some()
 					})
 					.is_some()
 			},
-			Command::UnrefinedWork { at } => {
-				self.get_unit(*at)
-					.filter(|u| u.stamina >= REQUIRED_UNREFINED_WORK_STAMINA)
-					.filter(|u| self.get_terrain(*at)
+			UnitCommand::UnrefinedWork => {
+				self.get_unit(pos)
+					.filter(|u| self.get_terrain(pos)
 						.is_unrefined_workable(u)
 					).is_some()
 			}
+		}
+	}
+
+	pub fn is_valid_command(&self, player: u32, command: &Command) -> bool {
+		match command {
+			Command::NextTurn => true,
+			Command::UnitCommand { ref command, pos } => self.is_valid_unit_command(player, *pos, command),
 		}
 	}
 }
