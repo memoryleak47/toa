@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
@@ -91,7 +93,7 @@ impl World {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
-					unit.stamina += FULL_STAMINA as i32;
+					unit.stamina = min(FULL_STAMINA as i32, unit.stamina + FULL_STAMINA as i32);
 				}
 			}
 		}
