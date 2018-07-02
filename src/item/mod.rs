@@ -4,6 +4,7 @@ pub mod wood;
 use std::slice;
 
 pub trait ItemClass {
+	fn get_name(&self) -> &'static str;
 	fn get_ref(&self) -> &'static ItemClass;
 	fn get_mass(&self) -> u32;
 	fn build(&self) -> Box<Item>;
@@ -55,6 +56,17 @@ impl Inventory {
 
 	pub fn as_mut(&mut self) -> &mut [Box<Item>] {
 		self.items.as_mut()
+	}
+
+	pub fn get_info_string(&self) -> String {
+		let mut s = String::new();
+		s.push('[');
+		let tmp: Vec<&'static str> = self.iter()
+			.map(|x| x.get_class().get_name())
+			.collect();
+		s.push_str(&(&tmp[..]).join(", "));
+		s.push(']');
+		s
 	}
 }
 

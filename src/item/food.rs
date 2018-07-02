@@ -7,6 +7,7 @@ pub struct Food {
 }
 
 impl ItemClass for FoodClass {
+	fn get_name(&self) -> &'static str { "Food" }
 	fn get_ref(&self) -> &'static ItemClass {
 		&FoodClass
 	}

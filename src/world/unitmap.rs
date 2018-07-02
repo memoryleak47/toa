@@ -36,6 +36,10 @@ impl Unit {
 			Color::rgb(0, 0, 255)
 		}
 	}
+
+	pub fn get_info_string(&self) -> String {
+		format!("Unit( owner: {}, stamina: {}, health: {}, food: {}, inventory: {})", self.owner, self.stamina, self.health, self.food, &self.inventory.get_info_string())
+	}
 }
 
 pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {

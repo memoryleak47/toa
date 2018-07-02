@@ -56,8 +56,8 @@ impl View {
 	pub fn default_text_at(pos: Vector2u, world: &World) -> String {
 		let terrain = world.get_terrain(pos);
 		let building = world.get_building(pos);
-		let unit = world.get_unit(pos).map(|x| "<Unit>").unwrap_or("None");
+		let unit = world.get_unit(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
 
-		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {}\nUnit: {:?}", world.active_player, terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit)
+		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {}\nUnit: {}", world.active_player, terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit)
 	}
 }

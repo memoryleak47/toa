@@ -7,6 +7,7 @@ pub struct Wood {
 }
 
 impl ItemClass for WoodClass {
+	fn get_name(&self) -> &'static str { "Wood" }
 	fn get_ref(&self) -> &'static ItemClass {
 		&WoodClass
 	}
