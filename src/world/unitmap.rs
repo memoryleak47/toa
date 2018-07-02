@@ -71,10 +71,16 @@ impl World {
 	fn apply_hunger_consequences(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
+				let u: &mut Option<Unit> = &mut self.unitmap[x][y];
+				if let Some(ref mut unit) = u {
 					if unit.food == 0 {
 						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
 					}
+				}
+				if u.as_mut()
+						.filter(|x| x.health == 0)
+						.is_some() {
+					*u = None;
 				}
 			}
 		}
