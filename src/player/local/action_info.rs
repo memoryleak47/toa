@@ -55,20 +55,6 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
-		v.push(ActionInfo {
-			text: "work".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Work }),
-			key_combination: &[Key::Q],
-			triggered: trigger::FRESH,
-		});
-
-		v.push(ActionInfo {
-			text: "unrefined work".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::UnrefinedWork }),
-			key_combination: &[Key::H],
-			triggered: trigger::FRESH,
-		});
-
 		// move camera:
 		v.push(ActionInfo {
 			text: "move camera up".to_string(),
@@ -108,6 +94,23 @@ impl LocalPlayer {
 			key_combination: &[Key::Escape],
 			triggered: trigger::FRESH,
 		});
+
+		// work
+		v.push(ActionInfo {
+			text: "work".to_string(),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Work }),
+			key_combination: &[Key::Q],
+			triggered: trigger::FRESH,
+		});
+
+		v.push(ActionInfo {
+			text: "unrefined work".to_string(),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::UnrefinedWork }),
+			key_combination: &[Key::H],
+			triggered: trigger::FRESH,
+		});
+
+		// move
 		v.push(ActionInfo {
 			text: "move up".to_string(),
 			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Up)}),

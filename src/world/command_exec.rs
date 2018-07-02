@@ -77,7 +77,7 @@ impl World {
 
 	fn exec_unrefined_work(&mut self, at: Vector2u) {
 		let item_class = self.get_terrain(at).get_item_class();
-		let mut u = self.get_unit_mut(at).unwrap();
+		let u = self.get_unit_mut(at).unwrap();
 		u.inventory.push(item_class.build());
 	}
 }

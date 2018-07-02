@@ -16,7 +16,6 @@ use self::buildingmap::Building;
 
 use sfml::system::{Vector2f, Vector2u};
 
-use misc::Direction;
 use item::Inventory;
 
 pub const TILESIZE: f32 = 40.;

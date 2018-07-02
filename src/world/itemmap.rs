@@ -1,6 +1,6 @@
 use sfml::system::Vector2u;
 
-use item::{Item, Inventory};
+use item::Inventory;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 
 impl World {
