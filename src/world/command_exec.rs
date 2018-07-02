@@ -65,6 +65,9 @@ impl World {
 		let construction = Construction::new(class);
 		let boxed = Box::new(construction);
 		self.buildingmap[at.x as usize][at.y as usize] = Some(boxed);
+
+		self.get_unit_mut(at).unwrap()
+			.inventory.reduce(class.get_build_item_cost());
 	}
 
 	fn exec_work(&mut self, at: Vector2u) {

@@ -83,6 +83,16 @@ impl Inventory {
 	pub fn get_item_vec(&mut self) -> &mut Vec<Box<Item>> {
 		&mut self.items
 	}
+
+	pub fn reduce(&mut self, items: &[&'static ItemClass]) {
+		for &item in items {
+			let p = self.items
+				.iter()
+				.position(|x| x.get_class() == item)
+				.unwrap();
+			self.items.remove(p);
+		}
+	}
 }
 
 impl PartialEq for ItemClass {

@@ -1,10 +1,11 @@
 use std::any::Any;
+use std::iter;
 
 use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
-use item;
 use item::ItemClass;
+use item::food::FoodClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
@@ -14,18 +15,15 @@ const REQUIRED_FOOD: u32 = 10;
 
 lazy_static! {
 	static ref TEAM_SPAWNER_COLOR: [Color; 2] = [Color::rgb(100, 0, 0), Color::rgb(0, 100, 0)];
+	static ref REQUIRED_FOOD_VEC: Vec<&'static ItemClass> = {
+		let food = FoodClass.get_ref();
+		iter::repeat(food)
+			.take(REQUIRED_FOOD as usize)
+			.collect()
+	};
 	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-
-		use item::food::FoodClass;
-
 		let u = w.get_unit_mut(p).unwrap();
-		let item_vec: &mut Vec<_> = u.inventory.get_item_vec();
-		for i in 0..REQUIRED_FOOD {
-			let pos = item_vec.iter()
-				.position(|x| x.get_class() == FoodClass.get_ref())
-				.unwrap();
-			item_vec.remove(pos);
-		}
+		u.inventory.reduce(&REQUIRED_FOOD_VEC[..]);
 		let p2 = p + Vector2u::new(1, 0); // TODO check that this space is free!
 		let new_unit = Unit::new(u.owner);
 		w.set_unit(p2, Some(new_unit));
@@ -68,13 +66,7 @@ impl Building for Spawner {
 	fn get_class(&self) -> &'static BuildingClass { SpawnerClass.get_ref() }
 	fn is_burnable(&self, unit: &Unit) -> bool { false }
 	fn is_workable(&self, unit: &Unit) -> bool {
-		use std::iter;
-
-		let food = item::food::FoodClass.get_ref();
-		let requirements: Vec<_> = iter::repeat(food)
-			.take(REQUIRED_FOOD as usize)
-			.collect();
-		unit.inventory.contains_all(&requirements)
+		unit.inventory.contains_all(&REQUIRED_FOOD_VEC[..])
 	}
 	fn get_color(&self) -> &'static Color {
 		&TEAM_SPAWNER_COLOR[self.player as usize]
