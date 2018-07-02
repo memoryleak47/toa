@@ -12,7 +12,7 @@ const HUNGER_DAMAGE: u32 = 10;
 
 pub struct Unit {
 	pub owner: u32,
-	pub stamina: u32,
+	pub stamina: i32,
 	pub health: u32,
 	pub food: u32,
 	pub inventory: Inventory,
@@ -22,7 +22,7 @@ impl Unit {
 	fn new(owner: u32) -> Unit {
 		Unit {
 			owner,
-			stamina: FULL_STAMINA,
+			stamina: FULL_STAMINA as i32,
 			health: FULL_HEALTH,
 			food: FULL_FOOD,
 			inventory: Inventory::new(),
@@ -91,7 +91,7 @@ impl World {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
-					unit.stamina = FULL_STAMINA;
+					unit.stamina += FULL_STAMINA as i32;
 				}
 			}
 		}

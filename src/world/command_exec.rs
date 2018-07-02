@@ -22,7 +22,7 @@ impl World {
 	fn exec_unit_command(&mut self, pos: Vector2u, command: &UnitCommand) {
 		let s = command.get_stamina_cost(pos, self);
 		for u in self.unitmap[pos.x as usize][pos.y as usize].iter_mut() {
-			u.stamina -= s;
+			u.stamina -= s as i32;
 		}
 			
 		match command {

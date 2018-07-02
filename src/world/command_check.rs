@@ -66,7 +66,7 @@ impl World {
 		self.unitmap[pos.x as usize][pos.y as usize]
 		.as_ref()
 		.filter(|x| x.owner == player)
-		.filter(|x| x.stamina >= command.get_stamina_cost(pos, self))
+		.filter(|x| x.stamina > 0)
 		.is_some()
 		&&
 		match command {
