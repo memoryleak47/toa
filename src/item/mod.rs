@@ -79,6 +79,10 @@ impl Inventory {
 			.filter(|x| !x.is_dead())
 			.collect();
 	}
+
+	pub fn get_item_vec(&mut self) -> &mut Vec<Box<Item>> {
+		&mut self.items
+	}
 }
 
 impl PartialEq for ItemClass {

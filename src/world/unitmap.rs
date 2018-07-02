@@ -21,7 +21,7 @@ pub struct Unit {
 }
 
 impl Unit {
-	fn new(owner: u32) -> Unit {
+	pub fn new(owner: u32) -> Unit {
 		Unit {
 			owner,
 			stamina: FULL_STAMINA as i32,
@@ -130,5 +130,9 @@ impl World {
 
 	pub fn get_unit_mut(&mut self, p: Vector2u) -> Option<&mut Unit> {
 		self.unitmap[p.x as usize][p.y as usize].as_mut()
+	}
+
+	pub fn set_unit(&mut self, p: Vector2u, unit: Option<Unit>) {
+		self.unitmap[p.x as usize][p.y as usize] = unit;
 	}
 }
