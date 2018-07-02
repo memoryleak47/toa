@@ -68,6 +68,17 @@ impl Inventory {
 		s.push(']');
 		s
 	}
+
+	pub fn clear_dead_items(&mut self) {
+		use std::mem::swap;
+
+		let mut tmp = Vec::new();
+
+		swap(&mut self.items, &mut tmp);
+		self.items = tmp.into_iter()
+			.filter(|x| !x.is_dead())
+			.collect();
+	}
 }
 
 impl PartialEq for ItemClass {

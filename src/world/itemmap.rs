@@ -14,7 +14,7 @@ impl World {
 				for item in self.itemmap[x][y].as_mut() {
 					item.damage();
 				}
-				// TODO remove dead items
+				self.itemmap[x][y].clear_dead_items();
 			}
 		}
 	}
