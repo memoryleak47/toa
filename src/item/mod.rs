@@ -3,7 +3,7 @@ pub mod wood;
 
 use std::slice;
 
-pub trait ItemClass {
+pub trait ItemClass: Sync {
 	fn get_name(&self) -> &'static str;
 	fn get_ref(&self) -> &'static ItemClass;
 	fn get_mass(&self) -> u32;

@@ -5,6 +5,7 @@ use sfml::system::Vector2u;
 
 use item;
 use item::ItemClass;
+use item::wood::WoodClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
@@ -16,6 +17,7 @@ lazy_static! {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(item::food::FoodClass.get_ref().build());
 	};
+	static ref BUILD_ITEM_COST: [&'static ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
 }
 
 pub struct FarmClass;
@@ -28,8 +30,7 @@ impl BuildingClass for FarmClass {
 	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
-		//&[ItemKind::Wood, ItemKind::Wood]
-		&[] // TODO change back!
+		&BUILD_ITEM_COST[..]
 	}
 	fn get_build_stamina_cost(&self) -> u32 { 20 }
 	fn get_height(&self) -> u32 { 0 }
