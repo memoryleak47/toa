@@ -11,19 +11,6 @@ use world::terrainmap::Terrain;
 
 lazy_static! {
 	static ref CONSTRUCTION_COLOR: Color = Color::rgb(90, 90, 40);
-	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let construction: &mut Construction = w.get_building_mut(p)
-				.unwrap()
-				.as_any_mut()
-				.downcast_mut()
-				.unwrap();
-
-		construction.invested_stamina += 10; // TODO make correct
-		if construction.invested_stamina >= construction.build_class.get_build_stamina_cost() {
-			let b = construction.build_class.build();
-			w.set_building(p, Some(b));
-		}
-	};
 }
 
 pub struct ConstructionClass;
@@ -53,19 +40,23 @@ impl BuildingClass for ConstructionClass {
 	fn get_name(&self) -> &'static str {
 		"Construction"
 	}
-	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u) {
-		&WORK_FN
-	}
 }
 
 impl Building for Construction {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { ConstructionClass.get_ref() }
-	fn is_burnable(&self, unit: &Unit) -> bool { true }
-	fn is_workable(&self, unit: &Unit) -> bool { true }
+	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
+	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn get_color(&self) -> &'static Color {
 		&CONSTRUCTION_COLOR
+	}
+	fn work(&mut self, world: &mut World, p: Vector2u) {
+		self.invested_stamina += 10; // TODO make correct
+		if self.invested_stamina >= self.build_class.get_build_stamina_cost() {
+			let b = self.build_class.build();
+			world.set_building(p, Some(b));
+		}
 	}
 }
 

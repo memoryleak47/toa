@@ -13,10 +13,6 @@ use world::terrainmap::Terrain;
 
 lazy_static! {
 	static ref FARM_COLOR: Color = Color::rgb(100, 100, 0);
-	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let u = w.get_unit_mut(p).unwrap();
-		u.inventory.push(item::food::FoodClass.get_ref().build());
-	};
 	static ref BUILD_ITEM_COST: [&'static ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
 }
 
@@ -41,18 +37,19 @@ impl BuildingClass for FarmClass {
 	fn get_name(&self) -> &'static str {
 		"Farm"
 	}
-	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u) {
-		&WORK_FN
-	}
 }
 
 impl Building for Farm {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { FarmClass.get_ref() }
-	fn is_burnable(&self, unit: &Unit) -> bool { true }
-	fn is_workable(&self, unit: &Unit) -> bool { true }
+	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
+	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn get_color(&self) -> &'static Color {
 		&FARM_COLOR
+	}
+	fn work(&mut self, w: &mut World, p: Vector2u) {
+		let u = w.get_unit_mut(p).unwrap();
+		u.inventory.push(item::food::FoodClass.get_ref().build());
 	}
 }

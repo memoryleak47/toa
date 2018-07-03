@@ -99,12 +99,7 @@ impl World {
 			},
 			UnitCommand::Work => {
 				self.get_building(pos)
-					.filter(|b| {
-						self.get_unit(pos)
-							.filter(|u| u.owner == player)
-							.filter(|u| b.is_workable(u))
-							.is_some()
-					})
+					.filter(|b| b.is_workable(self, pos))
 					.is_some()
 			},
 			UnitCommand::UnrefinedWork => {

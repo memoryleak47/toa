@@ -21,13 +21,6 @@ lazy_static! {
 			.take(REQUIRED_FOOD as usize)
 			.collect()
 	};
-	static ref WORK_FN: fn(&mut World, Vector2u) = |w, p| {
-		let u = w.get_unit_mut(p).unwrap();
-		u.inventory.reduce(&REQUIRED_FOOD_VEC[..]);
-		let p2 = p + Vector2u::new(1, 0); // TODO check that this space is free!
-		let new_unit = Unit::new(u.owner);
-		w.set_unit(p2, Some(new_unit));
-	};
 }
 
 pub struct SpawnerClass;
@@ -54,22 +47,29 @@ impl BuildingClass for SpawnerClass {
 	fn get_name(&self) -> &'static str {
 		"Spawner"
 	}
-
-	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u) {
-		&WORK_FN
-	}
 }
 
 impl Building for Spawner {
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { SpawnerClass.get_ref() }
-	fn is_burnable(&self, unit: &Unit) -> bool { false }
-	fn is_workable(&self, unit: &Unit) -> bool {
-		unit.inventory.contains_all(&REQUIRED_FOOD_VEC[..])
+	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { false }
+	fn is_workable(&self, w: &World, p: Vector2u) -> bool {
+		w.get_unit(p + Vector2u::new(1, 0)).is_none()
+		&&
+		w.get_unit(p)
+			.filter(|u| u.inventory.contains_all(&REQUIRED_FOOD_VEC[..]))
+			.is_some()
 	}
 	fn get_color(&self) -> &'static Color {
 		&TEAM_SPAWNER_COLOR[self.player as usize]
+	}
+	fn work(&mut self, w: &mut World, p: Vector2u) {
+		let u = w.get_unit_mut(p).unwrap();
+		u.inventory.reduce(&REQUIRED_FOOD_VEC[..]);
+		let p2 = p + Vector2u::new(1, 0);
+		let new_unit = Unit::new(u.owner);
+		w.set_unit(p2, Some(new_unit));
 	}
 }
 

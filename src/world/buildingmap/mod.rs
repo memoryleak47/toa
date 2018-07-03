@@ -22,9 +22,13 @@ pub trait Building {
 	fn as_any_mut(&mut self) -> &mut Any;
 	fn get_health(&self) -> u32;
 	fn get_class(&self) -> &'static BuildingClass;
-	fn is_burnable(&self, unit: &Unit) -> bool;
-	fn is_workable(&self, unit: &Unit) -> bool;
+	fn is_burnable(&self, &World, Vector2u) -> bool;
+	fn is_workable(&self, &World, Vector2u) -> bool;
 	fn get_color(&self) -> &'static Color;
+
+	// while this method is executed, the `self`-building is swapped out of the &mut World
+	// `self` will only be placed back, if it wouldn't replace anything
+	fn work(&mut self, &mut World, Vector2u);
 }
 
 pub trait BuildingClass: Sync {
@@ -35,7 +39,6 @@ pub trait BuildingClass: Sync {
 	fn get_height(&self) -> u32;
 	fn build(&self) -> Box<Building>;
 	fn get_name(&self) -> &'static str;
-	fn get_work_fn(&self) -> &'static fn(&mut World, Vector2u);
 }
 
 pub fn new_buildingmap() -> [[Option<Box<Building>>; MAP_SIZE_Y]; MAP_SIZE_X] {

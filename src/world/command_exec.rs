@@ -71,11 +71,13 @@ impl World {
 	}
 
 	fn exec_work(&mut self, at: Vector2u) {
-		let f = self.get_building_mut(at)
-			.unwrap()
-			.get_class()
-			.get_work_fn();
-		f(self, at);
+		let mut tmp_opt: Option<Box<_>> = None;
+		mem::swap(&mut tmp_opt, &mut self.buildingmap[at.x as usize][at.y as usize]);
+		tmp_opt.iter_mut()
+			.for_each(|b| b.work(self, at));
+		if self.get_building(at).is_none() {
+			self.set_building(at, tmp_opt);
+		}
 	}
 
 	fn exec_unrefined_work(&mut self, at: Vector2u) {
