@@ -1,11 +1,11 @@
 pub mod default;
 
 use sfml::system::{Vector2u, Vector2f};
-use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, CircleShape, Shape, Color, Transformable, Text, Font};
+use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text, Font};
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
 use misc::*;
-use graphics::TextureState;
+use graphics::{TextureState, TextureId};
 
 const MARKER_BORDER_SIZE: f32 = 5.;
 lazy_static! {
@@ -32,16 +32,11 @@ pub struct View {
 }
 
 impl View {
-	fn render_markers(&self, window: &mut RenderWindow) {
-		for marker in self.markers.iter() {
-			marker.render(window, self);
-		}
-	}
-
 	pub fn render(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		self.render_terrainmap(window, world, texture_state);
-		self.render_buildingmap(window, world);
-		self.render_unitmap(window, world);
+		self.render_buildingmap(window, world, texture_state);
+		self.render_itemmap(window, world, texture_state);
+		self.render_unitmap(window, world, texture_state);
 		self.render_markers(window);
 
 		self.render_hud(window, world);
@@ -67,22 +62,7 @@ impl View {
 		}
 	}
 
-	fn render_unitmap(&self, window: &mut RenderWindow, world: &World) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(ref unit) = world.unitmap[x][y] {
-					let posf = Vector2f::new(x as f32, y as f32);
-
-					let mut shape = CircleShape::new(TILESIZE / 2.0, 200);
-					shape.set_fill_color(&unit.get_color());
-					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
-					window.draw(&shape);
-				}
-			}
-		}
-	}
-
-	fn render_buildingmap(&self, window: &mut RenderWindow, world: &World) {
+	fn render_buildingmap(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				if let Some(building) = world.buildingmap[x][y]
@@ -90,13 +70,56 @@ impl View {
 							.map(|x| x.as_ref()) {
 					let posf = Vector2f::new(x as f32, y as f32);
 
-					let mut shape = RectangleShape::new();
-					shape.set_fill_color(&building.get_color());
+					let texture = texture_state.get_texture(building.get_class().get_texture_id());
+					let mut shape = RectangleShape::with_texture(texture);
 					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
-					shape.set_size(TILESIZE_VEC());
+					shape.set_size(Vector2f::new(TILESIZE, TILESIZE/2.0));
 					window.draw(&shape);
 				}
 			}
+		}
+	}
+
+	fn render_itemmap(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
+				if world.itemmap[x][y]
+						.iter()
+						.next()
+						.is_some() {
+					let posf = Vector2f::new(x as f32, y as f32);
+
+					let texture = texture_state.get_texture(TextureId::Bag);
+					let mut shape = RectangleShape::with_texture(texture);
+					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0 + Vector2f::new(0.0, 22.0));
+					shape.set_size(Vector2f::new(7., 12.));
+					window.draw(&shape);
+				}
+			}
+		}
+	}
+
+	fn render_unitmap(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
+		for x in 0..MAP_SIZE_X {
+			for y in 0..MAP_SIZE_Y {
+				if let Some(ref unit) = world.unitmap[x][y] {
+					let posf = Vector2f::new(x as f32, y as f32);
+
+					let texture_unit = texture_state.get_texture(TextureId::Unit);
+					let mut shape = RectangleShape::with_texture(texture_unit);
+					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0 + Vector2f::new(10.0, 10.0));
+					shape.set_size(Vector2f::new(20., 30.));
+					window.draw(&shape);
+
+					// TODO draw cloth
+				}
+			}
+		}
+	}
+
+	fn render_markers(&self, window: &mut RenderWindow) {
+		for marker in self.markers.iter() {
+			marker.render(window, self);
 		}
 	}
 }

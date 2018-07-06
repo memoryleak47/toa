@@ -10,26 +10,40 @@ pub enum TextureId {
 	ForestTile,
 	StoneTile,
 	IronTile,
+
+	Unit,
+	UnitCloth,
+
+	ConstructionBuilding,
+	FarmBuilding,
+	SpawnerBuilding,
+
+	Bag,
 }
 
-const TEXTURE_COUNT: usize = 4;
+const TEXTURE_COUNT: usize = 10;
 
 pub struct TextureState {
 	wrappers: [Texture; TEXTURE_COUNT],
 }
 
+fn get_res_path(s: &str) -> String {
+	let dir = ::misc::res_dir();
+	let path_string = dir.to_str().unwrap();
+	format!("{}/{}", path_string, s)
+}
+
 impl TextureState {
 	pub fn new() -> TextureState {
-		let dir = ::misc::res_dir();
-		let path_string = dir.to_str().unwrap();
 
 		unsafe {
 			let mut wrappers: [Texture; TEXTURE_COUNT] = mem::uninitialized();
 
+			let nope_texture = Texture::from_file(&get_res_path("nope.png")).unwrap();
+
 			macro_rules! load {
 				($a: expr, $b: expr) => {{
-					let s = format!("{}/{}", path_string, $b);
-					let texture = Texture::from_file(&s).unwrap();
+					let texture = Texture::from_file(&get_res_path($b)).unwrap_or(nope_texture.clone());
 					ptr::write(&mut wrappers[$a as usize], texture);
 				}}
 			}
@@ -38,6 +52,15 @@ impl TextureState {
 			load!(TextureId::ForestTile, "tile/forest.png");
 			load!(TextureId::StoneTile, "tile/stone.png");
 			load!(TextureId::IronTile, "tile/iron.png");
+
+			load!(TextureId::Unit, "unit.png");
+			load!(TextureId::UnitCloth, "unit_cloth.png");
+
+			load!(TextureId::ConstructionBuilding, "building/construction.png");
+			load!(TextureId::FarmBuilding, "building/farm.png");
+			load!(TextureId::SpawnerBuilding, "building/spawner.png");
+
+			load!(TextureId::Bag, "bag.png");
 
 			TextureState { wrappers }
 		}

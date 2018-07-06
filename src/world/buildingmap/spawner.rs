@@ -1,9 +1,9 @@
 use std::any::Any;
 use std::iter;
 
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
+use graphics::TextureId;
 use item::ItemClass;
 use item::food::FoodClass;
 use super::{BuildingClass, Building};
@@ -14,7 +14,6 @@ use world::terrainmap::Terrain;
 const REQUIRED_FOOD: u32 = 10;
 
 lazy_static! {
-	static ref TEAM_SPAWNER_COLOR: [Color; 2] = [Color::rgb(100, 0, 0), Color::rgb(0, 100, 0)];
 	static ref REQUIRED_FOOD_VEC: Vec<&'static ItemClass> = {
 		let food = FoodClass.get_ref();
 		iter::repeat(food)
@@ -31,6 +30,7 @@ pub struct Spawner {
 }
 
 impl BuildingClass for SpawnerClass {
+	fn get_texture_id(&self) -> TextureId { TextureId::SpawnerBuilding }
 	fn get_ref(&self) -> &'static BuildingClass { &SpawnerClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
@@ -60,9 +60,6 @@ impl Building for Spawner {
 		w.get_unit(p)
 			.filter(|u| u.inventory.contains_all(&REQUIRED_FOOD_VEC[..]))
 			.is_some()
-	}
-	fn get_color(&self) -> &'static Color {
-		&TEAM_SPAWNER_COLOR[self.player as usize]
 	}
 	fn work(&mut self, w: &mut World, p: Vector2u) {
 		let u = w.get_unit_mut(p).unwrap();

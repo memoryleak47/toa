@@ -1,6 +1,5 @@
 use std::cmp::min;
 
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
@@ -28,14 +27,6 @@ impl Unit {
 			health: FULL_HEALTH,
 			food: FULL_FOOD,
 			inventory: Inventory::new(),
-		}
-	}
-
-	pub fn get_color(&self) -> Color {
-		if self.owner == 0 {
-			Color::rgb(255, 0, 0)
-		} else {
-			Color::rgb(0, 0, 255)
 		}
 	}
 

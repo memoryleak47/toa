@@ -1,17 +1,12 @@
 use std::any::Any;
 
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
+use graphics::TextureId;
 use item::ItemClass;
 use super::{BuildingClass, Building};
 use world::World;
-use world::unitmap::Unit;
 use world::terrainmap::Terrain;
-
-lazy_static! {
-	static ref CONSTRUCTION_COLOR: Color = Color::rgb(90, 90, 40);
-}
 
 pub struct ConstructionClass;
 
@@ -22,6 +17,7 @@ pub struct Construction {
 }
 
 impl BuildingClass for ConstructionClass {
+	fn get_texture_id(&self) -> TextureId { TextureId::ConstructionBuilding }
 	fn get_ref(&self) -> &'static BuildingClass { &ConstructionClass }
 	fn get_required_terrain(&self) -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
@@ -48,9 +44,6 @@ impl Building for Construction {
 	fn get_class(&self) -> &'static BuildingClass { ConstructionClass.get_ref() }
 	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
-	fn get_color(&self) -> &'static Color {
-		&CONSTRUCTION_COLOR
-	}
 	fn work(&mut self, world: &mut World, p: Vector2u) {
 		self.invested_stamina += 10; // TODO make correct
 		if self.invested_stamina >= self.build_class.get_build_stamina_cost() {

@@ -6,12 +6,11 @@ use std::any::Any;
 
 use self::spawner::Spawner;
 
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
+use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::terrainmap::Terrain;
-use world::unitmap::Unit;
 use item::ItemClass;
 
 lazy_static! {
@@ -24,7 +23,6 @@ pub trait Building {
 	fn get_class(&self) -> &'static BuildingClass;
 	fn is_burnable(&self, &World, Vector2u) -> bool;
 	fn is_workable(&self, &World, Vector2u) -> bool;
-	fn get_color(&self) -> &'static Color;
 
 	// while this method is executed, the `self`-building is swapped out of the &mut World
 	// `self` will only be placed back, if it wouldn't replace anything
@@ -32,6 +30,7 @@ pub trait Building {
 }
 
 pub trait BuildingClass: Sync {
+	fn get_texture_id(&self) -> TextureId;
 	fn get_ref(&self) -> &'static BuildingClass;
 	fn get_required_terrain(&self) -> Option<Terrain>;
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass];

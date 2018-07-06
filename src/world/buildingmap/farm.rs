@@ -1,18 +1,16 @@
 use std::any::Any;
 
-use sfml::graphics::Color;
 use sfml::system::Vector2u;
 
+use graphics::TextureId;
 use item;
 use item::ItemClass;
 use item::wood::WoodClass;
 use super::{BuildingClass, Building};
 use world::World;
-use world::unitmap::Unit;
 use world::terrainmap::Terrain;
 
 lazy_static! {
-	static ref FARM_COLOR: Color = Color::rgb(100, 100, 0);
 	static ref BUILD_ITEM_COST: [&'static ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
 }
 
@@ -23,6 +21,7 @@ pub struct Farm {
 }
 
 impl BuildingClass for FarmClass {
+	fn get_texture_id(&self) -> TextureId { TextureId::FarmBuilding }
 	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
@@ -45,9 +44,6 @@ impl Building for Farm {
 	fn get_class(&self) -> &'static BuildingClass { FarmClass.get_ref() }
 	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
-	fn get_color(&self) -> &'static Color {
-		&FARM_COLOR
-	}
 	fn work(&mut self, w: &mut World, p: Vector2u) {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(item::food::FoodClass.get_ref().build());
