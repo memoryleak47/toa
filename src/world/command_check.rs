@@ -108,6 +108,16 @@ impl World {
 						.is_unrefined_workable(u)
 					).is_some()
 			}
+			UnitCommand::DropItem(i) => {
+				self.get_unit(pos)
+					.filter(|u| u.inventory.iter().len() > *i)
+					.is_some()
+			},
+			UnitCommand::TakeItem(i) => {
+				self.get_inventory(pos)
+					.iter()
+					.len() > *i
+			}
 		}
 	}
 

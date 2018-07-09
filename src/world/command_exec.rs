@@ -31,6 +31,8 @@ impl World {
 			&UnitCommand::Build(class)  => self.exec_build(pos, class),
 			&UnitCommand::Work => self.exec_work(pos),
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
+			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),
+			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 		}
 	}
 
@@ -84,5 +86,27 @@ impl World {
 		let item_class = self.get_terrain(at).get_item_class();
 		let u = self.get_unit_mut(at).unwrap();
 		u.inventory.push(item_class.build());
+	}
+
+	fn exec_drop_item(&mut self, at: Vector2u, i: usize) {
+		let item = self.get_unit_mut(at)
+			.unwrap()
+			.inventory
+			.get_item_vec()
+			.remove(i);
+
+		self.get_inventory_mut(at)
+			.push(item);
+	}
+
+	fn exec_take_item(&mut self, at: Vector2u, i: usize) {
+		let item = self.get_inventory_mut(at)
+			.get_item_vec()
+			.remove(i);
+		self.get_unit_mut(at)
+			.unwrap()
+			.inventory
+			.get_item_vec()
+			.push(item);
 	}
 }

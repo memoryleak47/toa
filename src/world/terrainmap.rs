@@ -18,10 +18,10 @@ pub enum Terrain {
 impl Terrain {
 	pub fn get_texture_id(&self) -> TextureId {
 		match self {
-			Terrain::GRASS => TextureId::GrassTile,
-			Terrain::FOREST => TextureId::ForestTile,
-			Terrain::STONE => TextureId::StoneTile,
-			Terrain::IRON => TextureId::IronTile,
+			Terrain::GRASS => TextureId::GrassTerrain,
+			Terrain::FOREST => TextureId::ForestTerrain,
+			Terrain::STONE => TextureId::StoneTerrain,
+			Terrain::IRON => TextureId::IronTerrain,
 		}
 	}
 

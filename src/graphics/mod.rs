@@ -6,10 +6,10 @@ use sfml::graphics::Texture;
 #[derive(Copy, Clone)]
 #[repr(usize)]
 pub enum TextureId {
-	GrassTile,
-	ForestTile,
-	StoneTile,
-	IronTile,
+	GrassTerrain,
+	ForestTerrain,
+	StoneTerrain,
+	IronTerrain,
 
 	Unit,
 	UnitCloth,
@@ -48,10 +48,10 @@ impl TextureState {
 				}}
 			}
 
-			load!(TextureId::GrassTile, "tile/grass.png");
-			load!(TextureId::ForestTile, "tile/forest.png");
-			load!(TextureId::StoneTile, "tile/stone.png");
-			load!(TextureId::IronTile, "tile/iron.png");
+			load!(TextureId::GrassTerrain, "terrain/grass.png");
+			load!(TextureId::ForestTerrain, "terrain/forest.png");
+			load!(TextureId::StoneTerrain, "terrain/stone.png");
+			load!(TextureId::IronTerrain, "terrain/iron.png");
 
 			load!(TextureId::Unit, "unit.png");
 			load!(TextureId::UnitCloth, "unit_cloth.png");

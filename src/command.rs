@@ -10,6 +10,8 @@ pub enum UnitCommand {
 	Build(&'static BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work
+	DropItem(usize),
+	TakeItem(usize),
 }
 
 pub enum Command {
@@ -26,18 +28,12 @@ impl UnitCommand {
 				let height_summand = 10 * (w.get_height(pos) as i32 - w.get_height(to) as i32).abs() as u32;
 				terrain_summand + height_summand
 			},
-			UnitCommand::Attack(_) => {
-				10
-			},
-			UnitCommand::Build(_) => {
-				10
-			},
-			UnitCommand::Work => {
-				40
-			},
-			UnitCommand::UnrefinedWork => {
-				80
-			},
+			UnitCommand::Attack(_) => { 10 },
+			UnitCommand::Build(_) => { 10 },
+			UnitCommand::Work => { 40 },
+			UnitCommand::UnrefinedWork => { 80 },
+			UnitCommand::DropItem(_) => 10,
+			UnitCommand::TakeItem(_) => 10,
 		}
 	}
 }
