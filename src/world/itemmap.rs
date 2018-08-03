@@ -31,6 +31,8 @@ impl World {
 pub fn new_itemmap() -> [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X] {
 	use ::item::ItemClass;
 	let mut x = init2d!(Inventory::new(), MAP_SIZE_X, MAP_SIZE_Y);
-	x[0][0].get_item_vec().push(::item::food::FoodClass.get_ref().build());
+
+	x[0][0].get_item_vec().push(::item::food::FoodClass.get_ref().build()); // TODO remove
+
 	x
 }
