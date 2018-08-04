@@ -91,8 +91,8 @@ impl View {
 
 					let texture = texture_state.get_texture(TextureId::Bag);
 					let mut shape = RectangleShape::with_texture(texture);
-					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0 + Vector2f::new(0.0, 22.0));
-					shape.set_size(Vector2f::new(7., 12.));
+					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0 + Vector2f::new(0.0, 20.0));
+					shape.set_size(Vector2f::new(10., 20.));
 					window.draw(&shape);
 				}
 			}
