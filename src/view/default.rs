@@ -57,7 +57,8 @@ impl View {
 		let terrain = world.get_terrain(pos);
 		let building = world.get_building(pos);
 		let unit = world.get_unit(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
+		let inventory = world.get_inventory(pos);
 
-		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {}\nUnit: {}", world.active_player, terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit)
+		format!("Active Player: {:?}\nTerrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", world.active_player, terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit, inventory.get_info_string())
 	}
 }
