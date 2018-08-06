@@ -18,6 +18,7 @@ lazy_static! {
 }
 
 pub trait Building {
+	fn get_texture_id(&self) -> TextureId;
 	fn as_any_mut(&mut self) -> &mut Any;
 	fn get_health(&self) -> u32;
 	fn get_class(&self) -> &'static BuildingClass;
@@ -30,7 +31,6 @@ pub trait Building {
 }
 
 pub trait BuildingClass: Sync {
-	fn get_texture_id(&self) -> TextureId;
 	fn get_ref(&self) -> &'static BuildingClass;
 	fn get_required_terrain(&self) -> Option<Terrain>;
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass];

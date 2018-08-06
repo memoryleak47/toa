@@ -30,7 +30,6 @@ pub struct Spawner {
 }
 
 impl BuildingClass for SpawnerClass {
-	fn get_texture_id(&self) -> TextureId { TextureId::SpawnerBuilding }
 	fn get_ref(&self) -> &'static BuildingClass { &SpawnerClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
@@ -50,6 +49,14 @@ impl BuildingClass for SpawnerClass {
 }
 
 impl Building for Spawner {
+	fn get_texture_id(&self) -> TextureId {
+		match self.player {
+			0 => TextureId::SpawnerRedBuilding,
+			1 => TextureId::SpawnerBlueBuilding,
+			_ => panic!("invalid team!"),
+		}
+	}
+	
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { SpawnerClass.get_ref() }

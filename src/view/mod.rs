@@ -70,7 +70,7 @@ impl View {
 							.map(|x| x.as_ref()) {
 					let posf = Vector2f::new(x as f32, y as f32);
 
-					let texture = texture_state.get_texture(building.get_class().get_texture_id());
+					let texture = texture_state.get_texture(building.get_texture_id());
 					let mut shape = RectangleShape::with_texture(texture);
 					shape.set_position((posf - self.focus_position) * TILESIZE + vector_uf(window.size()) / 2.0);
 					shape.set_size(Vector2f::new(TILESIZE, TILESIZE/2.0));

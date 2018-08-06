@@ -21,7 +21,6 @@ pub struct Farm {
 }
 
 impl BuildingClass for FarmClass {
-	fn get_texture_id(&self) -> TextureId { TextureId::FarmBuilding }
 	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
@@ -39,6 +38,7 @@ impl BuildingClass for FarmClass {
 }
 
 impl Building for Farm {
+	fn get_texture_id(&self) -> TextureId { TextureId::FarmBuilding }
 	fn as_any_mut(&mut self) -> &mut Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static BuildingClass { FarmClass.get_ref() }

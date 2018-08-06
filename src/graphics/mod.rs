@@ -16,12 +16,13 @@ pub enum TextureId {
 
 	ConstructionBuilding,
 	FarmBuilding,
-	SpawnerBuilding,
+	SpawnerRedBuilding,
+	SpawnerBlueBuilding,
 
 	Bag,
 }
 
-const TEXTURE_COUNT: usize = 10;
+const TEXTURE_COUNT: usize = 11;
 
 pub struct TextureState {
 	wrappers: [Texture; TEXTURE_COUNT],
@@ -58,7 +59,9 @@ impl TextureState {
 
 			load!(TextureId::ConstructionBuilding, "building/construction.png");
 			load!(TextureId::FarmBuilding, "building/farm.png");
-			load!(TextureId::SpawnerBuilding, "building/spawner.png");
+
+			load!(TextureId::SpawnerRedBuilding, "building/spawner/red.png");
+			load!(TextureId::SpawnerBlueBuilding, "building/spawner/blue.png");
 
 			load!(TextureId::Bag, "bag.png");
 
