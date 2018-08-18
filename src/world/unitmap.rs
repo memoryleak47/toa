@@ -11,6 +11,7 @@ const FULL_FOOD: u32 = 100;
 const FOOD_PER_TURN: u32 = 4;
 const HUNGER_DAMAGE: u32 = 10;
 
+#[derive(Clone)]
 pub struct Unit {
 	pub owner: u32,
 	pub stamina: i32,

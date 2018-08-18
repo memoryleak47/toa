@@ -24,6 +24,7 @@ lazy_static! {
 
 pub struct SpawnerClass;
 
+#[derive(Clone)]
 pub struct Spawner {
 	player: u32,
 	health: u32

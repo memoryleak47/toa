@@ -16,6 +16,7 @@ lazy_static! {
 
 pub struct FarmClass;
 
+#[derive(Clone)]
 pub struct Farm {
 	health: u32,
 }

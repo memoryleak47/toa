@@ -2,6 +2,7 @@ use item::{Item, ItemClass};
 
 pub struct FoodClass;
 
+#[derive(Clone)]
 pub struct Food {
 	alive: bool,
 }

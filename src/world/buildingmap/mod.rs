@@ -2,6 +2,8 @@ pub mod spawner;
 pub mod construction;
 pub mod farm;
 
+use objekt;
+
 use std::any::Any;
 
 use self::spawner::Spawner;
@@ -17,7 +19,7 @@ lazy_static! {
 	pub static ref BUILDABLE_CLASSES: [&'static BuildingClass; 1] = [farm::FarmClass.get_ref()];
 }
 
-pub trait Building {
+pub trait Building: objekt::Clone {
 	fn get_texture_id(&self) -> TextureId;
 	fn as_any_mut(&mut self) -> &mut Any;
 	fn get_health(&self) -> u32;

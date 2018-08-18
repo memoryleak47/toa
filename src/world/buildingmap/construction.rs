@@ -10,6 +10,7 @@ use world::terrainmap::Terrain;
 
 pub struct ConstructionClass;
 
+#[derive(Clone)]
 pub struct Construction {
 	health: u32,
 	invested_stamina: u32,

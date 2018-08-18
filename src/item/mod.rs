@@ -1,6 +1,8 @@
 pub mod food;
 pub mod wood;
 
+use objekt;
+
 use std::slice;
 
 pub trait ItemClass: Sync {
@@ -10,7 +12,7 @@ pub trait ItemClass: Sync {
 	fn build(&self) -> Box<Item>;
 }
 
-pub trait Item {
+pub trait Item: objekt::Clone {
 	fn get_class(&self) -> &'static ItemClass;
 	fn damage(&mut self);
 	fn is_dead(&self) -> bool;
@@ -95,9 +97,19 @@ impl Inventory {
 	}
 }
 
+impl Clone for Inventory {
+	fn clone(&self) -> Inventory {
+		let items = self.items.iter()
+			.map(|x| objekt::clone_box(x.as_ref()))
+			.collect();
+		Inventory { items }
+	}
+}
+
 impl PartialEq for ItemClass {
 	fn eq(&self, other: &ItemClass) -> bool {
 		self as *const ItemClass == other as *const ItemClass
 	}
 }
+
 impl Eq for ItemClass {}

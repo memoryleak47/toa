@@ -2,6 +2,7 @@ use item::{Item, ItemClass};
 
 pub struct WoodClass;
 
+#[derive(Clone)]
 pub struct Wood {
 	alive: bool,
 }
