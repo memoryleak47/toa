@@ -3,7 +3,7 @@ use item::{Item, ItemClass};
 pub struct WoodClass;
 
 pub struct Wood {
-	health: u32,
+	alive: bool,
 }
 
 impl ItemClass for WoodClass {
@@ -15,7 +15,7 @@ impl ItemClass for WoodClass {
 		10
 	}
 	fn build(&self) -> Box<Item> {
-		Box::new(Wood { health: 10 })
+		Box::new(Wood { alive: true })
 	}
 }
 
@@ -24,9 +24,9 @@ impl Item for Wood {
 		WoodClass.get_ref()
 	}
 	fn damage(&mut self) {
-		self.health = self.health.saturating_sub(1);
+		self.alive = false;
 	}
 	fn is_dead(&self) -> bool {
-		self.health == 0
+		!self.alive
 	}
 }
