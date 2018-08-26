@@ -48,7 +48,7 @@ impl App {
 				players: get_players(GameMode::LocalPvp),
 				world: World::gen(),
 			},
-			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
+			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Tales of Arbenhal", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
 			texture_state: TextureState::new(),
 			sound_state,
