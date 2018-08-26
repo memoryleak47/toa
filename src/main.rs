@@ -10,6 +10,7 @@ extern crate lazy_static;
 #[macro_use]
 mod misc;
 mod graphics;
+mod sound;
 mod item;
 mod input;
 mod command;

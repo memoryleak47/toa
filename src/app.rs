@@ -2,6 +2,7 @@ use sfml::graphics::{RenderWindow, Color, RenderTarget};
 use sfml::window::{Event::*, Style, VideoMode};
 
 use input::Input;
+use sound::SoundState;
 use player::{Player, LocalPlayer, AiPlayer};
 use world::World;
 use command::Command;
@@ -20,6 +21,7 @@ pub struct App {
 	state: AppState,
 	input: Input,
 	texture_state: TextureState,
+	sound_state: SoundState,
 }
 
 enum GameMode {
@@ -36,6 +38,11 @@ fn get_players(mode: GameMode) -> [Box<Player>; 2] {
 
 impl App {
 	pub fn new() -> App {
+		let sound_state = match SoundState::new() { // TODO there definitely is a better way
+			Ok(x) => x,
+			Err(x) => panic!("SoundState::new() - Error: {}", x),
+		};
+
 		App {
 			state: AppState::InGame {
 				players: get_players(GameMode::LocalPvp),
@@ -44,11 +51,13 @@ impl App {
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Combat", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
 			texture_state: TextureState::new(),
+			sound_state,
 		}
 	}
 
 	pub fn run(&mut self) {
 
+		self.sound_state.start();
 		self.window.set_framerate_limit(60);
 
 		while self.window.is_open() {
