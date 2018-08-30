@@ -2,11 +2,12 @@ use std::slice;
 
 use sfml::window::Key;
 
-use player::local::{LocalPlayer, UnitMode, Action};
+use player::local::{LocalPlayer, UnitMode, ItemUnitMode, Action};
 use input::Input;
 use world::{World, buildingmap::BuildingClass};
 use world::buildingmap::farm::FarmClass;
 use world::buildingmap::BUILDABLE_CLASSES;
+use item::Inventory;
 use command::{Command, UnitCommand};
 use misc::Direction;
 
@@ -136,6 +137,8 @@ impl LocalPlayer {
 			triggered: trigger::MOD,
 		});
 
+		// change mode
+
 		v.push(ActionInfo {
 			text: "go to attack mode".to_string(),
 			action: Action::ModeChange(Some(UnitMode::Attack { target_cursor: self.cursor })),
@@ -147,6 +150,20 @@ impl LocalPlayer {
 			text: "go to build mode".to_string(),
 			action: Action::ModeChange(Some(UnitMode::Build)),
 			key_combination: &[Key::B],
+			triggered: trigger::FRESH,
+		});
+
+		v.push(ActionInfo {
+			text: "drop item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item(ItemUnitMode::Drop))),
+			key_combination: &[Key::Z],
+			triggered: trigger::FRESH,
+		});
+
+		v.push(ActionInfo {
+			text: "take item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item(ItemUnitMode::Take))),
+			key_combination: &[Key::T],
 			triggered: trigger::FRESH,
 		});
 
@@ -212,6 +229,58 @@ impl LocalPlayer {
 		v
 	}
 
+	fn get_item_mode_action_infos(&self, mode: &ItemUnitMode, w: &World) -> Vec<ActionInfo> {
+		let mut v = Vec::new();
+
+		v.push(ActionInfo {
+			text: "go to normal mode".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Normal)),
+			key_combination: &[Key::Escape],
+			triggered: trigger::FRESH,
+		});
+
+		let num_to_key: &'static Fn(usize) -> &'static Key = &|x| { // TODO, this is not perfect..
+			match x {
+				0 => &Key::Num0,
+				1 => &Key::Num1,
+				2 => &Key::Num2,
+				3 => &Key::Num3,
+				4 => &Key::Num4,
+				5 => &Key::Num5,
+				6 => &Key::Num6,
+				7 => &Key::Num7,
+				8 => &Key::Num8,
+				9 => &Key::Num9,
+				_ => panic!("num_of_key: num out of range!"),
+			}
+		};
+
+		let inv: &Inventory = match mode { // TODO well... make this readable
+			ItemUnitMode::Drop => {
+				&(if let Some(u) = w.get_unit(self.cursor) {
+					u
+				} else { return v; }).inventory
+			},
+			ItemUnitMode::Take => &w.get_inventory(self.cursor),
+		};
+
+		let command_builder: &Fn(usize, _) -> _ = match mode {
+			ItemUnitMode::Drop => &|i, c| Action::Command(Command::UnitCommand { command: UnitCommand::DropItem(i), pos: c }),
+			ItemUnitMode::Take => &|i, c| Action::Command(Command::UnitCommand { command: UnitCommand::TakeItem(i), pos: c }),
+		};
+
+		for (i, item) in inv.iter().enumerate() {
+			v.push(ActionInfo {
+				text: format!("item {}", i),
+				action: command_builder(i, self.cursor),
+				key_combination: slice::from_ref(num_to_key(i)),
+				triggered: trigger::FRESH,
+			});
+		}
+
+		v
+	}
+
 	fn get_no_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
@@ -258,11 +327,12 @@ impl LocalPlayer {
 
 		v.extend(self.get_general_action_infos(w));
 
-		match self.unit_mode {
-			Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
-			Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
-			Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
-			None => v.extend(self.get_no_mode_action_infos(w)),
+		match &self.unit_mode {
+			&Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
+			&Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
+			&Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
+			&Some(UnitMode::Item(ref x)) => v.extend(self.get_item_mode_action_infos(x, w)),
+			&None => v.extend(self.get_no_mode_action_infos(w)),
 		}
 
 		v = v.into_iter()

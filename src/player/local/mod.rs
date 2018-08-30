@@ -10,10 +10,16 @@ use command::{Command, UnitCommand};
 use misc::{Direction, vector_if};
 
 #[derive(Debug)]
+pub enum ItemUnitMode {
+	Drop, Take
+}
+
+#[derive(Debug)]
 pub enum UnitMode {
 	Normal,
 	Attack { target_cursor: Vector2u },
-	Build
+	Build,
+	Item(ItemUnitMode),
 }
 
 pub enum Action {
