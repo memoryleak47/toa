@@ -155,14 +155,14 @@ impl LocalPlayer {
 
 		v.push(ActionInfo {
 			text: "drop item".to_string(),
-			action: Action::ModeChange(Some(UnitMode::Item(ItemUnitMode::Drop))),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode: ItemUnitMode::Drop, index: 0 })),
 			key_combination: &[Key::Z],
 			triggered: trigger::FRESH,
 		});
 
 		v.push(ActionInfo {
 			text: "take item".to_string(),
-			action: Action::ModeChange(Some(UnitMode::Item(ItemUnitMode::Take))),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode: ItemUnitMode::Take, index: 0 })),
 			key_combination: &[Key::T],
 			triggered: trigger::FRESH,
 		});
@@ -229,7 +229,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_item_mode_action_infos(&self, mode: &ItemUnitMode, w: &World) -> Vec<ActionInfo> {
+	fn get_item_mode_action_infos(&self, iu_mode: ItemUnitMode, index: usize, w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -239,46 +239,47 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
-		let num_to_key: &'static Fn(usize) -> Option<&'static Key> = &|x| { // TODO, this is not perfect..
-			match x {
-				0 => Some(&Key::Num0),
-				1 => Some(&Key::Num1),
-				2 => Some(&Key::Num2),
-				3 => Some(&Key::Num3),
-				4 => Some(&Key::Num4),
-				5 => Some(&Key::Num5),
-				6 => Some(&Key::Num6),
-				7 => Some(&Key::Num7),
-				8 => Some(&Key::Num8),
-				9 => Some(&Key::Num9),
-				_ => None,
-			}
-		};
-
-		let inv: &Inventory = match mode { // TODO well... make this readable
-			ItemUnitMode::Drop => {
-				&(if let Some(u) = w.get_unit(self.cursor) {
-					u
-				} else { return v; }).inventory
-			},
+		let inv: &Inventory = match iu_mode { // TODO well... make this readable
+			ItemUnitMode::Drop => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
 			ItemUnitMode::Take => &w.get_inventory(self.cursor),
 		};
 
-		let command_builder: &Fn(usize, _) -> _ = match mode {
-			ItemUnitMode::Drop => &|i, c| Action::Command(Command::UnitCommand { command: UnitCommand::DropItem(i), pos: c }),
-			ItemUnitMode::Take => &|i, c| Action::Command(Command::UnitCommand { command: UnitCommand::TakeItem(i), pos: c }),
-		};
+		let l = inv.iter().len();
+		if l == 0 { return v; }
 
-		for (i, item) in inv.iter().enumerate() {
-			if let Some(key) = num_to_key(i) {
-				v.push(ActionInfo {
-					text: format!("item {}", i),
-					action: command_builder(i, self.cursor),
-					key_combination: slice::from_ref(key),
-					triggered: trigger::FRESH,
-				});
-			} else { break; }
-		}
+		// activate
+		v.push(match iu_mode {
+			ItemUnitMode::Drop => ActionInfo {
+				text: format!("Drop Item {}", index),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
+				key_combination: &[Key::Return],
+				triggered: trigger::FRESH,
+			},
+			ItemUnitMode::Take => ActionInfo {
+				text: format!("Take Item {}", index),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
+				key_combination: &[Key::Return],
+				triggered: trigger::FRESH,
+			},
+		});
+
+		// next
+		let next_index = (index + 1) % l;
+		v.push(ActionInfo {
+			text: "next item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode, index: next_index })),
+			key_combination: &[Key::O],
+			triggered: trigger::FRESH,
+		});
+
+		// previous
+		let prev_index = (index + l - 1) % l;
+		v.push(ActionInfo {
+			text: "next item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode, index: prev_index })),
+			key_combination: &[Key::P],
+			triggered: trigger::FRESH,
+		});
 
 		v
 	}
@@ -333,7 +334,7 @@ impl LocalPlayer {
 			&Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
 			&Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
 			&Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
-			&Some(UnitMode::Item(ref x)) => v.extend(self.get_item_mode_action_infos(x, w)),
+			&Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index, w)),
 			&None => v.extend(self.get_no_mode_action_infos(w)),
 		}
 

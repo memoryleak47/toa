@@ -9,7 +9,7 @@ use world::World;
 use command::{Command, UnitCommand};
 use misc::{Direction, vector_if};
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {
 	Drop, Take
 }
@@ -19,7 +19,7 @@ pub enum UnitMode {
 	Normal,
 	Attack { target_cursor: Vector2u },
 	Build,
-	Item(ItemUnitMode),
+	Item { iu_mode: ItemUnitMode, index: usize },
 }
 
 pub enum Action {
