@@ -250,13 +250,13 @@ impl LocalPlayer {
 		// activate
 		v.push(match iu_mode {
 			ItemUnitMode::Drop => ActionInfo {
-				text: format!("Drop Item {}", index),
+				text: format!("Drop Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name() , index),
 				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::Take => ActionInfo {
-				text: format!("Take Item {}", index),
+				text: format!("Take Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
 				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
