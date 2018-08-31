@@ -239,19 +239,19 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
-		let num_to_key: &'static Fn(usize) -> &'static Key = &|x| { // TODO, this is not perfect..
+		let num_to_key: &'static Fn(usize) -> Option<&'static Key> = &|x| { // TODO, this is not perfect..
 			match x {
-				0 => &Key::Num0,
-				1 => &Key::Num1,
-				2 => &Key::Num2,
-				3 => &Key::Num3,
-				4 => &Key::Num4,
-				5 => &Key::Num5,
-				6 => &Key::Num6,
-				7 => &Key::Num7,
-				8 => &Key::Num8,
-				9 => &Key::Num9,
-				_ => panic!("num_of_key: num out of range!"),
+				0 => Some(&Key::Num0),
+				1 => Some(&Key::Num1),
+				2 => Some(&Key::Num2),
+				3 => Some(&Key::Num3),
+				4 => Some(&Key::Num4),
+				5 => Some(&Key::Num5),
+				6 => Some(&Key::Num6),
+				7 => Some(&Key::Num7),
+				8 => Some(&Key::Num8),
+				9 => Some(&Key::Num9),
+				_ => None,
 			}
 		};
 
@@ -270,12 +270,14 @@ impl LocalPlayer {
 		};
 
 		for (i, item) in inv.iter().enumerate() {
-			v.push(ActionInfo {
-				text: format!("item {}", i),
-				action: command_builder(i, self.cursor),
-				key_combination: slice::from_ref(num_to_key(i)),
-				triggered: trigger::FRESH,
-			});
+			if let Some(key) = num_to_key(i) {
+				v.push(ActionInfo {
+					text: format!("item {}", i),
+					action: command_builder(i, self.cursor),
+					key_combination: slice::from_ref(key),
+					triggered: trigger::FRESH,
+				});
+			} else { break; }
 		}
 
 		v
