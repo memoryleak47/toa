@@ -111,6 +111,14 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
+		// burn
+		v.push(ActionInfo {
+			text: "burn building".to_string(),
+			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::BurnBuilding }),
+			key_combination: &[Key::I],
+			triggered: trigger::FRESH,
+		});
+
 		// move
 		v.push(ActionInfo {
 			text: "move up".to_string(),

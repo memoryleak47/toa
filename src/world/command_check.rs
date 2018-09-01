@@ -117,7 +117,12 @@ impl World {
 				self.get_inventory(pos)
 					.iter()
 					.len() > *i
-			}
+			},
+			UnitCommand::BurnBuilding => {
+				self.get_building(pos)
+					.filter(|x| x.is_burnable(self, pos))
+					.is_some()
+			},
 		}
 	}
 

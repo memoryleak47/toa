@@ -12,6 +12,7 @@ pub enum UnitCommand {
 	UnrefinedWork, // terrain-work
 	DropItem(usize),
 	TakeItem(usize),
+	BurnBuilding,
 }
 
 pub enum Command {
@@ -34,7 +35,7 @@ impl UnitCommand {
 			UnitCommand::UnrefinedWork => { 80 },
 			UnitCommand::DropItem(_) => 10,
 			UnitCommand::TakeItem(_) => 10,
+			UnitCommand::BurnBuilding => 10,
 		}
 	}
 }
-

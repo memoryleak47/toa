@@ -33,6 +33,7 @@ impl World {
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
 			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),
 			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
+			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 		}
 	}
 
@@ -108,5 +109,9 @@ impl World {
 			.inventory
 			.get_item_vec()
 			.push(item);
+	}
+
+	fn exec_discard_building(&mut self, at: Vector2u) {
+		self.set_building(at, None);
 	}
 }
