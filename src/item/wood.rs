@@ -18,6 +18,7 @@ impl ItemClass for WoodClass {
 	fn build(&self) -> Box<Item> {
 		Box::new(Wood { alive: true })
 	}
+	fn get_recipe(&self) -> Option<&'static [&'static ItemClass]> { None }
 }
 
 impl Item for Wood {

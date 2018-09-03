@@ -18,6 +18,7 @@ impl ItemClass for FoodClass {
 	fn build(&self) -> Box<Item> {
 		Box::new(Food { alive: true })
 	}
+	fn get_recipe(&self) -> Option<&'static [&'static ItemClass]> { None }
 }
 
 impl Item for Food {

@@ -10,6 +10,7 @@ pub trait ItemClass: Sync {
 	fn get_ref(&self) -> &'static ItemClass;
 	fn get_mass(&self) -> u32;
 	fn build(&self) -> Box<Item>;
+	fn get_recipe(&self) -> Option<&'static [&'static ItemClass]>;
 }
 
 pub trait Item: objekt::Clone {

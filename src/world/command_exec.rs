@@ -2,6 +2,7 @@ use std::mem;
 
 use sfml::system::Vector2u;
 
+use item::ItemClass;
 use command::{Command, UnitCommand};
 use misc::Direction;
 use world::World;
@@ -34,6 +35,7 @@ impl World {
 			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),
 			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
+			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic,  pos),
 		}
 	}
 
@@ -113,5 +115,10 @@ impl World {
 
 	fn exec_discard_building(&mut self, at: Vector2u) {
 		self.set_building(at, None);
+	}
+
+	fn exec_craft_item_class(&mut self, ic: &'static ItemClass, at: Vector2u) {
+		let mut unit = self.get_unit_mut(at).unwrap();
+		unit.inventory.reduce(ic.get_recipe().unwrap());
 	}
 }

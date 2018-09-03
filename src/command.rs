@@ -1,5 +1,6 @@
 use sfml::system::Vector2u;
 
+use item::ItemClass;
 use misc::Direction;
 use world::World;
 use world::buildingmap::BuildingClass;
@@ -13,6 +14,7 @@ pub enum UnitCommand {
 	DropItem(usize),
 	TakeItem(usize),
 	BurnBuilding,
+	Craft(&'static ItemClass),
 }
 
 pub enum Command {
@@ -36,6 +38,7 @@ impl UnitCommand {
 			UnitCommand::DropItem(_) => 10,
 			UnitCommand::TakeItem(_) => 10,
 			UnitCommand::BurnBuilding => 10,
+			UnitCommand::Craft(_) => 10,
 		}
 	}
 }

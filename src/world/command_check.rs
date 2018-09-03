@@ -123,6 +123,13 @@ impl World {
 					.filter(|x| x.is_burnable(self, pos))
 					.is_some()
 			},
+			UnitCommand::Craft(class) => {
+				let recipe = match class.get_recipe() { Some(x) => x, None => return false };
+				self.get_unit(pos)
+					.filter(|x| x.owner == player)
+					.filter(|x| x.inventory.contains_all(recipe))
+					.is_some()
+			},
 		}
 	}
 
