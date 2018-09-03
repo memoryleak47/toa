@@ -8,12 +8,13 @@ use world::{World, buildingmap::BuildingClass};
 use world::buildingmap::farm::FarmClass;
 use world::buildingmap::BUILDABLE_CLASSES;
 use item::{ItemClass, Inventory};
+use item::club::ClubClass;
 use command::{Command, UnitCommand};
 use misc::Direction;
 
 lazy_static! {
 	pub static ref KEYED_BUILDABLE_CLASSES: [(&'static BuildingClass, Key); 1] = [(FarmClass.get_ref(), Key::F)];
-	pub static ref CRAFTABLE_CLASSES: [&'static ItemClass; 0] = [];
+	pub static ref CRAFTABLE_CLASSES: [&'static ItemClass; 1] = [ClubClass.get_ref()];
 }
 
 pub struct ActionInfo {
@@ -176,6 +177,13 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
+		v.push(ActionInfo {
+			text: "craft".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Craft { index: 0 })),
+			key_combination: &[Key::C],
+			triggered: trigger::FRESH,
+		});
+
 		v
 	}
 
@@ -304,11 +312,12 @@ impl LocalPlayer {
 		});
 
 		let l = CRAFTABLE_CLASSES.len();
+		assert!(l > 0);
 		let itemclass: &'static ItemClass = CRAFTABLE_CLASSES[index];
 
 		// activate
 		v.push(ActionInfo {
-			text: format!("Craft Item {} ({})", itemclass.get_name() , index),
+			text: format!("Craft Item {} ({})", itemclass.get_name(), index),
 			action: Action::Command(Command::UnitCommand { command: UnitCommand::Craft(itemclass), pos: self.cursor }),
 			key_combination: &[Key::Return],
 			triggered: trigger::FRESH,
@@ -318,7 +327,7 @@ impl LocalPlayer {
 		let next_index = (index + 1) % l;
 		v.push(ActionInfo {
 			text: "next item".to_string(),
-			action: Action::ModeChange(Some(UnitMode::Crafting { index: next_index })),
+			action: Action::ModeChange(Some(UnitMode::Craft { index: next_index })),
 			key_combination: &[Key::O],
 			triggered: trigger::FRESH,
 		});
@@ -327,7 +336,7 @@ impl LocalPlayer {
 		let prev_index = (index + l - 1) % l;
 		v.push(ActionInfo {
 			text: "previous item".to_string(),
-			action: Action::ModeChange(Some(UnitMode::Crafting { index: prev_index })),
+			action: Action::ModeChange(Some(UnitMode::Craft { index: prev_index })),
 			key_combination: &[Key::P],
 			triggered: trigger::FRESH,
 		});
@@ -386,7 +395,7 @@ impl LocalPlayer {
 			&Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
 			&Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
 			&Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index, w)),
-			&Some(UnitMode::Crafting { index }) => v.extend(self.get_crafting_mode_action_infos(index, w)),
+			&Some(UnitMode::Craft { index }) => v.extend(self.get_crafting_mode_action_infos(index, w)),
 			&None => v.extend(self.get_no_mode_action_infos(w)),
 		}
 

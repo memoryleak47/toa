@@ -1,5 +1,6 @@
 pub mod food;
 pub mod wood;
+pub mod club;
 
 use objekt;
 

@@ -120,5 +120,6 @@ impl World {
 	fn exec_craft_item_class(&mut self, ic: &'static ItemClass, at: Vector2u) {
 		let mut unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
+		unit.inventory.push(ic.build());
 	}
 }
