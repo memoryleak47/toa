@@ -20,6 +20,7 @@ pub enum UnitMode {
 	Attack { target_cursor: Vector2u },
 	Build,
 	Item { iu_mode: ItemUnitMode, index: usize },
+	Crafting { index: usize },
 }
 
 pub enum Action {
