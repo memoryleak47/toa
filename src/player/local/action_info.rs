@@ -13,8 +13,8 @@ use command::{Command, UnitCommand};
 use misc::Direction;
 
 lazy_static! {
-	pub static ref KEYED_BUILDABLE_CLASSES: [(&'static BuildingClass, Key); 1] = [(FarmClass.get_ref(), Key::F)];
-	pub static ref CRAFTABLE_CLASSES: [&'static ItemClass; 1] = [ClubClass.get_ref()];
+	pub static ref KEYED_BUILDABLE_CLASSES: [(&'static dyn BuildingClass, Key); 1] = [(FarmClass.get_ref(), Key::F)];
+	pub static ref CRAFTABLE_CLASSES: [&'static dyn ItemClass; 1] = [ClubClass.get_ref()];
 }
 
 pub struct ActionInfo {
@@ -313,7 +313,7 @@ impl LocalPlayer {
 
 		let l = CRAFTABLE_CLASSES.len();
 		assert!(l > 0);
-		let itemclass: &'static ItemClass = CRAFTABLE_CLASSES[index];
+		let itemclass: &'static dyn ItemClass = CRAFTABLE_CLASSES[index];
 
 		// activate
 		v.push(ActionInfo {

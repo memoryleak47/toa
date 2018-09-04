@@ -11,7 +11,7 @@ use world::World;
 use world::terrainmap::Terrain;
 
 lazy_static! {
-	static ref BUILD_ITEM_COST: [&'static ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
+	static ref BUILD_ITEM_COST: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
 }
 
 pub struct FarmClass;
@@ -22,15 +22,15 @@ pub struct Farm {
 }
 
 impl BuildingClass for FarmClass {
-	fn get_ref(&self) -> &'static BuildingClass { &FarmClass }
+	fn get_ref(&self) -> &'static dyn BuildingClass { &FarmClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { Some(Terrain::GRASS) }
-	fn get_build_item_cost(&self) -> &'static [&'static ItemClass] {
+	fn get_build_item_cost(&self) -> &'static [&'static dyn ItemClass] {
 		&BUILD_ITEM_COST[..]
 	}
 	fn get_build_stamina_cost(&self) -> u32 { 20 }
 	fn get_height(&self) -> u32 { 0 }
 
-	fn build(&self) -> Box<Building> {
+	fn build(&self) -> Box<dyn Building> {
 		Box::new(Farm { health: 100 })
 	}
 	fn get_name(&self) -> &'static str {
@@ -40,9 +40,9 @@ impl BuildingClass for FarmClass {
 
 impl Building for Farm {
 	fn get_texture_id(&self) -> TextureId { TextureId::FarmBuilding }
-	fn as_any_mut(&mut self) -> &mut Any { self }
+	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_health(&self) -> u32 { self.health }
-	fn get_class(&self) -> &'static BuildingClass { FarmClass.get_ref() }
+	fn get_class(&self) -> &'static dyn BuildingClass { FarmClass.get_ref() }
 	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
 	fn work(&mut self, w: &mut World, p: Vector2u) {

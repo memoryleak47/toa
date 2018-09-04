@@ -11,7 +11,7 @@ use graphics::TextureState;
 enum AppState {
 	Menu,
 	InGame {
-		players: [Box<Player>; 2],
+		players: [Box<dyn Player>; 2],
 		world: World,
 	}
 }
@@ -29,7 +29,7 @@ enum GameMode {
 	LocalVsAi,
 }
 
-fn get_players(mode: GameMode) -> [Box<Player>; 2] {
+fn get_players(mode: GameMode) -> [Box<dyn Player>; 2] {
 	match mode {
 		GameMode::LocalPvp => [Box::new(LocalPlayer::new(0)), Box::new(LocalPlayer::new(1))],
 		GameMode::LocalVsAi => [Box::new(LocalPlayer::new(0)), Box::new(AiPlayer::new(1))],

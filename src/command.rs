@@ -8,13 +8,13 @@ use world::buildingmap::BuildingClass;
 pub enum UnitCommand {
 	Move(Direction),
 	Attack(Vector2u),
-	Build(&'static BuildingClass),
+	Build(&'static dyn BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work
 	DropItem(usize),
 	TakeItem(usize),
 	BurnBuilding,
-	Craft(&'static ItemClass),
+	Craft(&'static dyn ItemClass),
 }
 
 pub enum Command {

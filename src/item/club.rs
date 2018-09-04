@@ -4,7 +4,7 @@ use item::{Item, ItemClass};
 use item::wood::WoodClass;
 
 lazy_static! {
-	static ref RECIPE: [&'static ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
+	static ref RECIPE: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
 }
 
 pub struct ClubClass;
@@ -16,20 +16,20 @@ pub struct Club {
 
 impl ItemClass for ClubClass {
 	fn get_name(&self) -> &'static str { "Club" }
-	fn get_ref(&self) -> &'static ItemClass {
+	fn get_ref(&self) -> &'static dyn ItemClass {
 		&ClubClass
 	}
 	fn get_mass(&self) -> u32 {
 		100
 	}
-	fn build(&self) -> Box<Item> {
+	fn build(&self) -> Box<dyn Item> {
 		Box::new(Club { health: 100 })
 	}
-	fn get_recipe(&self) -> Option<&'static [&'static ItemClass]> { Some(&RECIPE[..]) }
+	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { Some(&RECIPE[..]) }
 }
 
 impl Item for Club {
-	fn get_class(&self) -> &'static ItemClass {
+	fn get_class(&self) -> &'static dyn ItemClass {
 		ClubClass.get_ref()
 	}
 	fn damage(&mut self) {

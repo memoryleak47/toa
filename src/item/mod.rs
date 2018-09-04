@@ -8,20 +8,20 @@ use std::slice;
 
 pub trait ItemClass: Sync {
 	fn get_name(&self) -> &'static str;
-	fn get_ref(&self) -> &'static ItemClass;
+	fn get_ref(&self) -> &'static dyn ItemClass;
 	fn get_mass(&self) -> u32;
-	fn build(&self) -> Box<Item>;
-	fn get_recipe(&self) -> Option<&'static [&'static ItemClass]>;
+	fn build(&self) -> Box<dyn Item>;
+	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]>;
 }
 
 pub trait Item: objekt::Clone {
-	fn get_class(&self) -> &'static ItemClass;
+	fn get_class(&self) -> &'static dyn ItemClass;
 	fn damage(&mut self);
 	fn is_dead(&self) -> bool;
 }
 
 pub struct Inventory {
-	items: Vec<Box<Item>>,
+	items: Vec<Box<dyn Item>>,
 }
 
 impl Inventory {
@@ -29,12 +29,12 @@ impl Inventory {
 		Inventory { items: Vec::new() }
 	}
 
-	pub fn push(&mut self, item: Box<Item>) {
+	pub fn push(&mut self, item: Box<dyn Item>) {
 		self.items.push(item);
 	}
 
-	pub fn contains_all(&self, required_classes: &[&'static ItemClass]) -> bool {
-		let mut classes: Vec<&'static ItemClass> = self.iter()
+	pub fn contains_all(&self, required_classes: &[&'static dyn ItemClass]) -> bool {
+		let mut classes: Vec<&'static dyn ItemClass> = self.iter()
 			.map(|x| x.get_class())
 			.collect();
 
@@ -50,15 +50,15 @@ impl Inventory {
 		true
 	}
 
-	pub fn iter(&self) -> slice::Iter<Box<Item>> {
+	pub fn iter(&self) -> slice::Iter<Box<dyn Item>> {
 		self.as_ref().iter()
 	}
 
-	pub fn as_ref(&self) -> &[Box<Item>] {
+	pub fn as_ref(&self) -> &[Box<dyn Item>] {
 		self.items.as_ref()
 	}
 
-	pub fn as_mut(&mut self) -> &mut [Box<Item>] {
+	pub fn as_mut(&mut self) -> &mut [Box<dyn Item>] {
 		self.items.as_mut()
 	}
 
@@ -84,11 +84,11 @@ impl Inventory {
 			.collect();
 	}
 
-	pub fn get_item_vec(&mut self) -> &mut Vec<Box<Item>> {
+	pub fn get_item_vec(&mut self) -> &mut Vec<Box<dyn Item>> {
 		&mut self.items
 	}
 
-	pub fn reduce(&mut self, items: &[&'static ItemClass]) {
+	pub fn reduce(&mut self, items: &[&'static dyn ItemClass]) {
 		for &item in items {
 			let p = self.items
 				.iter()
@@ -108,10 +108,10 @@ impl Clone for Inventory {
 	}
 }
 
-impl PartialEq for ItemClass {
-	fn eq(&self, other: &ItemClass) -> bool {
-		self as *const ItemClass == other as *const ItemClass
+impl PartialEq for dyn ItemClass {
+	fn eq(&self, other: &dyn ItemClass) -> bool {
+		self as *const dyn ItemClass == other as *const dyn ItemClass
 	}
 }
 
-impl Eq for ItemClass {}
+impl Eq for dyn ItemClass {}

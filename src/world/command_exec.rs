@@ -66,7 +66,7 @@ impl World {
 		self.on_turn_start();
 	}
 
-	fn exec_build(&mut self, at: Vector2u, class: &'static BuildingClass) {
+	fn exec_build(&mut self, at: Vector2u, class: &'static dyn BuildingClass) {
 		let construction = Construction::new(class);
 		let boxed = Box::new(construction);
 		self.buildingmap[at.x as usize][at.y as usize] = Some(boxed);
@@ -117,7 +117,7 @@ impl World {
 		self.set_building(at, None);
 	}
 
-	fn exec_craft_item_class(&mut self, ic: &'static ItemClass, at: Vector2u) {
+	fn exec_craft_item_class(&mut self, ic: &'static dyn ItemClass, at: Vector2u) {
 		let mut unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());

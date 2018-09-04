@@ -41,7 +41,7 @@ impl Terrain {
 		}
 	}
 
-	pub fn get_item_class(&self) -> &'static ItemClass {
+	pub fn get_item_class(&self) -> &'static dyn ItemClass {
 		match self {
 			Terrain::GRASS => item::food::FoodClass.get_ref(),
 			Terrain::FOREST => item::wood::WoodClass.get_ref(),

@@ -30,7 +30,7 @@ pub fn TILESIZE_VEC() -> Vector2f {
 // represents the current world situation
 pub struct World {
 	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub buildingmap: [[Option<Box<Building>>; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub buildingmap: [[Option<Box<dyn Building>>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub itemmap: [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X],
 	pub active_player: u32,

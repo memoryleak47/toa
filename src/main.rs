@@ -1,3 +1,4 @@
+#![deny(bare_trait_objects)]
 #![feature(nll)]
 
 extern crate sfml;
