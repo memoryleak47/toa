@@ -12,7 +12,7 @@ impl ItemClass for FoodClass {
 	fn get_ref(&self) -> &'static dyn ItemClass {
 		&FoodClass
 	}
-	fn get_mass(&self) -> u32 {
+	fn get_weight(&self) -> u32 {
 		10
 	}
 	fn build(&self) -> Box<dyn Item> {

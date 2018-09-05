@@ -12,7 +12,7 @@ impl ItemClass for WoodClass {
 	fn get_ref(&self) -> &'static dyn ItemClass {
 		&WoodClass
 	}
-	fn get_mass(&self) -> u32 {
+	fn get_weight(&self) -> u32 {
 		10
 	}
 	fn build(&self) -> Box<dyn Item> {

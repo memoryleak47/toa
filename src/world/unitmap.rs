@@ -34,6 +34,10 @@ impl Unit {
 	pub fn get_info_string(&self) -> String {
 		format!("Unit( owner: {}, stamina: {}, health: {}, food: {}, inventory: {})", self.owner, self.stamina, self.health, self.food, &self.inventory.get_info_string())
 	}
+
+	pub fn get_weight(&self) -> u32 {
+		5 + self.inventory.get_weight()
+	}
 }
 
 pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {

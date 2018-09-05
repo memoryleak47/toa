@@ -19,7 +19,7 @@ impl ItemClass for ClubClass {
 	fn get_ref(&self) -> &'static dyn ItemClass {
 		&ClubClass
 	}
-	fn get_mass(&self) -> u32 {
+	fn get_weight(&self) -> u32 {
 		100
 	}
 	fn build(&self) -> Box<dyn Item> {

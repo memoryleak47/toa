@@ -9,7 +9,7 @@ use std::slice;
 pub trait ItemClass: Sync {
 	fn get_name(&self) -> &'static str;
 	fn get_ref(&self) -> &'static dyn ItemClass;
-	fn get_mass(&self) -> u32;
+	fn get_weight(&self) -> u32;
 	fn build(&self) -> Box<dyn Item>;
 	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]>;
 }
@@ -96,6 +96,14 @@ impl Inventory {
 				.unwrap();
 			self.items.remove(p);
 		}
+	}
+
+	pub fn get_weight(&self) -> u32 {
+		self.iter()
+			.map(|x| (**x).get_class()
+						  .get_weight()
+			)
+			.sum()
 	}
 }
 
