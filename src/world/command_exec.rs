@@ -37,7 +37,8 @@ impl World {
 			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
-			&UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos)
+			&UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos),
+			&UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
 		}
 	}
 
@@ -138,5 +139,13 @@ impl World {
 			let item = unit.inventory.remove(i);
 			unit.main_item = Some(item);
 		}
+	}
+
+	fn exec_exec_item(&mut self, i: usize, at: Vector2u) {
+		let item = self.get_unit_mut(at)
+			.unwrap()
+			.inventory
+			.remove(i);
+		item.exec(at, self);
 	}
 }

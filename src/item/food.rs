@@ -1,4 +1,7 @@
+use sfml::system::Vector2u;
+
 use item::{Item, ItemClass, ItemBox};
+use world::World;
 use world::aim::{Aim, MeeleeAim};
 use world::damage::Damage;
 
@@ -31,5 +34,10 @@ impl Item for Food {
 	}
 	fn aim(&self) -> Box<dyn Aim> {
 		Box::new(MeeleeAim::new(Damage(1)))
+	}
+	fn is_execable(&self, _p: Vector2u, _w: &World) -> bool { true }
+	fn exec(&self, p: Vector2u, w: &mut World) {
+		w.get_unit_mut(p).unwrap()
+			.food += 20;
 	}
 }

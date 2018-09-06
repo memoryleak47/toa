@@ -12,7 +12,7 @@ use misc::{Direction, vector_if, vector_iu, vector_ui};
 
 #[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {
-	Drop, Take, ChangeMainItem
+	Drop, Take, ChangeMainItem, Exec
 }
 
 pub enum UnitMode {

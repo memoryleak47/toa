@@ -137,7 +137,14 @@ impl World {
 						.and_then(|x| x.main_item.as_ref())
 						.is_some()
 				}
-			}
+			},
+			UnitCommand::ExecItem(i) => {
+				self.get_unit(pos)
+					.map(|u| u.inventory.iter())
+					.and_then(|mut inv| inv.nth(*i))
+					.filter(|x| x.is_execable(pos, self))
+					.is_some()
+			},
 		}
 	}
 

@@ -179,6 +179,13 @@ impl LocalPlayer {
 		});
 
 		v.push(ActionInfo {
+			text: "exec item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode: ItemUnitMode::Exec, index: 0 })),
+			key_combination: &[Key::R],
+			triggered: trigger::FRESH,
+		});
+
+		v.push(ActionInfo {
 			text: "craft".to_string(),
 			action: Action::ModeChange(Some(UnitMode::Craft { index: 0 })),
 			key_combination: &[Key::C],
@@ -282,7 +289,7 @@ impl LocalPlayer {
 		}
 
 		let inv: &Inventory = match iu_mode { // TODO well... make this readable
-			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
+			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem | ItemUnitMode::Exec => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
 			ItemUnitMode::Take => &w.get_inventory(self.cursor),
 		};
 
@@ -306,6 +313,12 @@ impl LocalPlayer {
 			ItemUnitMode::ChangeMainItem => ActionInfo {
 				text: format!("Choose Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
 				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
+				key_combination: &[Key::Return],
+				triggered: trigger::FRESH,
+			},
+			ItemUnitMode::Exec => ActionInfo {
+				text: format!("Use Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ExecItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},

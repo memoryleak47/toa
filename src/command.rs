@@ -17,6 +17,7 @@ pub enum UnitCommand {
 	BurnBuilding,
 	Craft(&'static dyn ItemClass),
 	ChangeMainItem(Option<usize>),
+	ExecItem(usize),
 }
 
 pub enum Command {
@@ -43,6 +44,7 @@ impl UnitCommand {
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
 			UnitCommand::ChangeMainItem(_) => 0,
+			UnitCommand::ExecItem(_) => 0,
 		}
 	}
 }

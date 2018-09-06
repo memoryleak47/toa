@@ -2,12 +2,14 @@ pub mod food;
 pub mod wood;
 pub mod club;
 
+use sfml::system::Vector2u;
 
 use std::ops::{Deref, DerefMut};
 use std::slice;
 use std::mem;
 
 use world::aim::Aim;
+use world::World;
 use world::damage::Damage;
 
 pub trait ItemClass: Sync {
@@ -23,6 +25,8 @@ pub trait Item {
 	fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
 	fn clone_box(&self) -> ItemBox;
 	fn aim(&self) -> Box<dyn Aim>;
+	fn is_execable(&self, Vector2u, &World) -> bool { false }
+	fn exec(&self, Vector2u, &mut World) {}
 }
 
 pub struct ItemBox(pub Box<dyn Item>);
