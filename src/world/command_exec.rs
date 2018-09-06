@@ -6,6 +6,7 @@ use item::ItemClass;
 use command::{Command, UnitCommand};
 use misc::Direction;
 use world::World;
+use world::aim::Aim;
 use world::unitmap::Unit;
 use world::buildingmap::BuildingClass;
 use world::buildingmap::construction::Construction;
@@ -28,7 +29,7 @@ impl World {
 			
 		match command {
 			&UnitCommand::Move(direction) => self.exec_move(pos, direction),
-			&UnitCommand::Attack(to) => self.exec_attack(pos, to),
+			&UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim.as_ref()),
 			&UnitCommand::Build(class)  => self.exec_build(pos, class),
 			&UnitCommand::Work => self.exec_work(pos),
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
@@ -54,8 +55,8 @@ impl World {
 		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
 	}
 
-	fn exec_attack(&mut self, _from: Vector2u, _to: Vector2u) {
-		unimplemented!()
+	fn exec_attack(&mut self, pos: Vector2u, aim: &dyn Aim) {
+		aim.exec(pos, self);
 	}
 
 	fn exec_next_turn(&mut self) {

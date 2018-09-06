@@ -1,4 +1,4 @@
-use sfml::system::{Vector2u, Vector2i};
+use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::buildingmap::BUILDABLE_CLASSES;
@@ -20,15 +20,9 @@ impl World {
 		}
 
 		// add Attack
-		const MAX_RANGE: i32 = 5;
+		// <this is still missing>
 
-		for rx in -MAX_RANGE..=MAX_RANGE {
-			for ry in -MAX_RANGE..=MAX_RANGE {
-				let target = vector_iu(vector_ui(pos) + Vector2i::new(rx, ry));
-				v.push(Command::UnitCommand { pos, command: UnitCommand::Attack(target)});
-			}
-		}
-
+		// add Build
 		for c in &BUILDABLE_CLASSES[..] {
 			v.push(Command::UnitCommand { pos, command: UnitCommand::Build(*c) });
 		}

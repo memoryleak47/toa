@@ -3,11 +3,12 @@ use sfml::system::Vector2u;
 use item::ItemClass;
 use misc::Direction;
 use world::World;
+use world::aim::Aim;
 use world::buildingmap::BuildingClass;
 
 pub enum UnitCommand {
 	Move(Direction),
-	Attack(Vector2u),
+	Attack(Box<dyn Aim>),
 	Build(&'static dyn BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work
