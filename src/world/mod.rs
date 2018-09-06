@@ -67,11 +67,15 @@ impl World {
 
 	pub fn damage(&mut self, p: Vector2u, damage: Damage) {
 		if let Some(x) = self.get_building_mut(p) {
-			x.damage(damage);
+			if x.damage(damage) {
+				self.set_building(p, None);
+			}
 			return;
 		}
 		if let Some(x) = self.get_unit_mut(p) {
-			x.damage(damage);
+			if x.damage(damage) {
+				self.set_unit(p, None);
+			}
 			return;
 		}
 		self.get_inventory_mut(p).damage(damage);
