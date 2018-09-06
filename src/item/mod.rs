@@ -35,6 +35,10 @@ impl Inventory {
 		self.items.push(item);
 	}
 
+	pub fn remove(&mut self, index: usize) -> ItemBox {
+		self.items.remove(index)
+	}
+
 	pub fn contains_all(&self, required_classes: &[&'static dyn ItemClass]) -> bool {
 		let mut classes: Vec<&'static dyn ItemClass> = self.iter()
 			.map(|x| x.get_class())

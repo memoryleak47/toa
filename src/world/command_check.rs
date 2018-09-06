@@ -130,6 +130,13 @@ impl World {
 					.filter(|x| x.inventory.contains_all(recipe))
 					.is_some()
 			},
+			UnitCommand::ChangeMainItem(opt_index) => {
+				opt_index.map(|i|
+					self.get_unit(pos)
+						.filter(|u| u.inventory.iter().len() > i)
+						.is_some()
+				).unwrap_or(true)
+			}
 		}
 	}
 

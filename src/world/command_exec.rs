@@ -35,7 +35,8 @@ impl World {
 			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),
 			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
-			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic,  pos),
+			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
+			&UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos)
 		}
 	}
 
@@ -121,5 +122,20 @@ impl World {
 		let mut unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());
+	}
+
+	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Vector2u) {
+		let mut unit = self.get_unit_mut(at).unwrap();
+
+		let mut opt = None;
+		mem::swap(&mut opt, &mut unit.main_item);
+
+		if let Some(x) = opt {
+			unit.inventory.push(x);
+		}
+		if let Some(i) = opt_index {
+			let item = unit.inventory.remove(i);
+			unit.main_item = Some(item);
+		}
 	}
 }

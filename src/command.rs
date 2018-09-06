@@ -1,6 +1,6 @@
 use sfml::system::Vector2u;
 
-use item::ItemClass;
+use item::{ItemClass, ItemBox};
 use misc::Direction;
 use world::World;
 use world::buildingmap::BuildingClass;
@@ -15,6 +15,7 @@ pub enum UnitCommand {
 	TakeItem(usize),
 	BurnBuilding,
 	Craft(&'static dyn ItemClass),
+	ChangeMainItem(Option<usize>),
 }
 
 pub enum Command {
@@ -40,6 +41,7 @@ impl UnitCommand {
 			UnitCommand::TakeItem(_) => 10,
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
+			UnitCommand::ChangeMainItem(_) => 0,
 		}
 	}
 }
