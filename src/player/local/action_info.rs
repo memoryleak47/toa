@@ -88,7 +88,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_normal_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
+	fn get_normal_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -148,13 +148,14 @@ impl LocalPlayer {
 		});
 
 		// change mode
-
-		v.push(ActionInfo {
-			text: "go to attack mode".to_string(),
-			action: Action::ModeChange(Some(UnitMode::Attack { target_cursor: self.cursor })),
-			key_combination: &[Key::F],
-			triggered: trigger::FRESH,
-		});
+		if let Some(u) = w.get_unit(self.cursor) {
+			v.push(ActionInfo {
+				text: "go to attack mode".to_string(),
+				action: Action::ModeChange(Some(UnitMode::Attack { aim: u.aim() })),
+				key_combination: &[Key::F],
+				triggered: trigger::FRESH,
+			});
+		}
 
 		v.push(ActionInfo {
 			text: "go to build mode".to_string(),
@@ -205,28 +206,36 @@ impl LocalPlayer {
 		});
 		v.push(ActionInfo {
 			text: "move target cursor up".to_string(),
-			action: Action::MoveTargetCursor(Direction::Up),
+			action: Action::MoveAim(Direction::Up),
 			key_combination: &[Key::W],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move target cursor left".to_string(),
-			action: Action::MoveTargetCursor(Direction::Left),
+			action: Action::MoveAim(Direction::Left),
 			key_combination: &[Key::A],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move target cursor down".to_string(),
-			action: Action::MoveTargetCursor(Direction::Down),
+			action: Action::MoveAim(Direction::Down),
 			key_combination: &[Key::S],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move target cursor right".to_string(),
-			action: Action::MoveTargetCursor(Direction::Right),
+			action: Action::MoveAim(Direction::Right),
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});
+		if let Some(UnitMode::Attack { ref aim }) = self.unit_mode.as_ref() {
+			v.push(ActionInfo {
+				text: "attack".to_string(),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Attack(aim.clone_box())}),
+				key_combination: &[Key::Return],
+				triggered: trigger::FRESH,
+			});
+		} else { assert!(false); }
 
 		v
 	}

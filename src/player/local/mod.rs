@@ -6,18 +6,18 @@ use player::Player;
 use view::{View, Marker, MarkerType, CURSOR_COLOR, TARGET_CURSOR_COLOR};
 use input::Input;
 use world::World;
+use world::aim::Aim;
 use command::{Command, UnitCommand};
-use misc::{Direction, vector_if};
+use misc::{Direction, vector_if, vector_iu, vector_ui};
 
 #[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {
 	Drop, Take, ChangeMainItem
 }
 
-#[derive(Debug)]
 pub enum UnitMode {
 	Normal,
-	Attack { target_cursor: Vector2u },
+	Attack { aim: Box<dyn Aim> },
 	Build,
 	Item { iu_mode: ItemUnitMode, index: usize },
 	Craft { index: usize },
@@ -28,7 +28,7 @@ pub enum Action {
 	Command(Command),
 	MoveCamera(Direction),
 	MoveCursor(Direction),
-	MoveTargetCursor(Direction),
+	MoveAim(Direction),
 	NextUnit,
 }
 
@@ -56,7 +56,7 @@ impl LocalPlayer {
 		let v: Vec<_> = action_infos.iter()
 				.map(|x| x.get_text())
 				.collect();
-		format!("{}\n\nMode: {:?}\n{}", default, self.unit_mode, v.join("\n"))
+		format!("{}\n{}", default, v.join("\n"))
 	}
 
 	fn get_markers(&self) -> Vec<Marker> {
@@ -68,14 +68,20 @@ impl LocalPlayer {
 			color: &CURSOR_COLOR,
 		});
 
-		if let Some(UnitMode::Attack { target_cursor }) = self.unit_mode {
-			v.push(Marker {
-				position: target_cursor,
-				marker_type: MarkerType::Border,
-				color: &TARGET_CURSOR_COLOR,
-			});
+		if let Some(UnitMode::Attack { ref aim }) = self.unit_mode {
+			v.extend(
+				aim.get_relative_tiles()
+					.iter()
+					.map(|x| *x + vector_ui(self.cursor))
+					.filter(|x| x.x >= 0 && x.y >= 0)
+					.map(|x| vector_iu(x))
+					.map(|x| Marker {
+						position: x,
+						marker_type: MarkerType::Transparent,
+						color: &TARGET_CURSOR_COLOR,
+					})
+			);
 		}
-
 		v
 	}
 
@@ -135,9 +141,9 @@ impl Action {
 				}
 			}
 			Action::ModeChange(m) => { player.unit_mode = m; },
-			Action::MoveTargetCursor(d) => {
-				if let Some(UnitMode::Attack { ref mut target_cursor }) = player.unit_mode.as_mut() {
-					*target_cursor = d.plus_vector(*target_cursor);
+			Action::MoveAim(d) => {
+				if let Some(UnitMode::Attack { ref mut aim }) = player.unit_mode.as_mut() {
+					aim.apply_direction(d, w);
 				} else { assert!(false); }
 			},
 			Action::MoveCamera(d) => { player.focus_position = vector_if(d.to_vector()) / 2. + player.focus_position; },
