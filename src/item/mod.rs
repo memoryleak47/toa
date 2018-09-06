@@ -2,26 +2,28 @@ pub mod food;
 pub mod wood;
 pub mod club;
 
-use objekt;
-
+use std::ops::{Deref, DerefMut};
 use std::slice;
 
 pub trait ItemClass: Sync {
 	fn get_name(&self) -> &'static str;
 	fn get_ref(&self) -> &'static dyn ItemClass;
 	fn get_weight(&self) -> u32;
-	fn build(&self) -> Box<dyn Item>;
+	fn build(&self) -> ItemBox;
 	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]>;
 }
 
-pub trait Item: objekt::Clone {
+pub trait Item {
 	fn get_class(&self) -> &'static dyn ItemClass;
 	fn damage(&mut self);
 	fn is_dead(&self) -> bool;
+	fn clone_box(&self) -> ItemBox;
 }
 
+pub struct ItemBox(pub Box<dyn Item>);
+
 pub struct Inventory {
-	items: Vec<Box<dyn Item>>,
+	items: Vec<ItemBox>,
 }
 
 impl Inventory {
@@ -29,7 +31,7 @@ impl Inventory {
 		Inventory { items: Vec::new() }
 	}
 
-	pub fn push(&mut self, item: Box<dyn Item>) {
+	pub fn push(&mut self, item: ItemBox) {
 		self.items.push(item);
 	}
 
@@ -50,15 +52,15 @@ impl Inventory {
 		true
 	}
 
-	pub fn iter(&self) -> slice::Iter<Box<dyn Item>> {
+	pub fn iter(&self) -> slice::Iter<ItemBox> {
 		self.as_ref().iter()
 	}
 
-	pub fn as_ref(&self) -> &[Box<dyn Item>] {
+	pub fn as_ref(&self) -> &[ItemBox] {
 		self.items.as_ref()
 	}
 
-	pub fn as_mut(&mut self) -> &mut [Box<dyn Item>] {
+	pub fn as_mut(&mut self) -> &mut [ItemBox] {
 		self.items.as_mut()
 	}
 
@@ -84,7 +86,7 @@ impl Inventory {
 			.collect();
 	}
 
-	pub fn get_item_vec(&mut self) -> &mut Vec<Box<dyn Item>> {
+	pub fn get_item_vec(&mut self) -> &mut Vec<ItemBox> {
 		&mut self.items
 	}
 
@@ -110,7 +112,7 @@ impl Inventory {
 impl Clone for Inventory {
 	fn clone(&self) -> Inventory {
 		let items = self.items.iter()
-			.map(|x| objekt::clone_box(x.as_ref()))
+			.map(|x| x.clone())
 			.collect();
 		Inventory { items }
 	}
@@ -123,3 +125,23 @@ impl PartialEq for dyn ItemClass {
 }
 
 impl Eq for dyn ItemClass {}
+
+impl Clone for ItemBox {
+	fn clone(&self) -> ItemBox {
+		self.clone_box()
+	}
+}
+
+impl Deref for ItemBox {
+	type Target = dyn Item;
+
+	fn deref(&self) -> &Self::Target {
+		self.0.as_ref()
+	}
+}
+
+impl DerefMut for ItemBox {
+	fn deref_mut(&mut self) -> &mut Self::Target {
+		self.0.as_mut()
+	}
+}

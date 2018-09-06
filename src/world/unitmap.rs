@@ -3,7 +3,7 @@ use std::cmp::min;
 use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use item::Inventory;
+use item::{Item, Inventory, ItemBox};
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -18,6 +18,7 @@ pub struct Unit {
 	pub health: u32,
 	pub food: u32,
 	pub inventory: Inventory,
+	pub main_item: Option<ItemBox>,
 }
 
 impl Unit {
@@ -28,11 +29,14 @@ impl Unit {
 			health: FULL_HEALTH,
 			food: FULL_FOOD,
 			inventory: Inventory::new(),
+			main_item: None,
 		}
 	}
 
 	pub fn get_info_string(&self) -> String {
-		format!("Unit( owner: {}, stamina: {}, health: {}, food: {}, inventory: {})", self.owner, self.stamina, self.health, self.food, &self.inventory.get_info_string())
+		format!("Unit( owner: {}, stamina: {}, health: {}, food: {}, main_item: {}, inventory: {})",
+			self.owner, self.stamina, self.health, self.food, self.main_item.as_ref().map(|x| x.get_class().get_name()).unwrap_or("None"), &self.inventory.get_info_string()
+		)
 	}
 
 	pub fn get_weight(&self) -> u32 {

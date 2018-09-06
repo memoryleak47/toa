@@ -1,4 +1,4 @@
-use item::{Item, ItemClass};
+use item::{Item, ItemClass, ItemBox};
 
 pub struct WoodClass;
 
@@ -15,8 +15,8 @@ impl ItemClass for WoodClass {
 	fn get_weight(&self) -> u32 {
 		10
 	}
-	fn build(&self) -> Box<dyn Item> {
-		Box::new(Wood { alive: true })
+	fn build(&self) -> ItemBox {
+		ItemBox(Box::new(Wood { alive: true }))
 	}
 	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { None }
 }
@@ -30,5 +30,8 @@ impl Item for Wood {
 	}
 	fn is_dead(&self) -> bool {
 		!self.alive
+	}
+	fn clone_box(&self) -> ItemBox {
+		ItemBox(Box::new(self.clone()))
 	}
 }

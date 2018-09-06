@@ -1,6 +1,6 @@
 use std::cmp::max;
 
-use item::{Item, ItemClass};
+use item::{Item, ItemClass, ItemBox};
 use item::wood::WoodClass;
 
 lazy_static! {
@@ -22,8 +22,8 @@ impl ItemClass for ClubClass {
 	fn get_weight(&self) -> u32 {
 		100
 	}
-	fn build(&self) -> Box<dyn Item> {
-		Box::new(Club { health: 100 })
+	fn build(&self) -> ItemBox {
+		ItemBox(Box::new(Club { health: 100 }))
 	}
 	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { Some(&RECIPE[..]) }
 }
@@ -37,5 +37,8 @@ impl Item for Club {
 	}
 	fn is_dead(&self) -> bool {
 		self.health == 0
+	}
+	fn clone_box(&self) -> ItemBox {
+		ItemBox(Box::new(self.clone()))
 	}
 }
