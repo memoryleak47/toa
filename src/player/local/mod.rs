@@ -11,7 +11,7 @@ use misc::{Direction, vector_if};
 
 #[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {
-	Drop, Take
+	Drop, Take, ChangeMainItem
 }
 
 #[derive(Debug)]

@@ -131,11 +131,15 @@ impl World {
 					.is_some()
 			},
 			UnitCommand::ChangeMainItem(opt_index) => {
-				opt_index.map(|i|
+				if let Some(i) = opt_index {
 					self.get_unit(pos)
-						.filter(|u| u.inventory.iter().len() > i)
+						.filter(|u| u.inventory.iter().len() > *i)
 						.is_some()
-				).unwrap_or(true)
+				} else {
+					self.get_unit(pos)
+						.and_then(|x| x.main_item.as_ref())
+						.is_some()
+				}
 			}
 		}
 	}

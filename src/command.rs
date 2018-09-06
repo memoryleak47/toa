@@ -1,6 +1,6 @@
 use sfml::system::Vector2u;
 
-use item::{ItemClass, ItemBox};
+use item::ItemClass;
 use misc::Direction;
 use world::World;
 use world::buildingmap::BuildingClass;

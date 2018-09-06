@@ -3,7 +3,7 @@ use std::cmp::min;
 use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use item::{Item, Inventory, ItemBox};
+use item::{Inventory, ItemBox};
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;

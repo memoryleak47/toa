@@ -184,6 +184,13 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
+		v.push(ActionInfo {
+			text: "equip item".to_string(),
+			action: Action::ModeChange(Some(UnitMode::Item { iu_mode: ItemUnitMode::ChangeMainItem, index: 0 })),
+			key_combination: &[Key::E],
+			triggered: trigger::FRESH,
+		});
+
 		v
 	}
 
@@ -256,8 +263,17 @@ impl LocalPlayer {
 			triggered: trigger::FRESH,
 		});
 
+		if let ItemUnitMode::ChangeMainItem = iu_mode {
+			v.push(ActionInfo {
+				text: String::from("Unequip Item"),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(None)}),
+				key_combination: &[Key::Q],
+				triggered: trigger::FRESH,
+			});
+		}
+
 		let inv: &Inventory = match iu_mode { // TODO well... make this readable
-			ItemUnitMode::Drop => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
+			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
 			ItemUnitMode::Take => &w.get_inventory(self.cursor),
 		};
 
@@ -275,6 +291,12 @@ impl LocalPlayer {
 			ItemUnitMode::Take => ActionInfo {
 				text: format!("Take Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
 				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
+				key_combination: &[Key::Return],
+				triggered: trigger::FRESH,
+			},
+			ItemUnitMode::ChangeMainItem => ActionInfo {
+				text: format!("Choose Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
