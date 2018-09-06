@@ -43,8 +43,8 @@ impl Building for Farm {
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static dyn BuildingClass { FarmClass.get_ref() }
-	fn is_burnable(&self, w: &World, p: Vector2u) -> bool { true }
-	fn is_workable(&self, w: &World, p: Vector2u) -> bool { true }
+	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { true }
+	fn is_workable(&self, _w: &World, _p: Vector2u) -> bool { true }
 	fn work(&mut self, w: &mut World, p: Vector2u) {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(item::food::FoodClass.get_ref().build());

@@ -34,7 +34,7 @@ impl Terrain {
 		}
 	}
 
-	pub fn is_unrefined_workable(&self, unit: &Unit) -> bool {
+	pub fn is_unrefined_workable(&self, _unit: &Unit) -> bool {
 		match self {
 			Terrain::GRASS | Terrain::FOREST => true,
 			_ => false,

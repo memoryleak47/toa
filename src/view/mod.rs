@@ -14,6 +14,7 @@ lazy_static! {
 }
 
 pub enum MarkerType {
+	#[allow(dead_code)]
 	Transparent,
 	Border
 }
@@ -42,7 +43,7 @@ impl View {
 		self.render_hud(window, world);
 	}
 
-	fn render_hud(&self, window: &mut RenderWindow, world: &World) {
+	fn render_hud(&self, window: &mut RenderWindow, _world: &World) {
 		let f = Font::from_file("/usr/share/fonts/TTF/DejaVuSerif.ttf").unwrap();
 		let t = Text::new(&self.text, &f, 15);
 		window.draw(&t);
@@ -102,7 +103,7 @@ impl View {
 	fn render_unitmap(&self, window: &mut RenderWindow, world: &World, texture_state: &TextureState) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(ref unit) = world.unitmap[x][y] {
+				if let Some(ref _unit) = world.unitmap[x][y] {
 					let posf = Vector2f::new(x as f32, y as f32);
 
 					let texture_unit = texture_state.get_texture(TextureId::Unit);

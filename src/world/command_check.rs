@@ -6,11 +6,12 @@ use command::{Command, UnitCommand};
 use misc::*;
 
 impl World {
-	pub fn get_unitless_commands(&self, player: u32) -> Vec<Command> {
+	pub fn get_unitless_commands(&self, _player: u32) -> Vec<Command> {
 		vec![Command::NextTurn]
 	}
 
-	fn get_unchecked_commands_by_unit(&self, player: u32, pos: Vector2u) -> Vec<Command> {
+	#[allow(dead_code)]
+	fn get_unchecked_commands_by_unit(&self, _player: u32, pos: Vector2u) -> Vec<Command> {
 		let mut v = Vec::new();
 
 		// add Move
@@ -38,12 +39,14 @@ impl World {
 		v
 	}
 
+	#[allow(dead_code)]
 	pub fn get_commands_by_unit(&self, player: u32, pos: Vector2u) -> Vec<Command> {
 		self.get_unchecked_commands_by_unit(player, pos).into_iter()
 			.filter(|x| self.is_valid_command(player, x))
 			.collect()
 	}
 
+	#[allow(dead_code)]
 	pub fn get_commands(&self, player: u32) -> Vec<Command> {
 		let mut v = Vec::new();
 		for x in 0..MAP_SIZE_X {
@@ -79,7 +82,7 @@ impl World {
 					.filter(|x| x.owner == player)
 					.is_some()
 			},
-			UnitCommand::Attack(to) => {
+			UnitCommand::Attack(_to) => {
 				// TODO in range-check
 
 				self.get_unit(pos)

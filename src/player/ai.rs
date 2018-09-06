@@ -5,6 +5,7 @@ use command::Command;
 use world::World;
 
 pub struct AiPlayer {
+	#[allow(dead_code)]
 	player_id: u32,
 	view_generator: DefaultViewGenerator
 }

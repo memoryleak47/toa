@@ -19,7 +19,7 @@ pub enum UnitCommand {
 }
 
 pub enum Command {
-	UnitCommand { command: UnitCommand, pos: Vector2u } ,
+	UnitCommand { command: UnitCommand, pos: Vector2u },
 	NextTurn,
 }
 

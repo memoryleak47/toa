@@ -58,6 +58,7 @@ impl World {
 			.map(|x| x.as_ref())
 	}
 
+	#[allow(dead_code)]
 	pub fn get_building_mut(&mut self, p: Vector2u) -> Option<&mut dyn Building> {
 		// TODO make nicer! try map()
 		if self.buildingmap[p.x as usize][p.y as usize].is_some() {

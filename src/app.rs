@@ -9,6 +9,7 @@ use command::Command;
 use graphics::TextureState;
 
 enum AppState {
+	#[allow(dead_code)]
 	Menu,
 	InGame {
 		players: [Box<dyn Player>; 2],
@@ -26,6 +27,7 @@ pub struct App {
 
 enum GameMode {
 	LocalPvp,
+	#[allow(dead_code)]
 	LocalVsAi,
 }
 

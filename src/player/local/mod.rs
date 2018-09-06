@@ -81,7 +81,7 @@ impl LocalPlayer {
 
 	fn apply_view_command(&mut self, command: &Command) {
 		match command {
-			Command::UnitCommand { pos, command: UnitCommand::Move(direction)} => {
+			Command::UnitCommand { command: UnitCommand::Move(direction), .. } => {
 				self.cursor = direction.plus_vector(self.cursor);
 			},
 			_ => {}

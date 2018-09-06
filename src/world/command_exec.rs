@@ -54,7 +54,7 @@ impl World {
 		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
 	}
 
-	fn exec_attack(&mut self, from: Vector2u, to: Vector2u) {
+	fn exec_attack(&mut self, _from: Vector2u, _to: Vector2u) {
 		unimplemented!()
 	}
 
@@ -119,13 +119,13 @@ impl World {
 	}
 
 	fn exec_craft_item_class(&mut self, ic: &'static dyn ItemClass, at: Vector2u) {
-		let mut unit = self.get_unit_mut(at).unwrap();
+		let unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());
 	}
 
 	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Vector2u) {
-		let mut unit = self.get_unit_mut(at).unwrap();
+		let unit = self.get_unit_mut(at).unwrap();
 
 		let mut opt = None;
 		mem::swap(&mut opt, &mut unit.main_item);

@@ -39,7 +39,7 @@ mod trigger {
 }
 
 impl LocalPlayer {
-	fn get_general_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_general_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
 		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_CLASSES.len());
 
 		let mut v = Vec::new();
@@ -88,7 +88,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_normal_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_normal_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -194,7 +194,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_attack_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_attack_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -231,7 +231,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_build_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_build_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -323,7 +323,7 @@ impl LocalPlayer {
 		v
 	}
 
-	fn get_crafting_mode_action_infos(&self, index: usize, w: &World) -> Vec<ActionInfo> {
+	fn get_crafting_mode_action_infos(&self, index: usize, _w: &World) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
