@@ -1,8 +1,7 @@
-use std::cmp::max;
-
 use item::{Item, ItemClass, ItemBox};
 use item::wood::WoodClass;
 use world::aim::{Aim, MeeleeAim};
+use world::damage::Damage;
 
 lazy_static! {
 	static ref RECIPE: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
@@ -33,16 +32,14 @@ impl Item for Club {
 	fn get_class(&self) -> &'static dyn ItemClass {
 		ClubClass.get_ref()
 	}
-	fn damage(&mut self) {
-		self.health = max(self.health, 0);
-	}
-	fn is_dead(&self) -> bool {
+	fn damage(&mut self, damage: Damage) -> bool {
+		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
 	fn clone_box(&self) -> ItemBox {
 		ItemBox(Box::new(self.clone()))
 	}
 	fn aim(&self) -> Box<dyn Aim> {
-		Box::new(MeeleeAim::new())
+		Box::new(MeeleeAim::new(Damage(10)))
 	}
 }

@@ -10,6 +10,7 @@ use super::{BuildingClass, Building};
 use world::World;
 use world::unitmap::Unit;
 use world::terrainmap::Terrain;
+use world::damage::Damage;
 
 const REQUIRED_FOOD: u32 = 10;
 
@@ -27,7 +28,7 @@ pub struct SpawnerClass;
 #[derive(Clone)]
 pub struct Spawner {
 	player: u32,
-	health: u32
+	health: u32,
 }
 
 impl BuildingClass for SpawnerClass {
@@ -59,7 +60,6 @@ impl Building for Spawner {
 	}
 	
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static dyn BuildingClass { SpawnerClass.get_ref() }
 	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { false }
 	fn is_workable(&self, w: &World, p: Vector2u) -> bool {
@@ -68,6 +68,10 @@ impl Building for Spawner {
 		w.get_unit(p)
 			.filter(|u| u.inventory.contains_all(&REQUIRED_FOOD_VEC[..]))
 			.is_some()
+	}
+	fn damage(&mut self, damage: Damage) -> bool {
+		self.health = self.health.saturating_sub(damage.0);
+		self.health == 0
 	}
 	fn work(&mut self, w: &mut World, p: Vector2u) {
 		let u = w.get_unit_mut(p).unwrap();

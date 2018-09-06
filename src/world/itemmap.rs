@@ -2,6 +2,9 @@ use sfml::system::Vector2u;
 
 use item::Inventory;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use world::damage::Damage;
+
+const GROUND_DAMAGE: Damage = Damage(5);
 
 impl World {
 	pub fn tick_itemmap(&mut self) {
@@ -11,10 +14,7 @@ impl World {
 	fn damage_items_on_ground(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				for item in self.itemmap[x][y].as_mut() {
-					item.damage();
-				}
-				self.itemmap[x][y].clear_dead_items();
+				self.itemmap[x][y].damage(GROUND_DAMAGE);
 			}
 		}
 	}

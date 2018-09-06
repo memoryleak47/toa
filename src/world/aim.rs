@@ -2,6 +2,7 @@ use sfml::system::{Vector2u, Vector2i};
 
 use misc::Direction;
 use world::World;
+use world::damage::Damage;
 
 // Aims are relative to it's owner
 pub trait Aim {
@@ -14,13 +15,14 @@ pub trait Aim {
 #[derive(Clone, Copy)]
 pub struct MeeleeAim {
 	dir: Direction,
+	damage: Damage,
 }
 
 
 
 impl MeeleeAim {
-	pub fn new() -> MeeleeAim {
-		MeeleeAim { dir: Direction::Up }
+	pub fn new(damage: Damage) -> MeeleeAim {
+		MeeleeAim { damage, dir: Direction::Up }
 	}
 }
 
@@ -31,7 +33,7 @@ impl Aim for MeeleeAim {
 
 	fn exec(&self, owner_pos: Vector2u, w: &mut World) {
 		let p = self.dir.plus_vector(owner_pos);
-		w.damage(p);
+		w.damage(p, self.damage);
 	}
 
 	fn get_relative_tiles(&self) -> Vec<Vector2i> {

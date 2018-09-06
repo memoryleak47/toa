@@ -13,6 +13,7 @@ use sfml::system::Vector2u;
 use graphics::TextureId;
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::terrainmap::Terrain;
+use world::damage::Damage;
 use item::ItemClass;
 
 lazy_static! {
@@ -22,10 +23,10 @@ lazy_static! {
 pub trait Building: objekt::Clone {
 	fn get_texture_id(&self) -> TextureId;
 	fn as_any_mut(&mut self) -> &mut dyn Any;
-	fn get_health(&self) -> u32;
 	fn get_class(&self) -> &'static dyn BuildingClass;
 	fn is_burnable(&self, &World, Vector2u) -> bool;
 	fn is_workable(&self, &World, Vector2u) -> bool;
+	fn damage(&mut self, damage: Damage) -> bool; // returns whether the building got destroyed
 
 	// while this method is executed, the `self`-building is swapped out of the &mut World
 	// `self` will only be placed back, if it wouldn't replace anything

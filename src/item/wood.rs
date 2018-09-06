@@ -1,12 +1,11 @@
 use item::{Item, ItemClass, ItemBox};
 use world::aim::{Aim, MeeleeAim};
+use world::damage::Damage;
 
 pub struct WoodClass;
 
 #[derive(Clone)]
-pub struct Wood {
-	alive: bool,
-}
+pub struct Wood;
 
 impl ItemClass for WoodClass {
 	fn get_name(&self) -> &'static str { "Wood" }
@@ -17,7 +16,7 @@ impl ItemClass for WoodClass {
 		10
 	}
 	fn build(&self) -> ItemBox {
-		ItemBox(Box::new(Wood { alive: true }))
+		ItemBox(Box::new(Wood))
 	}
 	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { None }
 }
@@ -26,16 +25,11 @@ impl Item for Wood {
 	fn get_class(&self) -> &'static dyn ItemClass {
 		WoodClass.get_ref()
 	}
-	fn damage(&mut self) {
-		self.alive = false;
-	}
-	fn is_dead(&self) -> bool {
-		!self.alive
-	}
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn clone_box(&self) -> ItemBox {
 		ItemBox(Box::new(self.clone()))
 	}
 	fn aim(&self) -> Box<dyn Aim> {
-		Box::new(MeeleeAim::new())
+		Box::new(MeeleeAim::new(Damage(5)))
 	}
 }

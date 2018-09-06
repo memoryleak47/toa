@@ -5,6 +5,7 @@ pub mod buildingmap;
 pub mod unitmap;
 pub mod itemmap;
 pub mod aim;
+pub mod damage;
 
 pub use self::command_check::*;
 pub use self::command_exec::*;
@@ -18,6 +19,7 @@ use self::buildingmap::Building;
 use sfml::system::{Vector2f, Vector2u};
 
 use item::Inventory;
+use self::damage::Damage;
 
 pub const TILESIZE: f32 = 40.;
 pub const MAP_SIZE_X: usize = 42;
@@ -63,17 +65,15 @@ impl World {
 			.unwrap_or(0)
 	}
 
-	pub fn damage(&mut self, p: Vector2u) { // TODO
-		if let Some(_x) = self.get_building_mut(p) {
-			// x.damage();
+	pub fn damage(&mut self, p: Vector2u, damage: Damage) {
+		if let Some(x) = self.get_building_mut(p) {
+			x.damage(damage);
 			return;
 		}
-		if let Some(_x) = self.get_unit_mut(p) {
-			// x.damage();
+		if let Some(x) = self.get_unit_mut(p) {
+			x.damage(damage);
 			return;
 		}
-		self.get_inventory_mut(p)
-		// .damage()
-		;
+		self.get_inventory_mut(p).damage(damage);
 	}
 }

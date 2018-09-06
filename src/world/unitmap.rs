@@ -4,6 +4,7 @@ use sfml::system::Vector2u;
 
 use world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use world::aim::{Aim, MeeleeAim};
+use world::damage::Damage;
 use item::{Inventory, ItemBox};
 
 const FULL_STAMINA: u32 = 100;
@@ -48,7 +49,12 @@ impl Unit {
 		self.main_item
 			.as_ref()
 			.map(|x| x.aim())
-			.unwrap_or_else(|| Box::new(MeeleeAim::new()))
+			.unwrap_or_else(|| Box::new(MeeleeAim::new(Damage(1))))
+	}
+
+	pub fn damage(&mut self, damage: Damage) -> bool { // returns whether the unit died
+		self.health = self.health.saturating_sub(damage.0);
+		self.health == 0
 	}
 }
 

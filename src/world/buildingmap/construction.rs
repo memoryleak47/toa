@@ -7,6 +7,7 @@ use item::ItemClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::terrainmap::Terrain;
+use world::damage::Damage;
 
 pub struct ConstructionClass;
 
@@ -41,10 +42,13 @@ impl BuildingClass for ConstructionClass {
 impl Building for Construction {
 	fn get_texture_id(&self) -> TextureId { TextureId::ConstructionBuilding }
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static dyn BuildingClass { ConstructionClass.get_ref() }
 	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { true }
 	fn is_workable(&self, _w: &World, _p: Vector2u) -> bool { true }
+	fn damage(&mut self, damage: Damage) -> bool {
+		self.health = self.health.saturating_sub(damage.0);
+		self.health == 0
+	}
 	fn work(&mut self, world: &mut World, p: Vector2u) {
 		self.invested_stamina += 10; // TODO make correct
 		if self.invested_stamina >= self.build_class.get_build_stamina_cost() {

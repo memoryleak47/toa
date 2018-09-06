@@ -2,9 +2,13 @@ pub mod food;
 pub mod wood;
 pub mod club;
 
-use world::aim::Aim;
+
 use std::ops::{Deref, DerefMut};
 use std::slice;
+use std::mem;
+
+use world::aim::Aim;
+use world::damage::Damage;
 
 pub trait ItemClass: Sync {
 	fn get_name(&self) -> &'static str;
@@ -16,8 +20,7 @@ pub trait ItemClass: Sync {
 
 pub trait Item {
 	fn get_class(&self) -> &'static dyn ItemClass;
-	fn damage(&mut self);
-	fn is_dead(&self) -> bool;
+	fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
 	fn clone_box(&self) -> ItemBox;
 	fn aim(&self) -> Box<dyn Aim>;
 }
@@ -66,6 +69,7 @@ impl Inventory {
 		self.items.as_ref()
 	}
 
+	#[allow(dead_code)]
 	pub fn as_mut(&mut self) -> &mut [ItemBox] {
 		self.items.as_mut()
 	}
@@ -79,17 +83,6 @@ impl Inventory {
 		s.push_str(&(&tmp[..]).join(", "));
 		s.push(']');
 		s
-	}
-
-	pub fn clear_dead_items(&mut self) {
-		use std::mem::swap;
-
-		let mut tmp = Vec::new();
-
-		swap(&mut self.items, &mut tmp);
-		self.items = tmp.into_iter()
-			.filter(|x| !x.is_dead())
-			.collect();
 	}
 
 	pub fn get_item_vec(&mut self) -> &mut Vec<ItemBox> {
@@ -112,6 +105,17 @@ impl Inventory {
 						  .get_weight()
 			)
 			.sum()
+	}
+
+	pub fn damage(&mut self, damage: Damage) {
+		let mut items = Vec::new();
+		mem::swap(&mut items, &mut self.items);
+		
+		for mut item in items.into_iter() {
+			if !item.damage(damage) {
+				self.items.push(item);
+			}
+		}
 	}
 }
 

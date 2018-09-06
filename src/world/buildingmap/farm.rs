@@ -9,6 +9,7 @@ use item::wood::WoodClass;
 use super::{BuildingClass, Building};
 use world::World;
 use world::terrainmap::Terrain;
+use world::damage::Damage;
 
 lazy_static! {
 	static ref BUILD_ITEM_COST: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
@@ -41,10 +42,13 @@ impl BuildingClass for FarmClass {
 impl Building for Farm {
 	fn get_texture_id(&self) -> TextureId { TextureId::FarmBuilding }
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_health(&self) -> u32 { self.health }
 	fn get_class(&self) -> &'static dyn BuildingClass { FarmClass.get_ref() }
 	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { true }
 	fn is_workable(&self, _w: &World, _p: Vector2u) -> bool { true }
+	fn damage(&mut self, damage: Damage) -> bool {
+		self.health = self.health.saturating_sub(damage.0);
+		self.health == 0
+	}
 	fn work(&mut self, w: &mut World, p: Vector2u) {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(item::food::FoodClass.get_ref().build());
