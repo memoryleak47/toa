@@ -1,4 +1,5 @@
 use item::{Item, ItemClass, ItemBox};
+use world::aim::{Aim, MeeleeAim};
 
 pub struct FoodClass;
 
@@ -33,5 +34,8 @@ impl Item for Food {
 	}
 	fn clone_box(&self) -> ItemBox {
 		ItemBox(Box::new(self.clone()))
+	}
+	fn aim(&self) -> Box<dyn Aim> {
+		Box::new(MeeleeAim::new())
 	}
 }

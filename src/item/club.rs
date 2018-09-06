@@ -2,6 +2,7 @@ use std::cmp::max;
 
 use item::{Item, ItemClass, ItemBox};
 use item::wood::WoodClass;
+use world::aim::{Aim, MeeleeAim};
 
 lazy_static! {
 	static ref RECIPE: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
@@ -40,5 +41,8 @@ impl Item for Club {
 	}
 	fn clone_box(&self) -> ItemBox {
 		ItemBox(Box::new(self.clone()))
+	}
+	fn aim(&self) -> Box<dyn Aim> {
+		Box::new(MeeleeAim::new())
 	}
 }

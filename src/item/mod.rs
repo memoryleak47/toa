@@ -2,6 +2,7 @@ pub mod food;
 pub mod wood;
 pub mod club;
 
+use world::aim::Aim;
 use std::ops::{Deref, DerefMut};
 use std::slice;
 
@@ -18,6 +19,7 @@ pub trait Item {
 	fn damage(&mut self);
 	fn is_dead(&self) -> bool;
 	fn clone_box(&self) -> ItemBox;
+	fn aim(&self) -> Box<dyn Aim>;
 }
 
 pub struct ItemBox(pub Box<dyn Item>);

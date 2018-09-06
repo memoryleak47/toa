@@ -4,6 +4,7 @@ pub mod terrainmap;
 pub mod buildingmap;
 pub mod unitmap;
 pub mod itemmap;
+pub mod aim;
 
 pub use self::command_check::*;
 pub use self::command_exec::*;
@@ -60,5 +61,19 @@ impl World {
 		self.get_building(pos)
 			.map(|x| x.get_class().get_height())
 			.unwrap_or(0)
+	}
+
+	pub fn damage(&mut self, p: Vector2u) { // TODO
+		if let Some(_x) = self.get_building_mut(p) {
+			// x.damage();
+			return;
+		}
+		if let Some(_x) = self.get_unit_mut(p) {
+			// x.damage();
+			return;
+		}
+		self.get_inventory_mut(p)
+		// .damage()
+		;
 	}
 }
