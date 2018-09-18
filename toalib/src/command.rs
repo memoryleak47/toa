@@ -1,5 +1,4 @@
-use sfml::system::Vector2u;
-
+use crate::vec::Vec2u;
 use crate::item::ItemClass;
 use crate::misc::Direction;
 use crate::world::World;
@@ -21,12 +20,12 @@ pub enum UnitCommand {
 }
 
 pub enum Command {
-	UnitCommand { command: UnitCommand, pos: Vector2u },
+	UnitCommand { command: UnitCommand, pos: Vec2u },
 	NextTurn,
 }
 
 impl UnitCommand {
-	pub fn get_stamina_cost(&self, pos: Vector2u, w: &World) -> u32 {
+	pub fn get_stamina_cost(&self, pos: Vec2u, w: &World) -> u32 {
 		match self {
 			UnitCommand::Move(dir) => {
 				let to = dir.plus_vector(pos);

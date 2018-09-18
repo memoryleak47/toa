@@ -6,10 +6,9 @@ pub mod farm;
 use std::any::Any;
 
 use objekt;
-use sfml::system::Vector2u;
 
+use crate::vec::Vec2u;
 use self::spawner::Spawner;
-use crate::graphics::TextureId;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
@@ -20,16 +19,15 @@ lazy_static! {
 }
 
 pub trait Building: objekt::Clone {
-	fn get_texture_id(&self) -> TextureId;
 	fn as_any_mut(&mut self) -> &mut dyn Any;
 	fn get_class(&self) -> &'static dyn BuildingClass;
-	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool;
-	fn is_workable(&self, _w: &World, _p: Vector2u) -> bool;
+	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool;
+	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool;
 	fn damage(&mut self, damage: Damage) -> bool; // returns whether the building got destroyed
 
 	// while this method is executed, the `self`-building is swapped out of the &mut World
 	// `self` will only be placed back, if it wouldn't replace anything
-	fn work(&mut self, _w: &mut World, _p: Vector2u);
+	fn work(&mut self, _w: &mut World, _p: Vec2u);
 }
 
 pub trait BuildingClass: Sync {
@@ -52,14 +50,14 @@ pub fn new_buildingmap() -> [[Option<Box<dyn Building>>; MAP_SIZE_Y]; MAP_SIZE_X
 }
 
 impl World {
-	pub fn get_building(&self, p: Vector2u) -> Option<&dyn Building> {
+	pub fn get_building(&self, p: Vec2u) -> Option<&dyn Building> {
 		self.buildingmap[p.x as usize][p.y as usize]
 			.as_ref()
 			.map(|x| x.as_ref())
 	}
 
 	#[allow(dead_code)]
-	pub fn get_building_mut(&mut self, p: Vector2u) -> Option<&mut dyn Building> {
+	pub fn get_building_mut(&mut self, p: Vec2u) -> Option<&mut dyn Building> {
 		// TODO make nicer! try map()
 		if self.buildingmap[p.x as usize][p.y as usize].is_some() {
 			Some(self.buildingmap[p.x as usize][p.y as usize].as_mut().unwrap().as_mut())
@@ -68,7 +66,7 @@ impl World {
 		}
 	}
 
-	pub fn set_building(&mut self, p: Vector2u, b: Option<Box<dyn Building>>) {
+	pub fn set_building(&mut self, p: Vec2u, b: Option<Box<dyn Building>>) {
 		self.buildingmap[p.x as usize][p.y as usize] = b;
 	}
 }

@@ -1,7 +1,6 @@
 use std::mem;
 
-use sfml::system::Vector2u;
-
+use crate::vec::Vec2u;
 use crate::item::ItemClass;
 use crate::command::{Command, UnitCommand};
 use crate::misc::Direction;
@@ -21,7 +20,7 @@ impl World {
 		}
 	}
 
-	fn exec_unit_command(&mut self, pos: Vector2u, command: &UnitCommand) {
+	fn exec_unit_command(&mut self, pos: Vec2u, command: &UnitCommand) {
 		let s = command.get_stamina_cost(pos, self);
 		for u in self.unitmap[pos.x as usize][pos.y as usize].iter_mut() {
 			u.stamina -= s as i32;
@@ -42,7 +41,7 @@ impl World {
 		}
 	}
 
-	fn exec_move(&mut self, from: Vector2u, direction: Direction) {
+	fn exec_move(&mut self, from: Vec2u, direction: Direction) {
 		let x1 = from.x as usize;
 		let y1 = from.y as usize;
 
@@ -56,7 +55,7 @@ impl World {
 		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
 	}
 
-	fn exec_attack(&mut self, pos: Vector2u, aim: &dyn Aim) {
+	fn exec_attack(&mut self, pos: Vec2u, aim: &dyn Aim) {
 		aim.exec(pos, self);
 	}
 
@@ -69,7 +68,7 @@ impl World {
 		self.on_turn_start();
 	}
 
-	fn exec_build(&mut self, at: Vector2u, class: &'static dyn BuildingClass) {
+	fn exec_build(&mut self, at: Vec2u, class: &'static dyn BuildingClass) {
 		let construction = Construction::new(class);
 		let boxed = Box::new(construction);
 		self.buildingmap[at.x as usize][at.y as usize] = Some(boxed);
@@ -78,7 +77,7 @@ impl World {
 			.inventory.reduce(class.get_build_item_cost());
 	}
 
-	fn exec_work(&mut self, at: Vector2u) {
+	fn exec_work(&mut self, at: Vec2u) {
 		let mut tmp_opt: Option<Box<_>> = None;
 		mem::swap(&mut tmp_opt, &mut self.buildingmap[at.x as usize][at.y as usize]);
 		tmp_opt.iter_mut()
@@ -88,13 +87,13 @@ impl World {
 		}
 	}
 
-	fn exec_unrefined_work(&mut self, at: Vector2u) {
+	fn exec_unrefined_work(&mut self, at: Vec2u) {
 		let item_class = self.get_terrain(at).get_item_class();
 		let u = self.get_unit_mut(at).unwrap();
 		u.inventory.push(item_class.build());
 	}
 
-	fn exec_drop_item(&mut self, at: Vector2u, i: usize) {
+	fn exec_drop_item(&mut self, at: Vec2u, i: usize) {
 		let item = self.get_unit_mut(at)
 			.unwrap()
 			.inventory
@@ -105,7 +104,7 @@ impl World {
 			.push(item);
 	}
 
-	fn exec_take_item(&mut self, at: Vector2u, i: usize) {
+	fn exec_take_item(&mut self, at: Vec2u, i: usize) {
 		let item = self.get_inventory_mut(at)
 			.get_item_vec()
 			.remove(i);
@@ -116,17 +115,17 @@ impl World {
 			.push(item);
 	}
 
-	fn exec_discard_building(&mut self, at: Vector2u) {
+	fn exec_discard_building(&mut self, at: Vec2u) {
 		self.set_building(at, None);
 	}
 
-	fn exec_craft_item_class(&mut self, ic: &'static dyn ItemClass, at: Vector2u) {
+	fn exec_craft_item_class(&mut self, ic: &'static dyn ItemClass, at: Vec2u) {
 		let unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());
 	}
 
-	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Vector2u) {
+	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Vec2u) {
 		let unit = self.get_unit_mut(at).unwrap();
 
 		let mut opt = None;
@@ -141,7 +140,7 @@ impl World {
 		}
 	}
 
-	fn exec_exec_item(&mut self, i: usize, at: Vector2u) {
+	fn exec_exec_item(&mut self, i: usize, at: Vec2u) {
 		let item = self.get_unit_mut(at)
 			.unwrap()
 			.inventory

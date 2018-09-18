@@ -1,5 +1,4 @@
-use sfml::system::{Vector2u, Vector2i};
-
+use crate::vec::{Vec2u, Vec2i};
 use crate::misc::Direction;
 use crate::world::World;
 use crate::world::damage::Damage;
@@ -7,8 +6,8 @@ use crate::world::damage::Damage;
 // Aims are relative to it's owner
 pub trait Aim {
 	fn apply_direction(&mut self, _d: Direction, _w: &World);
-	fn exec(&self, owner_pos: Vector2u, _w: &mut World);
-	fn get_relative_tiles(&self) -> Vec<Vector2i>;
+	fn exec(&self, owner_pos: Vec2u, _w: &mut World);
+	fn get_relative_tiles(&self) -> Vec<Vec2i>;
 	fn clone_box(&self) -> Box<dyn Aim>;
 }
 
@@ -31,12 +30,12 @@ impl Aim for MeeleeAim {
 		self.dir = d;
 	}
 
-	fn exec(&self, owner_pos: Vector2u, w: &mut World) {
+	fn exec(&self, owner_pos: Vec2u, w: &mut World) {
 		let p = self.dir.plus_vector(owner_pos);
 		w.damage(p, self.damage);
 	}
 
-	fn get_relative_tiles(&self) -> Vec<Vector2i> {
+	fn get_relative_tiles(&self) -> Vec<Vec2i> {
 		vec![self.dir.to_vector()]
 	}
 

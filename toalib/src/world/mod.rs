@@ -14,8 +14,7 @@ pub use self::buildingmap::*;
 pub use self::unitmap::*;
 pub use self::itemmap::*;
 
-use sfml::system::Vector2u;
-
+use crate::vec::Vec2u;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::Building;
 use crate::item::Inventory;
@@ -50,13 +49,13 @@ impl World {
 		self.refill_stamina();
 	}
 
-	pub fn get_height(&self, pos: Vector2u) -> u32 {
+	pub fn get_height(&self, pos: Vec2u) -> u32 {
 		self.get_building(pos)
 			.map(|x| x.get_class().get_height())
 			.unwrap_or(0)
 	}
 
-	pub fn damage(&mut self, p: Vector2u, damage: Damage) {
+	pub fn damage(&mut self, p: Vec2u, damage: Damage) {
 		if let Some(x) = self.get_building_mut(p) {
 			if x.damage(damage) {
 				self.set_building(p, None);

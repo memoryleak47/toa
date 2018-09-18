@@ -1,9 +1,7 @@
 use std::any::Any;
 use std::iter;
 
-use sfml::system::Vector2u;
-
-use crate::graphics::TextureId;
+use crate::vec::Vec2u;
 use crate::item::ItemClass;
 use crate::item::food::FoodClass;
 use crate::world::buildingmap::{BuildingClass, Building};
@@ -51,19 +49,11 @@ impl BuildingClass for SpawnerClass {
 }
 
 impl Building for Spawner {
-	fn get_texture_id(&self) -> TextureId {
-		match self.player {
-			0 => TextureId::SpawnerRedBuilding,
-			1 => TextureId::SpawnerBlueBuilding,
-			_ => panic!("invalid team!"),
-		}
-	}
-	
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_class(&self) -> &'static dyn BuildingClass { SpawnerClass.get_ref() }
-	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { false }
-	fn is_workable(&self, w: &World, p: Vector2u) -> bool {
-		w.get_unit(p + Vector2u::new(1, 0)).is_none()
+	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { false }
+	fn is_workable(&self, w: &World, p: Vec2u) -> bool {
+		w.get_unit(p + Vec2u::new(1, 0)).is_none()
 		&&
 		w.get_unit(p)
 			.filter(|u| u.inventory.contains_all(&REQUIRED_FOOD_VEC[..]))
@@ -73,10 +63,10 @@ impl Building for Spawner {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, w: &mut World, p: Vector2u) {
+	fn work(&mut self, w: &mut World, p: Vec2u) {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.reduce(&REQUIRED_FOOD_VEC[..]);
-		let p2 = p + Vector2u::new(1, 0);
+		let p2 = p + Vec2u::new(1, 0);
 		let new_unit = Unit::new(u.owner);
 		w.set_unit(p2, Some(new_unit));
 	}

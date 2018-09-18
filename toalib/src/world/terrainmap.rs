@@ -1,7 +1,6 @@
-use sfml::system::Vector2u;
 use rand::{RngCore, thread_rng};
 
-use crate::graphics::TextureId;
+use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::unitmap::Unit;
 use crate::item;
@@ -16,15 +15,6 @@ pub enum Terrain {
 }
 
 impl Terrain {
-	pub fn get_texture_id(&self) -> TextureId {
-		match self {
-			Terrain::GRASS => TextureId::GrassTerrain,
-			Terrain::FOREST => TextureId::ForestTerrain,
-			Terrain::STONE => TextureId::StoneTerrain,
-			Terrain::IRON => TextureId::IronTerrain,
-		}
-	}
-
 	pub fn get_stamina_cost(&self) -> u32 {
 		match self {
 			Terrain::GRASS => 10,
@@ -71,7 +61,7 @@ pub fn new_terrainmap() -> [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X] {
 }
 
 impl World {
-	pub fn get_terrain(&self, p: Vector2u) -> &Terrain {
+	pub fn get_terrain(&self, p: Vec2u) -> &Terrain {
 		&self.terrainmap[p.x as usize][p.y as usize]
 	}
 }

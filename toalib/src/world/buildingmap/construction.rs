@@ -1,8 +1,6 @@
 use std::any::Any;
 
-use sfml::system::Vector2u;
-
-use crate::graphics::TextureId;
+use crate::vec::Vec2u;
 use crate::item::ItemClass;
 use crate::world::buildingmap::{BuildingClass, Building};
 use crate::world::World;
@@ -40,16 +38,15 @@ impl BuildingClass for ConstructionClass {
 }
 
 impl Building for Construction {
-	fn get_texture_id(&self) -> TextureId { TextureId::ConstructionBuilding }
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_class(&self) -> &'static dyn BuildingClass { ConstructionClass.get_ref() }
-	fn is_burnable(&self, _w: &World, _p: Vector2u) -> bool { true }
-	fn is_workable(&self, _w: &World, _p: Vector2u) -> bool { true }
+	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { true }
+	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { true }
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, world: &mut World, p: Vector2u) {
+	fn work(&mut self, world: &mut World, p: Vec2u) {
 		self.invested_stamina += 10; // TODO make correct
 		if self.invested_stamina >= self.build_class.get_build_stamina_cost() {
 			let b = self.build_class.build();

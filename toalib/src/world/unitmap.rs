@@ -1,7 +1,6 @@
 use std::cmp::min;
 
-use sfml::system::Vector2u;
-
+use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::aim::{Aim, MeeleeAim};
 use crate::world::damage::Damage;
@@ -113,17 +112,17 @@ impl World {
 		}
 	}
 
-	fn next_tile(&self, tile: Vector2u) -> Vector2u {
+	fn next_tile(&self, tile: Vec2u) -> Vec2u {
 		if tile.x < MAP_SIZE_X as u32 - 1 {
-			Vector2u::new(tile.x + 1, tile.y)
+			Vec2u::new(tile.x + 1, tile.y)
 		} else if tile.y < MAP_SIZE_Y as u32 - 1 {
-			Vector2u::new(0, tile.y + 1)
+			Vec2u::new(0, tile.y + 1)
 		} else {
-			Vector2u::new(0, 0)
+			Vec2u::new(0, 0)
 		}
 	}
 
-	pub fn find_next_unit_tile(&self, start: Vector2u, player: u32) -> Option<Vector2u> {
+	pub fn find_next_unit_tile(&self, start: Vec2u, player: u32) -> Option<Vec2u> {
 		let mut i = start;
 
 		for _ in 0..(MAP_SIZE_X * MAP_SIZE_Y) {
@@ -138,15 +137,15 @@ impl World {
 		None
 	}
 
-	pub fn get_unit(&self, p: Vector2u) -> Option<&Unit> {
+	pub fn get_unit(&self, p: Vec2u) -> Option<&Unit> {
 		self.unitmap[p.x as usize][p.y as usize].as_ref()
 	}
 
-	pub fn get_unit_mut(&mut self, p: Vector2u) -> Option<&mut Unit> {
+	pub fn get_unit_mut(&mut self, p: Vec2u) -> Option<&mut Unit> {
 		self.unitmap[p.x as usize][p.y as usize].as_mut()
 	}
 
-	pub fn set_unit(&mut self, p: Vector2u, unit: Option<Unit>) {
+	pub fn set_unit(&mut self, p: Vec2u, unit: Option<Unit>) {
 		self.unitmap[p.x as usize][p.y as usize] = unit;
 	}
 }

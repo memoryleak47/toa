@@ -2,12 +2,11 @@ pub mod food;
 pub mod wood;
 pub mod club;
 
-use sfml::system::Vector2u;
-
 use std::ops::{Deref, DerefMut};
 use std::slice;
 use std::mem;
 
+use crate::vec::Vec2u;
 use crate::world::aim::Aim;
 use crate::world::World;
 use crate::world::damage::Damage;
@@ -25,8 +24,8 @@ pub trait Item {
 	fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
 	fn clone_box(&self) -> ItemBox;
 	fn aim(&self) -> Box<dyn Aim>;
-	fn is_execable(&self, _p: Vector2u, _w: &World) -> bool { false }
-	fn exec(&self, _p: Vector2u, _w: &mut World) {}
+	fn is_execable(&self, _p: Vec2u, _w: &World) -> bool { false }
+	fn exec(&self, _p: Vec2u, _w: &mut World) {}
 }
 
 pub struct ItemBox(pub Box<dyn Item>);

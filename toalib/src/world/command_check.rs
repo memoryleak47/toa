@@ -1,5 +1,4 @@
-use sfml::system::Vector2u;
-
+use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::BUILDABLE_CLASSES;
 use crate::command::{Command, UnitCommand};
@@ -11,7 +10,7 @@ impl World {
 	}
 
 	#[allow(dead_code)]
-	fn get_unchecked_commands_by_unit(&self, _player: u32, pos: Vector2u) -> Vec<Command> {
+	fn get_unchecked_commands_by_unit(&self, _player: u32, pos: Vec2u) -> Vec<Command> {
 		let mut v = Vec::new();
 
 		// add Move
@@ -34,7 +33,7 @@ impl World {
 	}
 
 	#[allow(dead_code)]
-	pub fn get_commands_by_unit(&self, player: u32, pos: Vector2u) -> Vec<Command> {
+	pub fn get_commands_by_unit(&self, player: u32, pos: Vec2u) -> Vec<Command> {
 		self.get_unchecked_commands_by_unit(player, pos).into_iter()
 			.filter(|x| self.is_valid_command(player, x))
 			.collect()
@@ -45,7 +44,7 @@ impl World {
 		let mut v = Vec::new();
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let pos = Vector2u::new(x as u32, y as u32);
+				let pos = Vec2u::new(x as u32, y as u32);
 				if self.get_unit(pos)
 						.filter(|x| x.owner == player)
 						.is_some() {
@@ -59,7 +58,7 @@ impl World {
 		v
 	}
 
-	fn is_valid_unit_command(&self, player: u32, pos: Vector2u, command: &UnitCommand) -> bool {
+	fn is_valid_unit_command(&self, player: u32, pos: Vec2u, command: &UnitCommand) -> bool {
 		self.unitmap[pos.x as usize][pos.y as usize]
 		.as_ref()
 		.filter(|x| x.owner == player)
