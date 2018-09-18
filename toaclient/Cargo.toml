@@ -1,0 +1,8 @@
+[package]
+name = "toaclient"
+version = "0.1.0"
+authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
+edition = "2018"
+
+[dependencies]
+sfml = "0.14"

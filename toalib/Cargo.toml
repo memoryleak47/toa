@@ -1,0 +1,11 @@
+[package]
+name = "toalib"
+version = "0.1.0"
+authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.5"
+lazy_static = "1.0"
+objekt = "0.1"
+sfml = "0.14"
