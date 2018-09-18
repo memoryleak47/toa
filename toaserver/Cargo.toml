@@ -5,3 +5,4 @@ authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
 edition = "2018"
 
 [dependencies]
+toalib = { path = "../toalib" }

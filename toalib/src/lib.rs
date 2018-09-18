@@ -8,10 +8,10 @@ extern crate objekt;
 #[macro_use]
 extern crate lazy_static;
 
-mod vec;
+pub mod vec;
 mod config;
 #[macro_use]
 mod misc;
-mod item;
-mod command;
-mod world;
+pub mod item;
+pub mod command;
+pub mod world;
