@@ -40,18 +40,18 @@ pub trait BuildingClass: Sync {
 	fn get_name(&self) -> &'static str;
 }
 
-pub fn new_buildingmap() -> [[Option<Box<dyn Building>>; MAP_SIZE_Y]; MAP_SIZE_X] {
+pub fn new_buildingmap() -> Vec<Option<Box<dyn Building>>> {
 	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	buildingmap[MAP_SIZE_X / 2][0] = Some(Spawner::new_boxed(0));
-	buildingmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Spawner::new_boxed(1));
+	buildingmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(Spawner::new_boxed(0));
+	buildingmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(Spawner::new_boxed(1));
 
 	buildingmap
 }
 
 impl World {
 	pub fn get_building(&self, p: Vec2u) -> Option<&dyn Building> {
-		self.buildingmap[p.x as usize][p.y as usize]
+		self.buildingmap[index2d!(p.x, p.y)]
 			.as_ref()
 			.map(|x| x.as_ref())
 	}
@@ -59,14 +59,14 @@ impl World {
 	#[allow(dead_code)]
 	pub fn get_building_mut(&mut self, p: Vec2u) -> Option<&mut dyn Building> {
 		// TODO make nicer! try map()
-		if self.buildingmap[p.x as usize][p.y as usize].is_some() {
-			Some(self.buildingmap[p.x as usize][p.y as usize].as_mut().unwrap().as_mut())
+		if self.buildingmap[index2d!(p.x, p.y)].is_some() {
+			Some(self.buildingmap[index2d!(p.x, p.y)].as_mut().unwrap().as_mut())
 		} else {
 			None
 		}
 	}
 
 	pub fn set_building(&mut self, p: Vec2u, b: Option<Box<dyn Building>>) {
-		self.buildingmap[p.x as usize][p.y as usize] = b;
+		self.buildingmap[index2d!(p.x, p.y)] = b;
 	}
 }

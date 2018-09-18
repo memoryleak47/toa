@@ -13,27 +13,27 @@ impl World {
 	fn damage_items_on_ground(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				self.itemmap[x][y].damage(GROUND_DAMAGE);
+				self.itemmap[index2d!(x, y)].damage(GROUND_DAMAGE);
 			}
 		}
 	}
 
 	pub fn get_inventory(&self, p: Vec2u) -> &Inventory {
-		&self.itemmap[p.x as usize][p.y as usize]
+		&self.itemmap[index2d!(p.x, p.y)]
 	}
 
 	pub fn get_inventory_mut(&mut self, p: Vec2u) -> &mut Inventory {
-		&mut self.itemmap[p.x as usize][p.y as usize]
+		&mut self.itemmap[index2d!(p.x, p.y)]
 	}
 }
 
-pub fn new_itemmap() -> [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X] {
+pub fn new_itemmap() -> Vec<Inventory> {
 	use crate::item::ItemClass;
 	use crate::item::food::FoodClass;
 
 	let mut x = init2d!(Inventory::new(), MAP_SIZE_X, MAP_SIZE_Y);
 
-	x[0][0].get_item_vec().push(FoodClass.get_ref().build()); // TODO remove
+	x[index2d!(0, 0)].get_item_vec().push(FoodClass.get_ref().build()); // TODO remove
 
 	x
 }

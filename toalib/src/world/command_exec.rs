@@ -22,7 +22,7 @@ impl World {
 
 	fn exec_unit_command(&mut self, pos: Vec2u, command: &UnitCommand) {
 		let s = command.get_stamina_cost(pos, self);
-		for u in self.unitmap[pos.x as usize][pos.y as usize].iter_mut() {
+		for u in self.unitmap[index2d!(pos.x, pos.y)].iter_mut() {
 			u.stamina -= s as i32;
 		}
 			
@@ -51,8 +51,8 @@ impl World {
 		let y2 = p.y as usize;
 
 		let mut tmp: Option<Unit> = None;
-		mem::swap(&mut tmp, &mut self.unitmap[x1][y1]);
-		mem::swap(&mut tmp, &mut self.unitmap[x2][y2]);
+		mem::swap(&mut tmp, &mut self.unitmap[index2d!(x1, y1)]);
+		mem::swap(&mut tmp, &mut self.unitmap[index2d!(x2, y2)]);
 	}
 
 	fn exec_attack(&mut self, pos: Vec2u, aim: &dyn Aim) {
@@ -71,7 +71,7 @@ impl World {
 	fn exec_build(&mut self, at: Vec2u, class: &'static dyn BuildingClass) {
 		let construction = Construction::new(class);
 		let boxed = Box::new(construction);
-		self.buildingmap[at.x as usize][at.y as usize] = Some(boxed);
+		self.buildingmap[index2d!(at.x, at.y)] = Some(boxed);
 
 		self.get_unit_mut(at).unwrap()
 			.inventory.reduce(class.get_build_item_cost());
@@ -79,7 +79,7 @@ impl World {
 
 	fn exec_work(&mut self, at: Vec2u) {
 		let mut tmp_opt: Option<Box<_>> = None;
-		mem::swap(&mut tmp_opt, &mut self.buildingmap[at.x as usize][at.y as usize]);
+		mem::swap(&mut tmp_opt, &mut self.buildingmap[index2d!(at.x, at.y)]);
 		tmp_opt.iter_mut()
 			.for_each(|b| b.work(self, at));
 		if self.get_building(at).is_none() {

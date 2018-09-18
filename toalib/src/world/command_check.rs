@@ -59,7 +59,7 @@ impl World {
 	}
 
 	fn is_valid_unit_command(&self, player: u32, pos: Vec2u, command: &UnitCommand) -> bool {
-		self.unitmap[pos.x as usize][pos.y as usize]
+		self.unitmap[index2d!(pos.x, pos.y)]
 		.as_ref()
 		.filter(|x| x.owner == player)
 		.filter(|x| x.stamina > 0)

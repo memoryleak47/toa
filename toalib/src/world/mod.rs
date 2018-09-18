@@ -22,10 +22,10 @@ use crate::world::damage::Damage;
 
 // represents the current world situation
 pub struct World {
-	pub terrainmap: [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub buildingmap: [[Option<Box<dyn Building>>; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub unitmap: [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X],
-	pub itemmap: [[Inventory; MAP_SIZE_Y]; MAP_SIZE_X],
+	pub terrainmap: Vec<Terrain>,
+	pub buildingmap: Vec<Option<Box<dyn Building>>>,
+	pub unitmap: Vec<Option<Unit>>,
+	pub itemmap: Vec<Inventory>,
 	pub active_player: u32,
 }
 

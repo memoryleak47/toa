@@ -40,19 +40,19 @@ impl Terrain {
 	}
 }
 
-pub fn new_terrainmap() -> [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X] {
+pub fn new_terrainmap() -> Vec<Terrain> {
 	let mut rng = thread_rng();
 
-	let mut terrainmap = [[Terrain::GRASS; MAP_SIZE_Y]; MAP_SIZE_X];
+	let mut terrainmap = init2d!(Terrain::GRASS, MAP_SIZE_Y, MAP_SIZE_X);
 	for x in 0..MAP_SIZE_X {
 		for y in 0..MAP_SIZE_Y {
 			let r = rng.next_u32();
 			if r % 3 == 0 {
-				terrainmap[x][y] = Terrain::FOREST;
+				terrainmap[index2d!(x, y)] = Terrain::FOREST;
 			} else if r % 7 == 0 {
-				terrainmap[x][y] = Terrain::STONE;
+				terrainmap[index2d!(x, y)] = Terrain::STONE;
 			} else if r % 11 == 0 {
-				terrainmap[x][y] = Terrain::IRON;
+				terrainmap[index2d!(x, y)] = Terrain::IRON;
 			}
 		}
 	}
@@ -62,6 +62,6 @@ pub fn new_terrainmap() -> [[Terrain; MAP_SIZE_Y]; MAP_SIZE_X] {
 
 impl World {
 	pub fn get_terrain(&self, p: Vec2u) -> &Terrain {
-		&self.terrainmap[p.x as usize][p.y as usize]
+		&self.terrainmap[index2d!(p.x, p.y)]
 	}
 }

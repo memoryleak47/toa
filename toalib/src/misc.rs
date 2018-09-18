@@ -47,18 +47,23 @@ impl Direction {
 
 #[macro_export]
 macro_rules! init2d {
-	($value: expr, $width: expr, $height: expr) => {
-		unsafe {
-			use std::{mem, ptr};
-			let mut arr: [[_; $height]; $width] = mem::uninitialized();
-			for x in 0..$width {
-				for y in 0..$height {
-					ptr::write(&mut arr[x][y], $value);
-				}
-			}
-			arr
-		}
-	}
+	($value: expr, $width: expr, $height: expr) => {{
+		use std::iter;
+
+		iter::repeat(|| $value)
+			.map(|x| x())
+			.take($width * $height)
+			.collect::<Vec<_>>()
+	}}
+}
+
+#[macro_export]
+macro_rules! index2d {
+	($width: expr, $height: expr) => {{
+		use crate::config::MAP_SIZE_X;
+
+		($width as usize) + ($height as usize) * MAP_SIZE_X
+	}}
 }
 
 pub fn res_dir() -> PathBuf {

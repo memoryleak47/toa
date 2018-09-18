@@ -57,11 +57,11 @@ impl Unit {
 	}
 }
 
-pub fn new_unitmap() -> [[Option<Unit>; MAP_SIZE_Y]; MAP_SIZE_X] {
+pub fn new_unitmap() -> Vec<Option<Unit>> {
 	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	unitmap[MAP_SIZE_X / 2][0] = Some(Unit::new(0));
-	unitmap[MAP_SIZE_X / 2][MAP_SIZE_Y - 1] = Some(Unit::new(1));
+	unitmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(Unit::new(0));
+	unitmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(Unit::new(1));
 
 	unitmap
 }
@@ -76,7 +76,7 @@ impl World {
 	fn reduce_food(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
+				if let Some(ref mut unit) = self.unitmap[index2d!(x, y)].as_mut() {
 					unit.food = unit.food.saturating_sub(FOOD_PER_TURN);
 				}
 			}
@@ -86,7 +86,7 @@ impl World {
 	fn apply_hunger_consequences(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let u: &mut Option<Unit> = &mut self.unitmap[x][y];
+				let u: &mut Option<Unit> = &mut self.unitmap[index2d!(x, y)];
 				if let Some(ref mut unit) = u {
 					if unit.food == 0 {
 						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
@@ -105,7 +105,7 @@ impl World {
 	pub fn refill_stamina(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(ref mut unit) = self.unitmap[x][y].as_mut() {
+				if let Some(ref mut unit) = self.unitmap[index2d!(x, y)].as_mut() {
 					unit.stamina = min(FULL_STAMINA as i32, unit.stamina + FULL_STAMINA as i32);
 				}
 			}
@@ -138,14 +138,14 @@ impl World {
 	}
 
 	pub fn get_unit(&self, p: Vec2u) -> Option<&Unit> {
-		self.unitmap[p.x as usize][p.y as usize].as_ref()
+		self.unitmap[index2d!(p.x, p.y)].as_ref()
 	}
 
 	pub fn get_unit_mut(&mut self, p: Vec2u) -> Option<&mut Unit> {
-		self.unitmap[p.x as usize][p.y as usize].as_mut()
+		self.unitmap[index2d!(p.x, p.y)].as_mut()
 	}
 
 	pub fn set_unit(&mut self, p: Vec2u, unit: Option<Unit>) {
-		self.unitmap[p.x as usize][p.y as usize] = unit;
+		self.unitmap[index2d!(p.x, p.y)] = unit;
 	}
 }
