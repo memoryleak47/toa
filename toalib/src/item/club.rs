@@ -1,5 +1,5 @@
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::world::aim::{Aim, MeeleeAim};
+use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 
 lazy_static! {
@@ -35,7 +35,7 @@ impl ItemTrait for Club {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn aim(&self) -> Box<dyn Aim> {
-		Box::new(MeeleeAim::new(Damage(10)))
+	fn aim(&self) -> Aim {
+		new_meelee_aim(Damage(10))
 	}
 }

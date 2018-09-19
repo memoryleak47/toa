@@ -2,7 +2,7 @@ use std::cmp::min;
 
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use crate::world::aim::{Aim, MeeleeAim};
+use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 use crate::item::{Inventory, Item};
 
@@ -44,11 +44,11 @@ impl Unit {
 		5 + self.inventory.get_weight()
 	}
 
-	pub fn aim(&self) -> Box<dyn Aim> {
+	pub fn aim(&self) -> Aim {
 		self.main_item
 			.as_ref()
 			.map(|x| x.aim())
-			.unwrap_or_else(|| Box::new(MeeleeAim::new(Damage(1))))
+			.unwrap_or_else(|| new_meelee_aim(Damage(1)))
 	}
 
 	pub fn damage(&mut self, damage: Damage) -> bool { // returns whether the unit died

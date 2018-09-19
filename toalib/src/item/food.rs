@@ -1,7 +1,7 @@
 use crate::vec::Vec2u;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
-use crate::world::aim::{Aim, MeeleeAim};
+use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -28,8 +28,8 @@ impl ItemTrait for Food {
 		ItemClass::Food
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn aim(&self) -> Box<dyn Aim> {
-		Box::new(MeeleeAim::new(Damage(1)))
+	fn aim(&self) -> Aim {
+		new_meelee_aim(Damage(1))
 	}
 	fn is_execable(&self, _p: Vec2u, _w: &World) -> bool { true }
 	fn exec(&self, p: Vec2u, w: &mut World) {

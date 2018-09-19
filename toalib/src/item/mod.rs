@@ -21,7 +21,7 @@ trait ItemTrait {
 
 	// returns whether the item got destroyed
 	fn damage(&mut self, damage: Damage) -> bool;
-	fn aim(&self) -> Box<dyn Aim>;
+	fn aim(&self) -> Aim;
 	fn is_execable(&self, _p: Vec2u, _w: &World) -> bool { false }
 	fn exec(&self, _p: Vec2u, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
 }
@@ -51,7 +51,7 @@ macro_rules! setup {
 		impl Item {
 			pub fn get_class(&self) -> ItemClass						{ match self { $( Item::$x(a) => a.get_class() ),* } }
 			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Item::$x(a) => a.damage(damage) ),* } }
-			pub fn aim(&self) -> Box<dyn Aim>							{ match self { $( Item::$x(a) => a.aim() ),* } }
+			pub fn aim(&self) -> Aim									{ match self { $( Item::$x(a) => a.aim() ),* } }
 			pub fn is_execable(&self, p: Vec2u, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
 			pub fn exec(&self, p: Vec2u, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
 		}

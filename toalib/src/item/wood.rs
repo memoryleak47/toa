@@ -1,5 +1,5 @@
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::world::aim::{Aim, MeeleeAim};
+use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -26,7 +26,7 @@ impl ItemTrait for Wood {
 		ItemClass::Wood
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn aim(&self) -> Box<dyn Aim> {
-		Box::new(MeeleeAim::new(Damage(5)))
+	fn aim(&self) -> Aim {
+		new_meelee_aim(Damage(5))
 	}
 }

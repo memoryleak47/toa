@@ -7,7 +7,7 @@ use crate::world::buildingmap::BuildingClass;
 
 pub enum UnitCommand {
 	Move(Direction),
-	Attack(Box<dyn Aim>),
+	Attack(Aim),
 	Build(BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work

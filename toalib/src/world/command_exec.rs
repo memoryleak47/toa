@@ -27,7 +27,7 @@ impl World {
 			
 		match command {
 			&UnitCommand::Move(direction) => self.exec_move(pos, direction),
-			&UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim.as_ref()),
+			&UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim),
 			&UnitCommand::Build(class)  => self.exec_build(pos, class),
 			&UnitCommand::Work => self.exec_work(pos),
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
@@ -54,7 +54,7 @@ impl World {
 		mem::swap(&mut tmp, &mut self.unitmap[index2d!(x2, y2)]);
 	}
 
-	fn exec_attack(&mut self, pos: Vec2u, aim: &dyn Aim) {
+	fn exec_attack(&mut self, pos: Vec2u, aim: &Aim) {
 		aim.exec(pos, self);
 	}
 
