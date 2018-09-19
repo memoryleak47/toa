@@ -1,45 +1,49 @@
 use std::any::Any;
 
 use crate::vec::Vec2u;
-use crate::item::ItemClass;
-use crate::world::buildingmap::{BuildingClass, Building};
+use crate::item::{ItemClass};
+use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait};
 use crate::world::World;
 use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct ConstructionClass;
 
 #[derive(Clone)]
 pub struct Construction {
 	health: u32,
 	invested_stamina: u32,
-	build_class: &'static dyn BuildingClass,
+	build_class: BuildingClass,
 }
 
-impl BuildingClass for ConstructionClass {
-	fn get_ref(&self) -> &'static dyn BuildingClass { &ConstructionClass }
-	fn get_required_terrain(&self) -> Option<Terrain> {
+impl BuildingClassTrait for ConstructionClass {
+	type Instance = Construction;
+
+	fn get_required_terrain() -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
 	}
-	fn get_build_item_cost(&self) -> &'static [ItemClass] {
+	fn get_build_item_cost() -> &'static [ItemClass] {
 		panic!("get_build_item_cost() should not be called on a Construction")
 	}
-	fn get_build_stamina_cost(&self) -> u32 {
+	fn get_build_stamina_cost() -> u32 {
 		panic!("get_build_stamina_cost() should not be called on a Construction")
 	}
-	fn get_height(&self) -> u32 { 0 }
+	fn get_height() -> u32 { 0 }
 
-	fn build(&self) -> Box<dyn Building> {
+	fn build() -> Building {
 		panic!("build() should not be called on a Construction")
 	}
-	fn get_name(&self) -> &'static str {
+	fn get_name() -> &'static str {
 		"Construction"
 	}
 }
 
-impl Building for Construction {
+impl BuildingTrait for Construction {
+	type Class = ConstructionClass;
+
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_class(&self) -> &'static dyn BuildingClass { ConstructionClass.get_ref() }
+	fn get_class(&self) -> BuildingClass { BuildingClass::Construction }
 	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { true }
 	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { true }
 	fn damage(&mut self, damage: Damage) -> bool {
@@ -55,12 +59,13 @@ impl Building for Construction {
 	}
 }
 
-impl Construction {
-	pub fn new(class: &'static dyn BuildingClass) -> Construction {
-		Construction {
-			health: 100, // TODO un-hardcode
-			invested_stamina: 0,
-			build_class: class,
-		}
-	}
+pub fn new_construction(class: BuildingClass) -> Building {
+		Building::Construction(
+			Construction {
+				health: 100, // TODO un-hardcode
+				invested_stamina: 0,
+				build_class: class,
+			}
+		)
 }
+

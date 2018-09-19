@@ -3,7 +3,6 @@
 #![feature(slice_patterns)]
 
 extern crate rand;
-extern crate objekt;
 
 #[macro_use]
 extern crate lazy_static;

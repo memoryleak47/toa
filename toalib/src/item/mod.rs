@@ -1,6 +1,6 @@
-pub mod food;
-pub mod wood;
-pub mod club;
+mod food;
+mod wood;
+mod club;
 
 use std::slice;
 use std::mem;
@@ -49,18 +49,18 @@ macro_rules! setup {
 		}
 
 		impl Item {
-			pub fn get_class(&self) -> ItemClass { match self { $( Item::$x(a) => a.get_class() ),* } }
-			pub fn damage(&mut self, damage: Damage) -> bool { match self { $( Item::$x(a) => a.damage(damage) ),* } }
-			pub fn aim(&self) -> Box<dyn Aim> { match self { $( Item::$x(a) => a.aim() ),* } }
-			pub fn is_execable(&self, p: Vec2u, w: &World) -> bool { match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
-			pub fn exec(&self, p: Vec2u, w: &mut World) { match self { $( Item::$x(a) => a.exec(p, w) ),* } }
+			pub fn get_class(&self) -> ItemClass						{ match self { $( Item::$x(a) => a.get_class() ),* } }
+			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Item::$x(a) => a.damage(damage) ),* } }
+			pub fn aim(&self) -> Box<dyn Aim>							{ match self { $( Item::$x(a) => a.aim() ),* } }
+			pub fn is_execable(&self, p: Vec2u, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
+			pub fn exec(&self, p: Vec2u, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
 		}
 
 		impl ItemClass {
-			pub fn get_name(&self) -> &'static str { match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_name() ),* } }
-			pub fn get_weight(&self) -> u32 { match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_weight() ),* } }
-			pub fn build(&self) -> Item { match self { $( ItemClass::$x => <$x as ItemTrait>::Class::build() ),* } }
-			pub fn get_recipe(&self) -> Option<&'static [ItemClass]> { match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_recipe() ),* } }
+			pub fn get_name(&self) -> &'static str						{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_name() ),* } }
+			pub fn get_weight(&self) -> u32								{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_weight() ),* } }
+			pub fn build(&self) -> Item									{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::build() ),* } }
+			pub fn get_recipe(&self) -> Option<&'static [ItemClass]> 	{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_recipe() ),* } }
 		}
 	};
 }

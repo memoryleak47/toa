@@ -7,8 +7,7 @@ use crate::misc::Direction;
 use crate::world::World;
 use crate::world::aim::Aim;
 use crate::world::unitmap::Unit;
-use crate::world::buildingmap::BuildingClass;
-use crate::world::buildingmap::construction::Construction;
+use crate::world::buildingmap::{BuildingClass, new_construction};
 
 impl World {
 	pub fn exec(&mut self, command: &Command) {
@@ -68,17 +67,15 @@ impl World {
 		self.on_turn_start();
 	}
 
-	fn exec_build(&mut self, at: Vec2u, class: &'static dyn BuildingClass) {
-		let construction = Construction::new(class);
-		let boxed = Box::new(construction);
-		self.buildingmap[index2d!(at.x, at.y)] = Some(boxed);
+	fn exec_build(&mut self, at: Vec2u, class: BuildingClass) {
+		self.buildingmap[index2d!(at.x, at.y)] = Some(new_construction(class));
 
 		self.get_unit_mut(at).unwrap()
 			.inventory.reduce(class.get_build_item_cost());
 	}
 
 	fn exec_work(&mut self, at: Vec2u) {
-		let mut tmp_opt: Option<Box<_>> = None;
+		let mut tmp_opt: Option<_> = None;
 		mem::swap(&mut tmp_opt, &mut self.buildingmap[index2d!(at.x, at.y)]);
 		tmp_opt.iter_mut()
 			.for_each(|b| b.work(self, at));

@@ -23,7 +23,7 @@ use crate::world::damage::Damage;
 // represents the current world situation
 pub struct World {
 	pub terrainmap: Vec<Terrain>,
-	pub buildingmap: Vec<Option<Box<dyn Building>>>,
+	pub buildingmap: Vec<Option<Building>>,
 	pub unitmap: Vec<Option<Unit>>,
 	pub itemmap: Vec<Inventory>,
 	pub active_player: u32,

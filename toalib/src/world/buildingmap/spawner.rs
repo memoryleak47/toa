@@ -3,7 +3,7 @@ use std::iter;
 
 use crate::vec::Vec2u;
 use crate::item::ItemClass;
-use crate::world::buildingmap::{BuildingClass, Building};
+use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait};
 use crate::world::World;
 use crate::world::unitmap::Unit;
 use crate::world::terrainmap::Terrain;
@@ -19,6 +19,7 @@ lazy_static! {
 	};
 }
 
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct SpawnerClass;
 
 #[derive(Clone)]
@@ -27,28 +28,31 @@ pub struct Spawner {
 	health: u32,
 }
 
-impl BuildingClass for SpawnerClass {
-	fn get_ref(&self) -> &'static dyn BuildingClass { &SpawnerClass }
-	fn get_required_terrain(&self) -> Option<Terrain> { None }
-	fn get_build_item_cost(&self) -> &'static [ItemClass] {
+impl BuildingClassTrait for SpawnerClass {
+	type Instance = Spawner;
+
+	fn get_required_terrain() -> Option<Terrain> { None }
+	fn get_build_item_cost() -> &'static [ItemClass] {
 		panic!("you should call get_build_item_cost() on Spawner!")
 	}
-	fn get_build_stamina_cost(&self) -> u32 {
+	fn get_build_stamina_cost() -> u32 {
 		panic!("you should call get_build_stamina_cost() on Spawner!")
 	}
-	fn get_height(&self) -> u32 { 0 }
+	fn get_height() -> u32 { 0 }
 
-	fn build(&self) -> Box<dyn Building> {
+	fn build() -> Building {
 		panic!("you should never call build() on Spawner!")
 	}
-	fn get_name(&self) -> &'static str {
+	fn get_name() -> &'static str {
 		"Spawner"
 	}
 }
 
-impl Building for Spawner {
+impl BuildingTrait for Spawner {
+	type Class = SpawnerClass;
+
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_class(&self) -> &'static dyn BuildingClass { SpawnerClass.get_ref() }
+	fn get_class(&self) -> BuildingClass { BuildingClass::Spawner }
 	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { false }
 	fn is_workable(&self, w: &World, p: Vec2u) -> bool {
 		w.get_unit(p + Vec2u::new(1, 0)).is_none()
@@ -70,12 +74,6 @@ impl Building for Spawner {
 	}
 }
 
-impl Spawner {
-	pub fn new(player: u32) -> Spawner {
-		Spawner { player, health: 100} // TODO un-hardcode
-	}
-
-	pub fn new_boxed(player: u32) -> Box<dyn Building> {
-		Box::new(Spawner::new(player))
-	}
+pub fn new_spawner(player: u32) -> Building {
+	Building::Spawner(Spawner { player, health: 100}) // TODO un-hardcode
 }
