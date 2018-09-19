@@ -12,9 +12,11 @@ lazy_static! {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct FarmClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Farm {
 	health: u32,
 }

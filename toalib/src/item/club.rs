@@ -7,9 +7,11 @@ lazy_static! {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct ClubClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Club {
 	health: u32,
 }

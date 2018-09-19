@@ -20,9 +20,11 @@ lazy_static! {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct SpawnerClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Spawner {
 	player: u32,
 	health: u32,

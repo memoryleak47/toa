@@ -3,9 +3,11 @@ use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct WoodClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Wood;
 
 impl ItemClassTrait for WoodClass {

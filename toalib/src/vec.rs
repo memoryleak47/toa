@@ -1,6 +1,7 @@
 use std::ops::Add;
 
 #[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct Vec2t<T: Add<Output=T>> {
 	pub x: T,
 	pub y: T,

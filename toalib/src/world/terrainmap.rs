@@ -6,6 +6,7 @@ use crate::world::unitmap::Unit;
 use crate::item::ItemClass;
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(Serialize, Deserialize)]
 pub enum Terrain {
 	GRASS,
 	FOREST,

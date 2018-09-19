@@ -13,6 +13,7 @@ const FOOD_PER_TURN: u32 = 4;
 const HUNGER_DAMAGE: u32 = 10;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Unit {
 	pub owner: u32,
 	pub stamina: i32,

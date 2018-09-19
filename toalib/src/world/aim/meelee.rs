@@ -5,6 +5,7 @@ use crate::world::World;
 use crate::misc::Direction;
 
 #[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct MeeleeAim {
 	dir: Direction,
 	damage: Damage,

@@ -5,9 +5,11 @@ use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct FoodClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Food;
 
 impl ItemClassTrait for FoodClass {

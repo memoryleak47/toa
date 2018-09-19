@@ -38,11 +38,13 @@ trait ItemClassTrait {
 macro_rules! setup {
 	($($x:ident),*) => {
 
+		#[derive(Serialize, Deserialize)]
 		#[derive(Clone)]
 		pub enum Item {
 			$(  $x($x)  ),*
 		}
 
+		#[derive(Serialize, Deserialize)]
 		#[derive(PartialEq, Eq, Copy, Clone)]
 		pub enum ItemClass {
 			$( $x ),*
@@ -67,6 +69,7 @@ macro_rules! setup {
 
 setup!(Food, Wood, Club);
 
+#[derive(Serialize, Deserialize)]
 pub struct Inventory {
 	items: Vec<Item>,
 }

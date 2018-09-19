@@ -6,7 +6,6 @@ use self::meelee::MeeleeAim;
 use crate::vec::{Vec2u, Vec2i};
 use crate::misc::Direction;
 use crate::world::World;
-use crate::world::damage::Damage;
 
 trait AimTrait {
 	fn apply_direction(&mut self, _d: Direction, _w: &World);
@@ -19,6 +18,7 @@ macro_rules! setup {
 
 		// Aims are relative to it's owner
 		#[derive(Clone)]
+		#[derive(Serialize, Deserialize)]
 		pub enum Aim {
 			$(  $x($x)  ),*
 		}

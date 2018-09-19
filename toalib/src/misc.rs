@@ -6,6 +6,7 @@ use crate::vec::{Vec2u, Vec2i, Vec2f};
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 
 #[derive(PartialEq, Copy, Clone)]
+#[derive(Serialize, Deserialize)]
 pub enum Direction {
 	Up, Left, Down, Right
 }

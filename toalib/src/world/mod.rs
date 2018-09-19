@@ -21,6 +21,7 @@ use crate::item::Inventory;
 use crate::world::damage::Damage;
 
 // represents the current world situation
+#[derive(Serialize, Deserialize)]
 pub struct World {
 	pub terrainmap: Vec<Terrain>,
 	pub buildingmap: Vec<Option<Building>>,

@@ -8,9 +8,11 @@ use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct ConstructionClass;
 
 #[derive(Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Construction {
 	health: u32,
 	invested_stamina: u32,

@@ -50,11 +50,13 @@ macro_rules! setup {
 	($($x:ident),*) => {
 
 		#[derive(Clone)]
+		#[derive(Serialize, Deserialize)]
 		pub enum Building {
 			$(  $x($x)  ),*
 		}
 
 		#[derive(PartialEq, Eq, Copy, Clone)]
+		#[derive(Serialize, Deserialize)]
 		pub enum BuildingClass {
 			$( $x ),*
 		}
