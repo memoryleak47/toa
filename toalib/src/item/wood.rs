@@ -1,34 +1,31 @@
-use crate::item::{Item, ItemClass, ItemBox};
+use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::aim::{Aim, MeeleeAim};
 use crate::world::damage::Damage;
 
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct WoodClass;
 
 #[derive(Clone)]
 pub struct Wood;
 
-impl ItemClass for WoodClass {
-	fn get_name(&self) -> &'static str { "Wood" }
-	fn get_ref(&self) -> &'static dyn ItemClass {
-		&WoodClass
+impl ItemClassTrait for WoodClass {
+	type Instance = Wood;
+
+	fn get_name() -> &'static str { "Wood" }
+	fn get_weight() -> u32 { 10 }
+	fn build() -> Item {
+		Item::Wood(Wood)
 	}
-	fn get_weight(&self) -> u32 {
-		10
-	}
-	fn build(&self) -> ItemBox {
-		ItemBox(Box::new(Wood))
-	}
-	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { None }
+	fn get_recipe() -> Option<&'static [ItemClass]> { None }
 }
 
-impl Item for Wood {
-	fn get_class(&self) -> &'static dyn ItemClass {
-		WoodClass.get_ref()
+impl ItemTrait for Wood {
+	type Class = WoodClass;
+
+	fn get_class(&self) -> ItemClass {
+		ItemClass::Wood
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn clone_box(&self) -> ItemBox {
-		ItemBox(Box::new(self.clone()))
-	}
 	fn aim(&self) -> Box<dyn Aim> {
 		Box::new(MeeleeAim::new(Damage(5)))
 	}

@@ -33,7 +33,7 @@ pub trait Building: objekt::Clone {
 pub trait BuildingClass: Sync {
 	fn get_ref(&self) -> &'static dyn BuildingClass;
 	fn get_required_terrain(&self) -> Option<Terrain>;
-	fn get_build_item_cost(&self) -> &'static [&'static dyn ItemClass];
+	fn get_build_item_cost(&self) -> &'static [ItemClass];
 	fn get_build_stamina_cost(&self) -> u32;
 	fn get_height(&self) -> u32;
 	fn build(&self) -> Box<dyn Building>;

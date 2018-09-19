@@ -21,7 +21,7 @@ impl BuildingClass for ConstructionClass {
 	fn get_required_terrain(&self) -> Option<Terrain> {
 		panic!("get_required_terrain() should not be called on a Construction")
 	}
-	fn get_build_item_cost(&self) -> &'static [&'static dyn ItemClass] {
+	fn get_build_item_cost(&self) -> &'static [ItemClass] {
 		panic!("get_build_item_cost() should not be called on a Construction")
 	}
 	fn get_build_stamina_cost(&self) -> u32 {

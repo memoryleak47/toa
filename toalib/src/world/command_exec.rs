@@ -119,7 +119,7 @@ impl World {
 		self.set_building(at, None);
 	}
 
-	fn exec_craft_item_class(&mut self, ic: &'static dyn ItemClass, at: Vec2u) {
+	fn exec_craft_item_class(&mut self, ic: ItemClass, at: Vec2u) {
 		let unit = self.get_unit_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());

@@ -1,36 +1,33 @@
 use crate::vec::Vec2u;
-use crate::item::{Item, ItemClass, ItemBox};
+use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
 use crate::world::aim::{Aim, MeeleeAim};
 use crate::world::damage::Damage;
 
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct FoodClass;
 
 #[derive(Clone)]
 pub struct Food;
 
-impl ItemClass for FoodClass {
-	fn get_name(&self) -> &'static str { "Food" }
-	fn get_ref(&self) -> &'static dyn ItemClass {
-		&FoodClass
+impl ItemClassTrait for FoodClass {
+	type Instance = Food;
+	
+	fn get_name() -> &'static str { "Food" }
+	fn get_weight() -> u32 { 10 }
+	fn build() -> Item {
+		Item::Food(Food)
 	}
-	fn get_weight(&self) -> u32 {
-		10
-	}
-	fn build(&self) -> ItemBox {
-		ItemBox(Box::new(Food))
-	}
-	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { None }
+	fn get_recipe() -> Option<&'static [ItemClass]> { None }
 }
 
-impl Item for Food {
-	fn get_class(&self) -> &'static dyn ItemClass {
-		FoodClass.get_ref()
+impl ItemTrait for Food {
+	type Class = FoodClass;
+
+	fn get_class(&self) -> ItemClass {
+		ItemClass::Food
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn clone_box(&self) -> ItemBox {
-		ItemBox(Box::new(self.clone()))
-	}
 	fn aim(&self) -> Box<dyn Aim> {
 		Box::new(MeeleeAim::new(Damage(1)))
 	}

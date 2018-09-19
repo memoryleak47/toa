@@ -3,7 +3,6 @@ use std::iter;
 
 use crate::vec::Vec2u;
 use crate::item::ItemClass;
-use crate::item::food::FoodClass;
 use crate::world::buildingmap::{BuildingClass, Building};
 use crate::world::World;
 use crate::world::unitmap::Unit;
@@ -13,9 +12,8 @@ use crate::world::damage::Damage;
 const REQUIRED_FOOD: u32 = 10;
 
 lazy_static! {
-	static ref REQUIRED_FOOD_VEC: Vec<&'static dyn ItemClass> = {
-		let food = FoodClass.get_ref();
-		iter::repeat(food)
+	static ref REQUIRED_FOOD_VEC: Vec<ItemClass> = {
+		iter::repeat(ItemClass::Food)
 			.take(REQUIRED_FOOD as usize)
 			.collect()
 	};
@@ -32,7 +30,7 @@ pub struct Spawner {
 impl BuildingClass for SpawnerClass {
 	fn get_ref(&self) -> &'static dyn BuildingClass { &SpawnerClass }
 	fn get_required_terrain(&self) -> Option<Terrain> { None }
-	fn get_build_item_cost(&self) -> &'static [&'static dyn ItemClass] {
+	fn get_build_item_cost(&self) -> &'static [ItemClass] {
 		panic!("you should call get_build_item_cost() on Spawner!")
 	}
 	fn get_build_stamina_cost(&self) -> u32 {

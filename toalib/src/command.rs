@@ -14,7 +14,7 @@ pub enum UnitCommand {
 	DropItem(usize),
 	TakeItem(usize),
 	BurnBuilding,
-	Craft(&'static dyn ItemClass),
+	Craft(ItemClass),
 	ChangeMainItem(Option<usize>),
 	ExecItem(usize),
 }

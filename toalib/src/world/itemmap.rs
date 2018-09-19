@@ -1,5 +1,5 @@
 use crate::vec::Vec2u;
-use crate::item::Inventory;
+use crate::item::{Inventory, ItemClass};
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::damage::Damage;
 
@@ -28,12 +28,9 @@ impl World {
 }
 
 pub fn new_itemmap() -> Vec<Inventory> {
-	use crate::item::ItemClass;
-	use crate::item::food::FoodClass;
-
 	let mut x = init2d!(Inventory::new(), MAP_SIZE_X, MAP_SIZE_Y);
 
-	x[index2d!(0, 0)].get_item_vec().push(FoodClass.get_ref().build()); // TODO remove
+	x[index2d!(0, 0)].get_item_vec().push(ItemClass::Food.build()); // TODO remove
 
 	x
 }

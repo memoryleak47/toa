@@ -1,12 +1,12 @@
-use crate::item::{Item, ItemClass, ItemBox};
-use crate::item::wood::WoodClass;
+use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::aim::{Aim, MeeleeAim};
 use crate::world::damage::Damage;
 
 lazy_static! {
-	static ref RECIPE: [&'static dyn ItemClass; 2] = [WoodClass.get_ref(), WoodClass.get_ref()];
+	static ref RECIPE: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];
 }
 
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct ClubClass;
 
 #[derive(Clone)]
@@ -14,30 +14,26 @@ pub struct Club {
 	health: u32,
 }
 
-impl ItemClass for ClubClass {
-	fn get_name(&self) -> &'static str { "Club" }
-	fn get_ref(&self) -> &'static dyn ItemClass {
-		&ClubClass
+impl ItemClassTrait for ClubClass {
+	type Instance = Club;
+
+	fn get_name() -> &'static str { "Club" }
+	fn get_weight() -> u32 { 100 }
+	fn build() -> Item {
+		Item::Club(Club { health: 100 })
 	}
-	fn get_weight(&self) -> u32 {
-		100
-	}
-	fn build(&self) -> ItemBox {
-		ItemBox(Box::new(Club { health: 100 }))
-	}
-	fn get_recipe(&self) -> Option<&'static [&'static dyn ItemClass]> { Some(&RECIPE[..]) }
+	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
 }
 
-impl Item for Club {
-	fn get_class(&self) -> &'static dyn ItemClass {
-		ClubClass.get_ref()
+impl ItemTrait for Club {
+	type Class = ClubClass;
+
+	fn get_class(&self) -> ItemClass {
+		ItemClass::Club
 	}
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
-	}
-	fn clone_box(&self) -> ItemBox {
-		ItemBox(Box::new(self.clone()))
 	}
 	fn aim(&self) -> Box<dyn Aim> {
 		Box::new(MeeleeAim::new(Damage(10)))

@@ -3,7 +3,6 @@ use rand::{RngCore, thread_rng};
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::unitmap::Unit;
-use crate::item;
 use crate::item::ItemClass;
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -31,10 +30,10 @@ impl Terrain {
 		}
 	}
 
-	pub fn get_item_class(&self) -> &'static dyn ItemClass {
+	pub fn get_item_class(&self) -> ItemClass {
 		match self {
-			Terrain::GRASS => item::food::FoodClass.get_ref(),
-			Terrain::FOREST => item::wood::WoodClass.get_ref(),
+			Terrain::GRASS => ItemClass::Food,
+			Terrain::FOREST => ItemClass::Wood,
 			_ => panic!("get_item() can only be called on GRASS/FOREST"),
 		}
 	}

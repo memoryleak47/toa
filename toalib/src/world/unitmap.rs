@@ -4,7 +4,7 @@ use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::aim::{Aim, MeeleeAim};
 use crate::world::damage::Damage;
-use crate::item::{Inventory, ItemBox};
+use crate::item::{Inventory, Item};
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -19,7 +19,7 @@ pub struct Unit {
 	pub health: u32,
 	pub food: u32,
 	pub inventory: Inventory,
-	pub main_item: Option<ItemBox>,
+	pub main_item: Option<Item>,
 }
 
 impl Unit {
