@@ -2,10 +2,18 @@ use serde_json;
 
 use crate::world::World;
 use crate::command::Command;
+use crate::team::PlayerID;
 
 #[derive(Serialize, Deserialize)]
 pub enum ServerToClientPacket {
-	World(World),
+	Init {
+		world: World,
+		your_id: PlayerID
+	},
+	Command {
+		command: Command,
+		author_id: PlayerID,
+	}
 }
 
 #[derive(Serialize, Deserialize)]
