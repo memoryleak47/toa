@@ -10,7 +10,7 @@ pub enum Team {
 	Blue
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct PlayerPool {
 	players: HashMap<PlayerID, Team>,
 }

@@ -4,6 +4,7 @@ use std::io::stdin;
 
 use toalib::world::World;
 use toalib::team::{Team, PlayerPool};
+use toalib::packet::ServerToClientPacket;
 
 mod pool;
 mod net;
@@ -34,8 +35,16 @@ fn main() {
 		if (&*s).trim() == "go" { break; } // TODO add more commands
 	}
 
-	// game
 	let mut w = World::gen(player_pool);
+
+	net_pool.broadcast(|id| {
+		ServerToClientPacket::Init {
+			world: w.clone(),
+			your_id: id,
+		}
+	});
+
+	// game
 	loop {
 		println!("running!");
 		// run!

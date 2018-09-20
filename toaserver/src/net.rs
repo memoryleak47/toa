@@ -1,7 +1,7 @@
 use std::net::{TcpStream, TcpListener};
-use std::io::{Read, ErrorKind};
+use std::io::{Write, Read, ErrorKind};
 
-use toalib::packet::ClientToServerPacket;
+use toalib::packet::{ClientToServerPacket, ServerToClientPacket};
 
 const PORT: u32 = 4242;
 
@@ -17,6 +17,11 @@ pub fn try_receiving_packet(stream: &mut TcpStream) -> Option<Result<ClientToSer
 		ClientToServerPacket::from_str(&*string)
 			.map_err(|x| x.to_string())
 	)
+}
+
+pub fn send_packet(packet: ServerToClientPacket, stream: &mut TcpStream) {
+	let s = packet.to_string().unwrap();
+	stream.write(s.as_bytes()).unwrap();
 }
 
 pub fn create_listener() -> Result<TcpListener, String> {

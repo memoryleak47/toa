@@ -22,7 +22,7 @@ use crate::world::damage::Damage;
 use crate::team::{PlayerPool, PlayerID};
 
 // represents the current world situation
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct World {
 	pub terrainmap: Vec<Terrain>,
 	pub buildingmap: Vec<Option<Building>>,
