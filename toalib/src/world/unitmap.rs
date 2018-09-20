@@ -5,6 +5,7 @@ use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::aim::{Aim, new_meelee_aim};
 use crate::world::damage::Damage;
 use crate::item::{Inventory, Item};
+use crate::team::PlayerID;
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -15,7 +16,7 @@ const HUNGER_DAMAGE: u32 = 10;
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
 pub struct Unit {
-	pub owner: u32,
+	pub owner: PlayerID,
 	pub stamina: i32,
 	pub health: u32,
 	pub food: u32,
@@ -24,7 +25,7 @@ pub struct Unit {
 }
 
 impl Unit {
-	pub fn new(owner: u32) -> Unit {
+	pub fn new(owner: PlayerID) -> Unit {
 		Unit {
 			owner,
 			stamina: FULL_STAMINA as i32,
@@ -61,8 +62,8 @@ impl Unit {
 pub fn new_unitmap() -> Vec<Option<Unit>> {
 	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	unitmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(Unit::new(0));
-	unitmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(Unit::new(1));
+	unitmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(Unit::new(PlayerID::new(0)));
+	unitmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(Unit::new(PlayerID::new(1)));
 
 	unitmap
 }
@@ -123,7 +124,7 @@ impl World {
 		}
 	}
 
-	pub fn find_next_unit_tile(&self, start: Vec2u, player: u32) -> Option<Vec2u> {
+	pub fn find_next_unit_tile(&self, start: Vec2u, player: PlayerID) -> Option<Vec2u> {
 		let mut i = start;
 
 		for _ in 0..(MAP_SIZE_X * MAP_SIZE_Y) {

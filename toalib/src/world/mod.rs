@@ -19,6 +19,7 @@ use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::Building;
 use crate::item::Inventory;
 use crate::world::damage::Damage;
+use crate::team::{TeamPool, PlayerID};
 
 // represents the current world situation
 #[derive(Serialize, Deserialize)]
@@ -27,17 +28,20 @@ pub struct World {
 	pub buildingmap: Vec<Option<Building>>,
 	pub unitmap: Vec<Option<Unit>>,
 	pub itemmap: Vec<Inventory>,
-	pub active_player: u32,
+	pub team_pool: TeamPool,
+	pub active_player_ids: Vec<PlayerID>,
 }
 
 impl World {
-	pub fn gen() -> World {
+	pub fn gen(team_pool: TeamPool) -> World {
+		let ids = team_pool.get_ids_for_team(team_pool.get_starting_team());
 		World {
 			terrainmap: new_terrainmap(),
 			buildingmap: new_buildingmap(),
 			unitmap: new_unitmap(),
 			itemmap: new_itemmap(),
-			active_player: 0,
+			team_pool,
+			active_player_ids: ids,
 		}
 	}
 

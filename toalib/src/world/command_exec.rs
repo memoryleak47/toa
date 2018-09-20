@@ -8,13 +8,20 @@ use crate::world::World;
 use crate::world::aim::Aim;
 use crate::world::unitmap::Unit;
 use crate::world::buildingmap::{BuildingClass, new_construction};
+use crate::team::PlayerID;
 
 impl World {
-	pub fn exec(&mut self, command: &Command) {
-		assert!(self.is_valid_command(self.active_player, command));
+	pub fn checked_exec(&mut self, player_id: PlayerID, command: &Command) -> bool {
+		if !self.is_valid_command(player_id, command) { return false; }
 
+		self.exec(player_id, command);
+
+		return true;
+	}
+
+	fn exec(&mut self, player_id: PlayerID, command: &Command) {
 		match command {
-			&Command::NextTurn => self.exec_next_turn(),
+			&Command::NextTurn => self.exec_next_turn(player_id),
 			&Command::UnitCommand { pos, ref command } => self.exec_unit_command(pos, command),
 		}
 	}
@@ -58,13 +65,18 @@ impl World {
 		aim.exec(pos, self);
 	}
 
-	fn exec_next_turn(&mut self) {
-		self.active_player = 1 - self.active_player;
+	fn exec_next_turn(&mut self, player_id: PlayerID) {
+		let current_team = self.team_pool.get_team_of(self.active_player_ids[0]);
 
-		if self.active_player == 0 {
-			self.reset_turn();
+		self.active_player_ids.retain(|x| *x != player_id);
+		if self.active_player_ids.is_empty() {
+			let next_team = self.team_pool.get_next_team(current_team);
+			self.active_player_ids = self.team_pool.get_ids_for_team(next_team);
+			if next_team == self.team_pool.get_starting_team() {
+				self.reset_turn();
+			}
+			self.on_turn_start();
 		}
-		self.on_turn_start();
 	}
 
 	fn exec_build(&mut self, at: Vec2u, class: BuildingClass) {

@@ -16,6 +16,7 @@ pub mod vec;
 mod config;
 #[macro_use]
 mod misc;
+pub mod team;
 pub mod item;
 pub mod command;
 pub mod world;

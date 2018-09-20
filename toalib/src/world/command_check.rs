@@ -3,14 +3,15 @@ use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::BUILDABLE_CLASSES;
 use crate::command::{Command, UnitCommand};
 use crate::misc::*;
+use crate::team::PlayerID;
 
 impl World {
-	pub fn get_unitless_commands(&self, _player: u32) -> Vec<Command> {
+	pub fn get_unitless_commands(&self, _player: PlayerID) -> Vec<Command> {
 		vec![Command::NextTurn]
 	}
 
 	#[allow(dead_code)]
-	fn get_unchecked_commands_by_unit(&self, _player: u32, pos: Vec2u) -> Vec<Command> {
+	fn get_unchecked_commands_by_unit(&self, _player: PlayerID, pos: Vec2u) -> Vec<Command> {
 		let mut v = Vec::new();
 
 		// add Move
@@ -33,14 +34,14 @@ impl World {
 	}
 
 	#[allow(dead_code)]
-	pub fn get_commands_by_unit(&self, player: u32, pos: Vec2u) -> Vec<Command> {
+	pub fn get_commands_by_unit(&self, player: PlayerID, pos: Vec2u) -> Vec<Command> {
 		self.get_unchecked_commands_by_unit(player, pos).into_iter()
 			.filter(|x| self.is_valid_command(player, x))
 			.collect()
 	}
 
 	#[allow(dead_code)]
-	pub fn get_commands(&self, player: u32) -> Vec<Command> {
+	pub fn get_commands(&self, player: PlayerID) -> Vec<Command> {
 		let mut v = Vec::new();
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
@@ -58,7 +59,7 @@ impl World {
 		v
 	}
 
-	fn is_valid_unit_command(&self, player: u32, pos: Vec2u, command: &UnitCommand) -> bool {
+	fn is_valid_unit_command(&self, player: PlayerID, pos: Vec2u, command: &UnitCommand) -> bool {
 		self.unitmap[index2d!(pos.x, pos.y)]
 		.as_ref()
 		.filter(|x| x.owner == player)
@@ -147,7 +148,9 @@ impl World {
 		}
 	}
 
-	pub fn is_valid_command(&self, player: u32, command: &Command) -> bool {
+	pub fn is_valid_command(&self, player: PlayerID, command: &Command) -> bool {
+		if !self.active_player_ids.contains(&player) { return false; }
+
 		match command {
 			Command::NextTurn => true,
 			Command::UnitCommand { ref command, pos } => self.is_valid_unit_command(player, *pos, command),

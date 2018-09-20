@@ -9,6 +9,7 @@ use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 use crate::item::ItemClass;
+use crate::team::PlayerID;
 
 use self::spawner::Spawner;
 use self::construction::Construction;
@@ -88,8 +89,8 @@ setup!(Spawner, Construction, Farm);
 pub fn new_buildingmap() -> Vec<Option<Building>> {
 	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	buildingmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(new_spawner(0));
-	buildingmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(new_spawner(1));
+	buildingmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(new_spawner(PlayerID::new(0)));
+	buildingmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(new_spawner(PlayerID::new(1)));
 
 	buildingmap
 }

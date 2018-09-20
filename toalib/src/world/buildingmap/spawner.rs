@@ -8,6 +8,7 @@ use crate::world::World;
 use crate::world::unitmap::Unit;
 use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
+use crate::team::PlayerID;
 
 const REQUIRED_FOOD: u32 = 10;
 
@@ -26,7 +27,7 @@ pub struct SpawnerClass;
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
 pub struct Spawner {
-	player: u32,
+	player: PlayerID,
 	health: u32,
 }
 
@@ -76,6 +77,6 @@ impl BuildingTrait for Spawner {
 	}
 }
 
-pub fn new_spawner(player: u32) -> Building {
+pub fn new_spawner(player: PlayerID) -> Building {
 	Building::Spawner(Spawner { player, health: 100}) // TODO un-hardcode
 }
