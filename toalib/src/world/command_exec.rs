@@ -66,13 +66,13 @@ impl World {
 	}
 
 	fn exec_next_turn(&mut self, player_id: PlayerID) {
-		let current_team = self.team_pool.get_team_of(self.active_player_ids[0]);
+		let current_team = self.pool.get_team_of(self.active_player_ids[0]);
 
 		self.active_player_ids.retain(|x| *x != player_id);
 		if self.active_player_ids.is_empty() {
-			let next_team = self.team_pool.get_next_team(current_team);
-			self.active_player_ids = self.team_pool.get_ids_for_team(next_team);
-			if next_team == self.team_pool.get_starting_team() {
+			let next_team = self.pool.get_next_team(current_team);
+			self.active_player_ids = self.pool.get_ids_for_team(next_team);
+			if next_team == self.pool.get_starting_team() {
 				self.reset_turn();
 			}
 			self.on_turn_start();

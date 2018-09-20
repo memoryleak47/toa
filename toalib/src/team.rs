@@ -11,14 +11,8 @@ pub enum Team {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct TeamPool {
-	players: HashMap<PlayerID, Player>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Player {
-	team: Team,
-	id: PlayerID,
+pub struct PlayerPool {
+	players: HashMap<PlayerID, Team>,
 }
 
 impl Display for PlayerID {
@@ -33,16 +27,16 @@ impl PlayerID {
 	}
 }
 
-impl TeamPool {
+impl PlayerPool {
 	pub fn get_teams(&self) -> Vec<Team> {
 		self.players.iter()
-			.map(|(_, y)| y.team)
+			.map(|(_, y)| *y)
 			.collect()
 	}
 
 	pub fn get_ids_for_team(&self, team: Team) -> Vec<PlayerID> {
 		self.players.iter()
-			.filter(|(_, y)| y.team == team)
+			.filter(|(_, y)| **y == team)
 			.map(|(x, _)| *x)
 			.collect()
 	}
@@ -60,6 +54,21 @@ impl TeamPool {
 	}
 
 	pub fn get_team_of(&self, player: PlayerID) -> Team {
-		self.players[&player].team
+		self.players[&player]
+	}
+
+	pub fn add(&mut self, team: Team) -> PlayerID {
+		let new_id = self.players.iter()
+			.map(|(x, _)| x.0)
+			.max()
+			.unwrap() + 1;
+		let player_id = PlayerID::new(new_id);
+		self.players.insert(player_id, team);
+
+		player_id
+	}
+
+	pub fn remove(&mut self, player_id: PlayerID) -> bool {
+		self.players.remove(&player_id).is_some()
 	}
 }
