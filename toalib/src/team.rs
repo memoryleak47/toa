@@ -28,6 +28,12 @@ impl PlayerID {
 }
 
 impl PlayerPool {
+	pub fn new() -> PlayerPool {
+		PlayerPool {
+			players: HashMap::new(),
+		}
+	}
+
 	pub fn get_teams(&self) -> Vec<Team> {
 		self.players.iter()
 			.map(|(_, y)| *y)

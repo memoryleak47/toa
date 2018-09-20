@@ -1,38 +1,28 @@
 extern crate toalib;
 
-use std::net::{TcpListener, SocketAddr, TcpStream};
 use std::io::stdin;
 
 use toalib::world::World;
+use toalib::team::{Team, PlayerPool};
 
-const PORT: u32 = 4242;
+mod pool;
+mod net;
 
-struct Slot {
-	stream: TcpStream,
-	addr: SocketAddr, // TODO add team
-}
+use self::pool::NetPool;
+use self::net::create_listener;
 
 fn main() {
-	let bind_string = format!("127.0.0.1:{}", PORT);
-    let listener = TcpListener::bind(&*bind_string).expect("Could not bind TcpListener");
-	listener.set_nonblocking(true).expect("Could not set non-blocking");
+	let listener = create_listener().expect("Could not create listener");
 
-	let mut slots = Vec::new();
-
-	let handle_command = |c: &str| {
-		match c {
-			"go" => return true,
-			_ => {}, // TODO add more commands
-		};
-		return false;
-	};
+	let mut net_pool = NetPool::new();
+	let mut player_pool = PlayerPool::new();
 
 	// lobby
 	loop {
 		// add new connections
 		if let Ok((stream, addr)) = listener.accept() {
-			let slot = Slot { stream, addr };
-			slots.push(slot);
+			let id = player_pool.add(Team::Red);
+			net_pool.add(id, stream, addr);
 			println!("a new player joined");
 		}
 
@@ -41,11 +31,11 @@ fn main() {
 
 		let mut s = String::new();
 		stdin().read_line(&mut s).unwrap(); // TODO make this non-blocking
-		if handle_command((&*s).trim()) { break; }
+		if (&*s).trim() == "go" { break; } // TODO add more commands
 	}
 
 	// game
-	let mut w = World::gen();
+	let mut w = World::gen(player_pool);
 	loop {
 		println!("running!");
 		// run!
