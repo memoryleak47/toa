@@ -4,7 +4,7 @@ use std::io::stdin;
 
 use toalib::world::World;
 use toalib::team::{Team, PlayerPool};
-use toalib::packet::ServerToClientPacket;
+use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
 
 mod pool;
 mod net;
@@ -46,7 +46,19 @@ fn main() {
 
 	// game
 	loop {
-		println!("running!");
-		// run!
+		for (id, packet) in net_pool.receive_packets().into_iter() {
+			let command = match packet {
+				ClientToServerPacket::Command(c) => c,
+			};
+
+			if w.checked_exec(id, &command) {
+				net_pool.broadcast(|_| {
+					ServerToClientPacket::Command {
+						command: command.clone(),
+						author_id: id,
+					}
+				});
+			}
+		}
 	}
 }

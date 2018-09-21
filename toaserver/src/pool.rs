@@ -2,9 +2,9 @@ use std::collections::HashMap;
 use std::net::{SocketAddr, TcpStream};
 
 use toalib::team::PlayerID;
-use toalib::packet::ServerToClientPacket;
+use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
 
-use crate::net::send_packet;
+use crate::net::{send_packet, try_receiving_packet};
 
 pub struct NetPool {
 	players: HashMap<PlayerID, (TcpStream, SocketAddr)>,
@@ -32,5 +32,15 @@ impl NetPool {
 		for &x in v.iter() {
 			self.send(x, f(x));
 		}
+	}
+
+	pub fn receive_packets(&mut self) -> Vec<(PlayerID, ClientToServerPacket)> {
+		let mut v = Vec::new();
+		for (&id, (stream, _)) in self.players.iter_mut() {	
+			if let Some(x) = try_receiving_packet(stream) {
+				v.push((id, x.unwrap()));
+			}
+		}
+		v
 	}
 }

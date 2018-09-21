@@ -5,7 +5,7 @@ use crate::world::World;
 use crate::world::aim::Aim;
 use crate::world::buildingmap::BuildingClass;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum UnitCommand {
 	Move(Direction),
 	Attack(Aim),
@@ -20,7 +20,7 @@ pub enum UnitCommand {
 	ExecItem(usize),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum Command {
 	UnitCommand { command: UnitCommand, pos: Vec2u },
 	NextTurn,
