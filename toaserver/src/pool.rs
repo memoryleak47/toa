@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use toalib::team::{Team, PlayerPool, PlayerID};
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
-use toalib::net::{Stream, NonBlockError};
+use toalib::net::Stream;
 
 pub struct UserPool {
 	users: HashMap<PlayerID, Stream>,
@@ -26,7 +26,6 @@ impl UserPool {
 		self.users.get_mut(&id)
 			.unwrap()
 			.send(p)
-			.unwrap();
 	}
 
 	pub fn broadcast<F>(&mut self, f: F) where F: Fn(PlayerID) -> ServerToClientPacket {
@@ -43,9 +42,8 @@ impl UserPool {
 		let mut v = Vec::new();
 		for (&id, stream) in self.users.iter_mut() {	
 			match stream.receive_nonblocking::<ClientToServerPacket>() {
-				Ok(x) => v.push((id, x)),
-				Err(NonBlockError::Empty) => {},
-				Err(NonBlockError::Error(x)) => Err(x).unwrap()
+				Some(x) => v.push((id, x)),
+				None => {},
 			}
 		}
 		v

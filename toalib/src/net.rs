@@ -17,140 +17,113 @@ pub struct Listener {
 	nonblocking: bool,
 }
 
-#[derive(Debug)]
-pub enum NonBlockError {
-	Error(String),
-	Empty,
-}
-
 impl Stream {
-	fn set_nonblocking(&mut self, nb: bool) -> Result<(), String> {
+	fn set_nonblocking(&mut self, nb: bool) {
 		if nb != self.nonblocking {
-			self.stream.set_nonblocking(nb)
-				.map_err(|x| x.to_string())?;
+			self.stream.set_nonblocking(nb).unwrap();
 			self.nonblocking = nb;
 		}
-		Ok(())
 	}
 
-	pub fn connect(ip: &str) -> Result<Stream, String> {
-		let stream = TcpStream::connect(ip)
-			.map_err(|x| x.to_string())?;
+	pub fn connect(ip: &str) -> Stream {
+		let stream = TcpStream::connect(ip).unwrap();
 
-		Ok(Stream {
+		Stream {
 			stream,
 			nonblocking: false,
-		})
+		}
 	}
 
-	pub fn send<P: Packet>(&mut self, p: P) -> Result<(), String> {
-		let bytes = ser(p)?;
+	pub fn send<P: Packet>(&mut self, p: P) {
+		let bytes = ser(p);
 		let len = bytes.len();
-		let len_bytes = ser(len as u32)?;
+		let len_bytes = ser(len as u32);
 
-		assert!(4 == self.stream.write(&len_bytes[..])
-			.map_err(|x| x.to_string())?);
+		let c = self.stream.write(&len_bytes[..]).unwrap();
+		assert_eq!(c, 4);
 
-		assert!(len == (self.stream.write(&bytes[..])
-			.map_err(|x| x.to_string())?));
-		Ok(())
+		let c = self.stream.write(&bytes[..]).unwrap();
+		assert_eq!(c, len);
+
+		self.stream.flush().unwrap();
 	}
 
-	pub fn receive_blocking<P: Packet>(&mut self) -> Result<P, String> {
-		self.set_nonblocking(false)?;
+	pub fn receive_blocking<P: Packet>(&mut self) -> P {
+		self.set_nonblocking(false);
 
 		let mut len_bytes: [u8; 4] = [0; 4];
-		self.stream.read_exact(&mut len_bytes[..])
-			.map_err(|x| x.to_string())?;
-		let len: u32 = deser(&len_bytes[..])?;
+		self.stream.read_exact(&mut len_bytes[..]).unwrap();
+		let len: u32 = deser(&len_bytes[..]);
 
 		let mut bytes: Vec<u8> = iter::repeat(0u8)
 			.take(len as usize)
 			.collect();
-		self.stream.read_exact(&mut bytes[..])
-			.map_err(|x| x.to_string())?;
-		let ret = deser(&bytes[..])?;
-		Ok(ret)
+		self.stream.read_exact(&mut bytes[..]).unwrap();
+		deser(&bytes[..])
 	}
 
-	pub fn receive_nonblocking<P: Packet>(&mut self) -> Result<P, NonBlockError> {
-		self.set_nonblocking(true)
-			.map_err(|x| NonBlockError::Error(x))?;
+	pub fn receive_nonblocking<P: Packet>(&mut self) -> Option<P> {
+		self.set_nonblocking(true);
 
 		let mut len_bytes: [u8; 4] = [0; 4];
 		match self.stream.read_exact(&mut len_bytes[..]) {
-			Ok(_) => {},
-			Err(ref x) if x.kind() == ErrorKind::WouldBlock => return Err(NonBlockError::Empty),
-			Err(x) => return Err(NonBlockError::Error(x.to_string())),
+			Ok(()) => {},
+			Err(ref x) if x.kind() == ErrorKind::WouldBlock => return None,
+			Err(x) => Err(x).unwrap()
 		}
-		let len: u32 = deser(&len_bytes[..])
-			.map_err(|x| NonBlockError::Error(x))?;
+		let len: u32 = deser(&len_bytes[..]);
 
 		let mut bytes: Vec<u8> = iter::repeat(0u8)
 			.take(len as usize)
 			.collect();
-		self.stream.read_exact(&mut bytes[..])
-			.map_err(|x| NonBlockError::Error(x.to_string()))?;
-		let ret = deser(&bytes[..])
-			.map_err(|x| NonBlockError::Error(x))?;
-		Ok(ret)
+		match self.stream.read_exact(&mut bytes[..]) {
+			Ok(()) => {},
+			Err(x) => Err(x).unwrap(),
+		}
+		Some(deser(&bytes[..]))
 	}
 }
 
 impl Listener {
-	pub fn bind(ip: &str) -> Result<Listener, String> {
-		Ok(Listener {
-			listener: TcpListener::bind(ip).map_err(|x| x.to_string())?,
+	pub fn bind(ip: &str) -> Listener {
+		Listener {
+			listener: TcpListener::bind(ip).unwrap(),
 			nonblocking: false,
-		})
+		}
 	}
 
-	pub fn accept_nonblocking(&mut self) -> Result<Stream, NonBlockError> {
-		self.set_nonblocking(true)
-			.map_err(|x| NonBlockError::Error(x))?;
+	pub fn accept_nonblocking(&mut self) -> Option<Stream> {
+		self.set_nonblocking(true);
 
 		match self.listener.accept() {
-			Ok((stream, _)) => Ok(Stream { stream, nonblocking: false }),
-			Err(ref x) if x.kind() == ErrorKind::WouldBlock => return Err(NonBlockError::Empty),
-			Err(x) => return Err(NonBlockError::Error(x.to_string())),
+			Ok((stream, _)) => Some(Stream { stream, nonblocking: false }),
+			Err(ref x) if x.kind() == ErrorKind::WouldBlock => return None,
+			Err(x) => Err(x).unwrap(),
 		}
 	}
 
-	pub fn accept_blocking(&mut self) -> Result<Stream, String> {
-		self.set_nonblocking(false)?;
+	pub fn accept_blocking(&mut self) -> Stream {
+		self.set_nonblocking(false);
 
-		self.listener.accept()
-			.map(|(stream, _)| Stream { stream, nonblocking: false })
-			.map_err(|x| x.to_string())
+		Stream {
+			stream: self.listener.accept().unwrap().0,
+			nonblocking: false,
+		}
 	}
 
-	fn set_nonblocking(&mut self, nb: bool) -> Result<(), String> {
+	fn set_nonblocking(&mut self, nb: bool) {
 		if nb != self.nonblocking {
-			self.listener.set_nonblocking(nb)
-				.map_err(|x| x.to_string())?;
+			self.listener.set_nonblocking(nb).unwrap();
 			self.nonblocking = nb;
 		}
-		Ok(())
 	}
 
 }
 
-fn ser<P: Serialize>(p: P) -> Result<Vec<u8>, String> {
-	serialize(&p)
-		.map_err(|x| x.to_string())
+fn ser<P: Serialize>(p: P) -> Vec<u8> {
+	serialize(&p).unwrap()
 }
 
-fn deser<P: DeserializeOwned>(bytes: &[u8]) -> Result<P, String> {
-	deserialize(bytes)
-		.map_err(|x| x.to_string())
+fn deser<P: DeserializeOwned>(bytes: &[u8]) -> P {
+	deserialize(bytes).unwrap()
 }
-
-impl ToString for NonBlockError {
-	fn to_string(&self) -> String {
-		match self {
-			NonBlockError::Error(x) => format!("NonBlockError::Error({})", &x),
-			NonBlockError::Empty => format!("NonBlockError::Empty"),
-		}
-	}
-}
-

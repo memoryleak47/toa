@@ -16,7 +16,7 @@ use sfml::window::{Style, Event};
 use sfml::graphics::RenderWindow;
 
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
-use toalib::net::{Stream, NonBlockError};
+use toalib::net::Stream;
 
 use self::input::Input;
 use self::graphics::TextureState;
@@ -24,9 +24,9 @@ use self::graphics::TextureState;
 fn main() {
 	let ip = cli::get_ip();
 
-	let mut stream = Stream::connect(&*ip).unwrap();
+	let mut stream = Stream::connect(&*ip);
 
-	let (mut world, my_id) = match stream.receive_blocking().unwrap() {
+	let (mut world, my_id) = match stream.receive_blocking() {
 		ServerToClientPacket::Init { world, your_id } => (world, your_id),
 		_ => panic!("got command packet while still in lobby!"),
 	};
@@ -48,15 +48,14 @@ fn main() {
 		window.set_active(true);
 
 		match stream.receive_nonblocking() {
-			Ok(ServerToClientPacket::Command { author_id, command }) => assert!(world.checked_exec(author_id, &command)),
-			Ok(_) => panic!("got wrong packet while running!"),
-			Err(NonBlockError::Empty) => {},
-			Err(NonBlockError::Error(x)) => Err(x).unwrap(),
+			Some(ServerToClientPacket::Command { author_id, command }) => assert!(world.checked_exec(author_id, &command)),
+			Some(_) => panic!("got wrong packet while running!"),
+			None => {},
 		}
 
 		if let Some(c) = player.tick(&world, &input) {
 			let p = ClientToServerPacket::Command(c);
-			stream.send(p).unwrap();
+			stream.send(p);
 		}
 
 		player.get_view(&world)

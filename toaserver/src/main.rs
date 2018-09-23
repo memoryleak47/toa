@@ -12,7 +12,7 @@ use self::pool::UserPool;
 use self::term::{Term, TermCommand};
 
 fn main() {
-	let mut listener = Listener::bind("localhost:4242").unwrap();
+	let mut listener = Listener::bind("localhost:4242");
 
 	let mut user_pool = UserPool::new();
 	let mut term = Term::new();
@@ -20,7 +20,7 @@ fn main() {
 	// lobby
 	loop {
 		// add new connections
-		if let Ok(stream) = listener.accept_nonblocking() {
+		if let Some(stream) = listener.accept_nonblocking() {
 			user_pool.add(Team::Red, stream);
 			println!("a new player joined");
 		}
