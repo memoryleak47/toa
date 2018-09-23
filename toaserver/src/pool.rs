@@ -45,7 +45,7 @@ impl UserPool {
 			match stream.receive_nonblocking::<ClientToServerPacket>() {
 				Ok(x) => v.push((id, x)),
 				Err(NonBlockError::Empty) => {},
-				Err(x) => Err(x).unwrap()
+				Err(NonBlockError::Error(x)) => Err(x).unwrap()
 			}
 		}
 		v
