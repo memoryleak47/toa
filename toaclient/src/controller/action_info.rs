@@ -9,7 +9,7 @@ use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
 use toalib::team::PlayerID;
 
-use crate::local::{LocalPlayer, UnitMode, ItemUnitMode, Action};
+use crate::controller::{Controller, UnitMode, ItemUnitMode, Action};
 use crate::input::Input;
 
 lazy_static! {
@@ -38,7 +38,7 @@ mod trigger {
 	pub static MOD: F = |i, k| i.are_pressed_mod(k, 3);
 }
 
-impl LocalPlayer {
+impl Controller {
 	fn get_general_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
 		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_CLASSES.len());
 

@@ -9,7 +9,7 @@ mod index;
 mod vec_compat;
 mod graphics;
 mod input;
-mod local;
+mod controller;
 mod view;
 
 use sfml::window::{Style, Event};
@@ -20,6 +20,7 @@ use toalib::net::Stream;
 
 use self::input::Input;
 use self::graphics::TextureState;
+use self::controller::Controller;
 
 fn main() {
 	let ip = cli::get_ip();
@@ -32,7 +33,7 @@ fn main() {
 	};
 
 	let texture_state = TextureState::new();
-	let mut player = local::LocalPlayer::new(my_id);
+	let mut controller = Controller::new(my_id);
 	let mut input = Input::new();
 	let mut window = RenderWindow::new((800, 600), "Toa client", Style::CLOSE, &Default::default());
 
@@ -54,12 +55,12 @@ fn main() {
 		}
 
 		input.tick();
-		if let Some(c) = player.tick(&world, &input) {
+		if let Some(c) = controller.tick(&world, &input) {
 			let p = ClientToServerPacket::Command(c);
 			stream.send(p);
 		}
 
-		player.get_view(&world)
+		controller.get_view(&world)
 			.render(&mut window, &world, &texture_state);
 
 		window.display();

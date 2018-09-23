@@ -32,16 +32,16 @@ pub enum Action {
 	NextUnit,
 }
 
-pub struct LocalPlayer {
+pub struct Controller {
 	player_id: PlayerID,
 	unit_mode: Option<UnitMode>, // None -> no unit focused
 	focus_position: Vec2f,
 	cursor: Vec2u,
 }
 
-impl LocalPlayer {
-	pub fn new(player_id: PlayerID) -> LocalPlayer {
-		LocalPlayer {
+impl Controller {
+	pub fn new(player_id: PlayerID) -> Controller {
+		Controller {
 			player_id,
 			unit_mode: None,
 			focus_position: Vec2f::new(0., 0.),
@@ -130,22 +130,22 @@ impl LocalPlayer {
 }
 
 impl Action {
-	pub fn execute(self, player: &mut LocalPlayer, w: &World) -> Option<Command> {
+	pub fn execute(self, controller: &mut Controller, w: &World) -> Option<Command> {
 		match self {
 			Action::Command(c) => return Some(c),
 			Action::NextUnit => {
-				for x in w.find_next_unit_tile(player.cursor, player.player_id) {
-					player.cursor = x;
+				for x in w.find_next_unit_tile(controller.cursor, controller.player_id) {
+					controller.cursor = x;
 				}
 			}
-			Action::ModeChange(m) => { player.unit_mode = m; },
+			Action::ModeChange(m) => { controller.unit_mode = m; },
 			Action::MoveAim(d) => {
-				if let Some(UnitMode::Attack { ref mut aim }) = player.unit_mode.as_mut() {
+				if let Some(UnitMode::Attack { ref mut aim }) = controller.unit_mode.as_mut() {
 					aim.apply_direction(d, w);
 				} else { assert!(false); }
 			},
-			Action::MoveCamera(d) => { player.focus_position = vector_if(d.to_vector()) / 2. + player.focus_position; },
-			Action::MoveCursor(d) => { player.cursor = d.plus_vector(player.cursor); },
+			Action::MoveCamera(d) => { controller.focus_position = vector_if(d.to_vector()) / 2. + controller.focus_position; },
+			Action::MoveCursor(d) => { controller.cursor = d.plus_vector(controller.cursor); },
 		}
 		None
 	}
