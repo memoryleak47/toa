@@ -39,12 +39,8 @@ impl Stream {
 		let len = bytes.len();
 		let len_bytes = ser(len as u32);
 
-		let c = self.stream.write(&len_bytes[..]).unwrap();
-		assert_eq!(c, 4);
-
-		let c = self.stream.write(&bytes[..]).unwrap();
-		assert_eq!(c, len);
-
+		self.stream.write_all(&len_bytes[..]).unwrap();
+		self.stream.write_all(&bytes[..]).unwrap();
 		self.stream.flush().unwrap();
 	}
 

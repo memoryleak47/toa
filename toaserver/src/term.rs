@@ -13,8 +13,8 @@ pub struct Term {
 }
 
 fn term_fun(sender: Sender<TermCommand>) {
-	let mut s = String::new();
 	loop {
+		let mut s = String::new();
 		
 		stdout().write(b"enter command\n>> ").unwrap();
 		stdout().flush().unwrap();
