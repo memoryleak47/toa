@@ -51,7 +51,7 @@ fn main() {
 			Ok(ServerToClientPacket::Command { author_id, command }) => assert!(world.checked_exec(author_id, &command)),
 			Ok(_) => panic!("got wrong packet while running!"),
 			Err(NonBlockError::Empty) => {},
-			Err(NonBlockError::Error(x)) => panic!(x),
+			Err(NonBlockError::Error(x)) => Err(x).unwrap(),
 		}
 
 		if let Some(c) = player.tick(&world, &input) {

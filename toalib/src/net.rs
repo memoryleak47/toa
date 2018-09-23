@@ -45,14 +45,15 @@ impl Stream {
 
 	pub fn send<P: Packet>(&mut self, p: P) -> Result<(), String> {
 		let bytes = ser(p)?;
-		let len_bytes = ser(bytes.len() as u32)?;
+		let len = bytes.len();
+		let len_bytes = ser(len as u32)?;
 
-		self.stream.write(&len_bytes[..])
-			.map_err(|x| x.to_string())?;
+		assert!(4 == self.stream.write(&len_bytes[..])
+			.map_err(|x| x.to_string())?);
 
-		self.stream.write(&bytes[..])
-			.map_err(|x| x.to_string())
-			.map(|_| ())
+		assert!(len == (self.stream.write(&bytes[..])
+			.map_err(|x| x.to_string())?));
+		Ok(())
 	}
 
 	pub fn receive_blocking<P: Packet>(&mut self) -> Result<P, String> {
