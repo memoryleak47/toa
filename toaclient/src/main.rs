@@ -8,6 +8,7 @@ mod cli;
 mod index;
 mod vec_compat;
 mod graphics;
+mod sound;
 mod input;
 mod controller;
 mod view;
@@ -21,9 +22,13 @@ use toalib::net::Stream;
 use self::input::Input;
 use self::graphics::TextureState;
 use self::controller::Controller;
+use self::sound::SoundState;
 
 fn main() {
 	let ip = cli::get_ip();
+
+	let mut sound_state = SoundState::new().unwrap();
+	sound_state.start();
 
 	let mut stream = Stream::connect(&*ip);
 

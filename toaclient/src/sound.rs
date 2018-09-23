@@ -6,7 +6,7 @@ pub struct SoundState {
 
 impl SoundState {
 	pub fn new() -> Result<SoundState, String> {
-		use crate::misc::res_dir;
+		use toalib::misc::res_dir;
 
 		let res_dir = res_dir();
 		let res_dir_str = res_dir.to_str()
