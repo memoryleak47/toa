@@ -1,6 +1,8 @@
 use std::ptr;
 use std::mem;
 
+pub mod terrain;
+
 use sfml::graphics::Texture;
 
 #[derive(Copy, Clone)]

@@ -10,7 +10,7 @@ use toalib::misc::*;
 use toalib::team::PlayerID;
 use toalib::vec::{Vec2u, Vec2f};
 
-use crate::graphics::{TextureState, TextureId};
+use crate::graphics::{terrain, TextureState, TextureId};
 use crate::vec_compat::*;
 
 const MARKER_BORDER_SIZE: f32 = 5.;
@@ -60,13 +60,12 @@ impl View {
 			for y in 0..MAP_SIZE_Y {
 				let posf = Vec2f::new(x as f32, y as f32);
 
-				/* TODO: get texture id
-				let texture = texture_state.get_texture(world.terrainmap[index2d!(x, y)].get_texture_id());
+				let texture_id = terrain::get_texture_id(world.terrainmap[index2d!(x, y)]);
+				let texture = texture_state.get_texture(texture_id);
 				let mut shape = RectangleShape::with_texture(texture);
 				shape.set_position(vec2f_to_sfml((posf - self.focus_position) * TILESIZE + vector_uf(vector2u_to_toa(window.size())) / 2.0));
 				shape.set_size(vec2f_to_sfml(TILESIZE_VEC()));
 				window.draw(&shape);
-				*/
 			}
 		}
 	}
