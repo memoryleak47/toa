@@ -72,6 +72,9 @@ impl Stream {
 		let mut bytes: Vec<u8> = iter::repeat(0u8)
 			.take(len as usize)
 			.collect();
+
+		self.set_nonblocking(false);
+
 		match self.stream.read_exact(&mut bytes[..]) {
 			Ok(()) => {},
 			Err(x) => Err(x).unwrap(),
