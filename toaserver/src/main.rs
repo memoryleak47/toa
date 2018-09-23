@@ -1,22 +1,23 @@
 extern crate toalib;
 
-use std::io::stdin;
-
 use toalib::world::World;
 use toalib::team::{Team, PlayerPool};
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
 
 mod pool;
 mod net;
+mod term;
 
 use self::pool::NetPool;
 use self::net::create_listener;
+use self::term::{Term, TermCommand};
 
 fn main() {
 	let listener = create_listener().expect("Could not create listener");
 
 	let mut net_pool = NetPool::new();
 	let mut player_pool = PlayerPool::new();
+	let mut term = Term::new();
 
 	// lobby
 	loop {
@@ -27,12 +28,10 @@ fn main() {
 			println!("a new player joined");
 		}
 
-		// enter commands
-		println!("enter command");
-
-		let mut s = String::new();
-		stdin().read_line(&mut s).unwrap(); // TODO make this non-blocking
-		if (&*s).trim() == "go" { break; } // TODO add more commands
+		match term.fetch_command() {
+			Some(TermCommand::Go) => break,
+			None => continue,
+		}
 	}
 
 	let mut w = World::gen(player_pool);
