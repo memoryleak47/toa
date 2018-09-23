@@ -1,0 +1,18 @@
+use toalib::world::buildingmap::{Building, BuildingClass};
+use toalib::team::{Team, PlayerPool};
+
+use crate::graphics::TextureId;
+
+pub fn get_texture_id(building: &Building, player_pool: &PlayerPool) -> TextureId {
+	match building {
+		Building::Spawner(spawner) => {
+			match player_pool.get_team_of(spawner.get_player_id()) {
+				Team::Red => TextureId::SpawnerRedBuilding,
+				Team::Blue => TextureId::SpawnerBlueBuilding,
+			}
+		},
+		Building::Construction(_) => TextureId::ConstructionBuilding,
+		Building::Farm(_) => TextureId::FarmBuilding,
+	}
+}
+

@@ -83,4 +83,8 @@ impl PlayerPool {
 	pub fn remove(&mut self, player_id: PlayerID) -> bool {
 		self.players.remove(&player_id).is_some()
 	}
+
+	pub fn get_player_ids(&self) -> Vec<PlayerID> {
+		self.players.keys().cloned().collect()
+	}
 }

@@ -35,10 +35,13 @@ pub struct World {
 impl World {
 	pub fn gen(pool: PlayerPool) -> World {
 		let ids = pool.get_ids_for_team(pool.get_starting_team());
+
+		let spawns = World::gen_spawns(&pool);
+
 		World {
 			terrainmap: new_terrainmap(),
-			buildingmap: new_buildingmap(),
-			unitmap: new_unitmap(),
+			buildingmap: new_buildingmap(&spawns[..]),
+			unitmap: new_unitmap(&spawns[..]),
 			itemmap: new_itemmap(),
 			pool,
 			active_player_ids: ids,
@@ -74,5 +77,19 @@ impl World {
 			return;
 		}
 		self.get_inventory_mut(p).damage(damage);
+	}
+
+	fn gen_spawns(pool: &PlayerPool) -> Vec<(PlayerID, Vec2u)> {
+		let v = vec![
+			Vec2u::new((MAP_SIZE_X/2) as u32, 0),
+			Vec2u::new((MAP_SIZE_X/2) as u32, (MAP_SIZE_Y-1) as u32)
+		];
+
+		assert!(pool.get_player_ids().len() <= 2);
+
+		pool.get_player_ids()
+				.into_iter()
+				.zip(v.into_iter())
+				.collect()
 	}
 }

@@ -59,11 +59,12 @@ impl Unit {
 	}
 }
 
-pub fn new_unitmap() -> Vec<Option<Unit>> {
+pub fn new_unitmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Unit>> {
 	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	unitmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(Unit::new(PlayerID::new(0)));
-	unitmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(Unit::new(PlayerID::new(1)));
+	for (player_id, spawn) in spawns {
+		unitmap[index2d!(spawn.x, spawn.y)] = Some(Unit::new(*player_id));
+	}
 
 	unitmap
 }

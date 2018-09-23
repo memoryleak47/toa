@@ -77,6 +77,12 @@ impl BuildingTrait for Spawner {
 	}
 }
 
+impl Spawner {
+	pub fn get_player_id(&self) -> PlayerID {
+		self.player
+	}
+}
+
 pub fn new_spawner(player: PlayerID) -> Building {
 	Building::Spawner(Spawner { player, health: 100}) // TODO un-hardcode
 }

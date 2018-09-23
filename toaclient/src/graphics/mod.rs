@@ -2,6 +2,7 @@ use std::ptr;
 use std::mem;
 
 pub mod terrain;
+pub mod building;
 
 use sfml::graphics::Texture;
 

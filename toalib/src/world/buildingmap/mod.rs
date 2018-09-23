@@ -85,12 +85,12 @@ macro_rules! setup {
 
 setup!(Spawner, Construction, Farm);
 
-
-pub fn new_buildingmap() -> Vec<Option<Building>> {
+pub fn new_buildingmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Building>> {
 	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
-	buildingmap[index2d!(MAP_SIZE_X / 2, 0)] = Some(new_spawner(PlayerID::new(0)));
-	buildingmap[index2d!(MAP_SIZE_X / 2, MAP_SIZE_Y - 1)] = Some(new_spawner(PlayerID::new(1)));
+	for (player_id, spawn) in spawns {
+		buildingmap[index2d!(spawn.x, spawn.y)] = Some(new_spawner(*player_id));
+	}
 
 	buildingmap
 }
