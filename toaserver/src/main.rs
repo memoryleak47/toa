@@ -3,17 +3,16 @@ extern crate toalib;
 use toalib::world::World;
 use toalib::team::Team;
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
+use toalib::net::Listener;
 
 mod pool;
-mod net;
 mod term;
 
 use self::pool::UserPool;
-use self::net::create_listener;
 use self::term::{Term, TermCommand};
 
 fn main() {
-	let listener = create_listener().expect("Could not create listener");
+	let mut listener = Listener::bind("localhost:4242").unwrap();
 
 	let mut user_pool = UserPool::new();
 	let mut term = Term::new();
@@ -21,8 +20,8 @@ fn main() {
 	// lobby
 	loop {
 		// add new connections
-		if let Ok((stream, addr)) = listener.accept() {
-			user_pool.add(Team::Red, stream, addr);
+		if let Ok(stream) = listener.accept_nonblocking() {
+			user_pool.add(Team::Red, stream);
 			println!("a new player joined");
 		}
 

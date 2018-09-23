@@ -1,18 +1,11 @@
 use std::collections::HashMap;
-use std::net::{SocketAddr, TcpStream};
 
 use toalib::team::{Team, PlayerPool, PlayerID};
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
-
-use crate::net::{send_packet, try_receiving_packet};
-
-struct Entry {
-	stream: TcpStream,
-	addr: SocketAddr,
-}
+use toalib::net::{Stream, NonBlockError};
 
 pub struct UserPool {
-	users: HashMap<PlayerID, Entry>,
+	users: HashMap<PlayerID, Stream>,
 	player_pool: PlayerPool,
 }
 
@@ -24,22 +17,23 @@ impl UserPool {
 		}
 	}
 
-	pub fn add(&mut self, team: Team, stream: TcpStream, addr: SocketAddr) {
-		stream.set_nonblocking(true).unwrap();
-
+	pub fn add(&mut self, team: Team, stream: Stream) {
 		let player_id = self.player_pool.add(team);
-		let entry = Entry { stream, addr };
-		self.users.insert(player_id, entry);
+		self.users.insert(player_id, stream);
 	}
 
 	pub fn send(&mut self, id: PlayerID, p: ServerToClientPacket) {
-		send_packet(p, &mut self.users.get_mut(&id).unwrap().stream);
+		self.users.get_mut(&id)
+			.unwrap()
+			.send(p)
+			.unwrap();
 	}
 
 	pub fn broadcast<F>(&mut self, f: F) where F: Fn(PlayerID) -> ServerToClientPacket {
 		let v: Vec<PlayerID> = self.users.keys()
 				.cloned()
 				.collect();
+
 		for &x in v.iter() {
 			self.send(x, f(x));
 		}
@@ -47,9 +41,11 @@ impl UserPool {
 
 	pub fn receive_packets(&mut self) -> Vec<(PlayerID, ClientToServerPacket)> {
 		let mut v = Vec::new();
-		for (&id, entry) in self.users.iter_mut() {	
-			if let Some(x) = try_receiving_packet(&mut entry.stream) {
-				v.push((id, x.unwrap()));
+		for (&id, stream) in self.users.iter_mut() {	
+			match stream.receive_nonblocking::<ClientToServerPacket>() {
+				Ok(x) => v.push((id, x)),
+				Err(NonBlockError::Empty) => {},
+				Err(x) => Err(x).unwrap()
 			}
 		}
 		v

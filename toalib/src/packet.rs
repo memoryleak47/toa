@@ -1,4 +1,4 @@
-use serde_json;
+use serde::{Serialize, de::DeserializeOwned};
 
 use crate::world::World;
 use crate::command::Command;
@@ -21,23 +21,7 @@ pub enum ClientToServerPacket {
 	Command(Command),
 }
 
+pub trait Packet: Serialize + DeserializeOwned {}
 
-impl ServerToClientPacket {
-	pub fn to_string(&self) -> Result<String, serde_json::error::Error> {
-		serde_json::to_string(self)
-	}
-
-	pub fn from_str(s: &str) -> Result<Self, serde_json::error::Error> {
-		serde_json::from_str(&s)
-	}
-}
-
-impl ClientToServerPacket {
-	pub fn to_string(&self) -> Result<String, serde_json::error::Error> {
-		serde_json::to_string(self)
-	}
-
-	pub fn from_str(s: &str) -> Result<Self, serde_json::error::Error> {
-		serde_json::from_str(&s)
-	}
-}
+impl Packet for ServerToClientPacket {}
+impl Packet for ClientToServerPacket {}

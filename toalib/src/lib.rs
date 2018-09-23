@@ -10,7 +10,7 @@ extern crate lazy_static;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
-extern crate serde_json;
+extern crate bincode;
 
 pub mod vec;
 pub mod config;
@@ -21,3 +21,4 @@ pub mod item;
 pub mod command;
 pub mod world;
 pub mod packet;
+pub mod net;
