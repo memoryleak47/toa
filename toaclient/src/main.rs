@@ -31,7 +31,7 @@ fn main() {
 		_ => panic!("got command packet while still in lobby!"),
 	};
 
-	let mut texture_state = TextureState::new();
+	let texture_state = TextureState::new();
 	let mut player = local::LocalPlayer::new(my_id);
 	let mut input = Input::new();
 	let mut window = RenderWindow::new((800, 600), "Toa client", Style::CLOSE, &Default::default());
@@ -53,6 +53,7 @@ fn main() {
 			None => {},
 		}
 
+		input.tick();
 		if let Some(c) = player.tick(&world, &input) {
 			let p = ClientToServerPacket::Command(c);
 			stream.send(p);
