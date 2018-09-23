@@ -35,9 +35,15 @@ impl PlayerPool {
 	}
 
 	pub fn get_teams(&self) -> Vec<Team> {
-		self.players.iter()
-			.map(|(_, y)| *y)
-			.collect()
+		let mut teams = Vec::new();
+
+		for (_, team) in self.players.iter() {
+			if !teams.contains(team) {
+				teams.push(*team);
+			}
+		}
+
+		teams
 	}
 
 	pub fn get_ids_for_team(&self, team: Team) -> Vec<PlayerID> {
@@ -65,9 +71,9 @@ impl PlayerPool {
 
 	pub fn add(&mut self, team: Team) -> PlayerID {
 		let new_id = self.players.iter()
-			.map(|(x, _)| x.0)
+			.map(|(x, _)| x.0 + 1)
 			.max()
-			.unwrap() + 1;
+			.unwrap_or(0);
 		let player_id = PlayerID::new(new_id);
 		self.players.insert(player_id, team);
 
