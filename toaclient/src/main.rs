@@ -1,15 +1,29 @@
 extern crate toalib;
 extern crate sfml;
+#[macro_use]
+extern crate lazy_static;
 
 mod net;
+#[macro_use]
+mod misc;
+mod vec_compat;
+mod graphics;
+mod input;
+mod local;
+mod view;
 
 use std::net::TcpStream;
 use std::env;
 use std::io::Read;
 
-use toalib::packet::ServerToClientPacket;
+use sfml::window::{Style, Event};
+use sfml::graphics::RenderWindow;
 
-use self::net::try_receiving_packet;
+use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
+
+use self::net::{try_receiving_packet, send_packet};
+use self::input::Input;
+use self::graphics::TextureState;
 
 fn main() {
 	let args: Vec<_> = env::args()
@@ -32,7 +46,24 @@ fn main() {
 		_ => panic!("got command packet while still in lobby!"),
 	};
 
-	loop {
+	let mut texture_state = TextureState::new();
+	let mut player = local::LocalPlayer::new(my_id);
+	let mut input = Input::new();
+	let mut window = RenderWindow::new((800, 600),
+								 "Toa client",
+								 Style::CLOSE,
+								 &Default::default());
+	window.set_framerate_limit(60);
+
+	while window.is_open() {
+		while let Some(event) = window.poll_event() {
+			if event == Event::Closed {
+				window.close();
+			}
+		}
+
+		window.set_active(true);
+
 		if let Some(x) = try_receiving_packet(&mut stream) {
 			let (author_id, command) = match x.unwrap() {
 				ServerToClientPacket::Command { author_id, command, } => (author_id, command),
@@ -42,9 +73,14 @@ fn main() {
 			assert!(world.checked_exec(author_id, &command));
 		}
 
-		// TODO tick
+		if let Some(c) = player.tick(&world, &input) {
+			let p = ClientToServerPacket::Command(c);
+			send_packet(p, &mut stream);
+		}
 
-		// TODO maybe send packet
+		player.get_view(&world)
+			.render(&mut window, &world, &texture_state);
+
+		window.display();
 	}
-
 }

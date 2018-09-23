@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use sfml::window::Key;
 
-use crate::misc::Direction;
+use toalib::misc::Direction;
 
 const MOVE_WAIT_TIME: u32 = 7;
 

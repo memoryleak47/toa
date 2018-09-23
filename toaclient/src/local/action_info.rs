@@ -2,19 +2,19 @@ use std::slice;
 
 use sfml::window::Key;
 
-use crate::player::local::{LocalPlayer, UnitMode, ItemUnitMode, Action};
+use toalib::world::World;
+use toalib::world::buildingmap::{BUILDABLE_CLASSES, BuildingClass};
+use toalib::item::{ItemClass, Inventory};
+use toalib::command::{Command, UnitCommand};
+use toalib::misc::Direction;
+use toalib::team::PlayerID;
+
+use crate::local::{LocalPlayer, UnitMode, ItemUnitMode, Action};
 use crate::input::Input;
-use crate::world::{World, buildingmap::BuildingClass};
-use crate::world::buildingmap::farm::FarmClass;
-use crate::world::buildingmap::BUILDABLE_CLASSES;
-use crate::item::{ItemClass, Inventory};
-use crate::item::club::ClubClass;
-use crate::command::{Command, UnitCommand};
-use crate::misc::Direction;
 
 lazy_static! {
-	pub static ref KEYED_BUILDABLE_CLASSES: [(&'static dyn BuildingClass, Key); 1] = [(FarmClass.get_ref(), Key::F)];
-	pub static ref CRAFTABLE_CLASSES: [&'static dyn ItemClass; 1] = [ClubClass.get_ref()];
+	pub static ref KEYED_BUILDABLE_CLASSES: [(BuildingClass, Key); 1] = [(BuildingClass::Farm, Key::F)];
+	pub static ref CRAFTABLE_CLASSES: [ItemClass; 1] = [ItemClass::Club];
 }
 
 pub struct ActionInfo {
@@ -238,7 +238,7 @@ impl LocalPlayer {
 		if let Some(UnitMode::Attack { ref aim }) = self.unit_mode.as_ref() {
 			v.push(ActionInfo {
 				text: "attack".to_string(),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Attack(aim.clone_box())}),
+				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Attack(aim.clone())}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			});
@@ -357,7 +357,7 @@ impl LocalPlayer {
 
 		let l = CRAFTABLE_CLASSES.len();
 		assert!(l > 0);
-		let itemclass: &'static dyn ItemClass = CRAFTABLE_CLASSES[index];
+		let itemclass: ItemClass = CRAFTABLE_CLASSES[index];
 
 		// activate
 		v.push(ActionInfo {
@@ -452,7 +452,7 @@ impl LocalPlayer {
 }
 
 impl ActionInfo {
-	pub fn is_valid(&self, player_id: u32, w: &World) -> bool {
+	pub fn is_valid(&self, player_id: PlayerID, w: &World) -> bool {
 		if let Action::Command(ref c) = self.action {
 			w.is_valid_command(player_id, c)
 		} else {

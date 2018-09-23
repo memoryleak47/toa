@@ -1,14 +1,14 @@
 mod action_info;
 
-use sfml::system::{Vector2f, Vector2u};
+use toalib::team::PlayerID;
+use toalib::world::World;
+use toalib::world::aim::Aim;
+use toalib::command::{Command, UnitCommand};
+use toalib::misc::{Direction, vector_if, vector_iu, vector_ui};
+use toalib::vec::{Vec2f, Vec2u};
 
-use crate::player::Player;
 use crate::view::{View, Marker, MarkerType, CURSOR_COLOR, TARGET_CURSOR_COLOR};
 use crate::input::Input;
-use crate::world::World;
-use crate::world::aim::Aim;
-use crate::command::{Command, UnitCommand};
-use crate::misc::{Direction, vector_if, vector_iu, vector_ui};
 
 #[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {
@@ -17,7 +17,7 @@ pub enum ItemUnitMode {
 
 pub enum UnitMode {
 	Normal,
-	Attack { aim: Box<dyn Aim> },
+	Attack { aim: Aim },
 	Build,
 	Item { iu_mode: ItemUnitMode, index: usize },
 	Craft { index: usize },
@@ -33,19 +33,19 @@ pub enum Action {
 }
 
 pub struct LocalPlayer {
-	player_id: u32,
+	player_id: PlayerID,
 	unit_mode: Option<UnitMode>, // None -> no unit focused
-	focus_position: Vector2f,
-	cursor: Vector2u,
+	focus_position: Vec2f,
+	cursor: Vec2u,
 }
 
 impl LocalPlayer {
-	pub fn new(player_id: u32) -> LocalPlayer {
+	pub fn new(player_id: PlayerID) -> LocalPlayer {
 		LocalPlayer {
 			player_id,
 			unit_mode: None,
-			focus_position: Vector2f::new(0., 0.),
-			cursor: Vector2u::new(0, 0),
+			focus_position: Vec2f::new(0., 0.),
+			cursor: Vec2u::new(0, 0),
 		}
 	}
 
@@ -93,10 +93,8 @@ impl LocalPlayer {
 			_ => {}
 		}
 	}
-}
 
-impl Player for LocalPlayer {
-	fn tick(&mut self, w: &World, input: &Input) -> Option<Command> {
+	pub fn tick(&mut self, w: &World, input: &Input) -> Option<Command> {
 		// in case the cursored unit died
 		if w.get_unit(self.cursor)
 				.filter(|x| x.owner == self.player_id)
@@ -117,7 +115,7 @@ impl Player for LocalPlayer {
 		None
 	}
 
-	fn get_view(&self, w: &World) -> View {
+	pub fn get_view(&self, w: &World) -> View {
 		View {
 			markers: self.get_markers(),
 			focus_position: self.focus_position,
@@ -126,7 +124,7 @@ impl Player for LocalPlayer {
 		}
 	}
 
-	fn turn_start(&mut self) {
+	pub fn turn_start(&mut self) {
 		self.unit_mode = None;
 	}
 }

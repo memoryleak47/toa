@@ -29,7 +29,7 @@ pub struct TextureState {
 }
 
 fn get_image_path(s: &str) -> String {
-	use crate::misc::res_dir;
+	use toalib::misc::res_dir;
 
 	let mut dir = res_dir();
 	dir.push("image");

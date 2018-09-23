@@ -13,9 +13,9 @@ extern crate serde;
 extern crate serde_json;
 
 pub mod vec;
-mod config;
+pub mod config;
 #[macro_use]
-mod misc;
+pub mod misc;
 pub mod team;
 pub mod item;
 pub mod command;
