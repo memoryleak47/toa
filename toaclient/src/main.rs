@@ -13,7 +13,7 @@ mod local;
 mod view;
 
 use sfml::window::{Style, Event};
-use sfml::graphics::RenderWindow;
+use sfml::graphics::{RenderWindow, RenderTarget, Color};
 
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
 use toalib::net::Stream;
@@ -63,5 +63,6 @@ fn main() {
 			.render(&mut window, &world, &texture_state);
 
 		window.display();
+		window.clear(&Color::rgb(0, 0, 0));
 	}
 }
