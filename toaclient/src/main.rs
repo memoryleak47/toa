@@ -21,7 +21,7 @@ use sfml::graphics::RenderWindow;
 
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
 
-use self::net::{try_receiving_packet, send_packet};
+use self::net::{try_receiving_packet, wait_for_packet, send_packet};
 use self::input::Input;
 use self::graphics::TextureState;
 
@@ -38,10 +38,7 @@ fn main() {
 
 	let mut stream = TcpStream::connect(&*ip).unwrap();
 
-	let mut init_string = String::new();
-	stream.read_to_string(&mut init_string).unwrap();
-
-	let (mut world, my_id) = match ServerToClientPacket::from_str(&*init_string).unwrap() {
+	let (mut world, my_id) = match wait_for_packet(&mut stream).unwrap() {
 		ServerToClientPacket::Init { world, your_id } => (world, your_id),
 		_ => panic!("got command packet while still in lobby!"),
 	};
@@ -53,6 +50,7 @@ fn main() {
 								 "Toa client",
 								 Style::CLOSE,
 								 &Default::default());
+
 	window.set_framerate_limit(60);
 
 	while window.is_open() {

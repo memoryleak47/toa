@@ -18,6 +18,7 @@ impl NetPool {
 	}
 
 	pub fn add(&mut self, player: PlayerID, stream: TcpStream, addr: SocketAddr) {
+		stream.set_nonblocking(true).unwrap();
 		self.players.insert(player, (stream, addr));
 	}
 
