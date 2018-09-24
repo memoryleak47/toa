@@ -54,7 +54,12 @@ fn main() {
 		window.set_active(true);
 
 		match stream.receive_nonblocking() {
-			Some(ServerToClientPacket::Command { author_id, command }) => assert!(world.checked_exec(author_id, &command)),
+			Some(ServerToClientPacket::Command { author_id, command }) => {
+				assert!(world.checked_exec(author_id, &command));
+				if author_id == my_id {
+					controller.apply_view_command(&command);
+				}
+			},
 			Some(_) => panic!("got wrong packet while running!"),
 			None => {},
 		}

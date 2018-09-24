@@ -85,7 +85,7 @@ impl Controller {
 		v
 	}
 
-	fn apply_view_command(&mut self, command: &Command) {
+	pub fn apply_view_command(&mut self, command: &Command) {
 		match command {
 			Command::UnitCommand { command: UnitCommand::Move(direction), .. } => {
 				self.cursor = direction.plus_vector(self.cursor);
@@ -107,7 +107,6 @@ impl Controller {
 		for info in action_infos.into_iter() {
 			if info.is_triggered(input) {
 				if let Some(x) = info.action.execute(self, w) {
-					self.apply_view_command(&x);
 					return Some(x);
 				}
 			}
