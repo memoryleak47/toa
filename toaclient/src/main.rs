@@ -64,7 +64,12 @@ fn main() {
 			None => {},
 		}
 
-		input.tick();
+		if window.has_focus() {
+			input.tick();
+		} else {
+			input.reset();
+		}
+
 		if let Some(c) = controller.tick(&world, &input) {
 			let p = ClientToServerPacket::Command(c);
 			stream.send(p);

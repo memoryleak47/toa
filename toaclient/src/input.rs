@@ -25,6 +25,15 @@ impl Input {
 		self.tick_keys();
 	}
 
+	pub fn reset(&mut self) {
+		for key in get_all_keys().into_iter() {
+			if self.keymap[&key].pressed {
+				let state = KeyState { time: 0, pressed: false, };
+				self.keymap.insert(key, state);
+			}
+		}
+	}
+
 	pub fn is_pressed(&self, key: Key) -> bool {
 		self.keymap[&key].pressed
 	}
