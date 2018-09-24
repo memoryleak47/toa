@@ -91,15 +91,6 @@ impl Input {
 
 		self.keymap = keymap;
 	}
-
-	pub fn move_direction(&self) -> Option<Direction> {
-		if self.is_pressed_mod(Key::W, MOVE_WAIT_TIME) { Some(Direction::Up) }
-		else if self.is_pressed_mod(Key::A, MOVE_WAIT_TIME) { Some(Direction::Left) }
-		else if self.is_pressed_mod(Key::S, MOVE_WAIT_TIME) { Some(Direction::Down) }
-		else if self.is_pressed_mod(Key::D, MOVE_WAIT_TIME) { Some(Direction::Right) }
-		else { None }
-	}
-
 }
 
 fn new_keymap() -> HashMap<Key, KeyState> {

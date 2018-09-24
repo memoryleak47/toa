@@ -1,12 +1,8 @@
-pub mod default;
-
-use sfml::system::{Vector2u, Vector2f};
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text, Font};
 
-use toalib::misc::{vector_uf};
+use toalib::misc::vector_uf;
 use toalib::world::World;
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
-use toalib::misc::*;
 use toalib::team::PlayerID;
 use toalib::vec::{Vec2u, Vec2f};
 
@@ -47,6 +43,15 @@ impl View {
 		self.render_markers(window);
 
 		self.render_hud(window, world);
+	}
+
+	pub fn default_text_at(pos: Vec2u, world: &World) -> String {
+		let terrain = world.get_terrain(pos);
+		let building = world.get_building(pos);
+		let unit = world.get_unit(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
+		let inventory = world.get_inventory(pos);
+
+		format!("Terrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit, inventory.get_info_string())
 	}
 
 	fn render_hud(&self, window: &mut RenderWindow, _world: &World) {

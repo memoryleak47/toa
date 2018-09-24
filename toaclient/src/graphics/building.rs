@@ -1,4 +1,4 @@
-use toalib::world::buildingmap::{Building, BuildingClass};
+use toalib::world::buildingmap::Building;
 use toalib::team::{Team, PlayerPool};
 
 use crate::graphics::TextureId;
