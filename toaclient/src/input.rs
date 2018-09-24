@@ -1,10 +1,6 @@
 use std::collections::HashMap;
 use sfml::window::Key;
 
-use toalib::misc::Direction;
-
-const MOVE_WAIT_TIME: u32 = 7;
-
 struct KeyState {
 	time: u32,
 	pressed: bool,
@@ -43,6 +39,7 @@ impl Input {
 		state.pressed && state.time == 0
 	}
 
+	#[allow(dead_code)]
 	pub fn is_pressed_mod(&self, key: Key, modulo: u32) -> bool {
 		let state = &self.keymap[&key];
 		state.pressed && state.time % modulo == 0

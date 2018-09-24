@@ -122,10 +122,6 @@ impl Controller {
 			text: self.get_text(w),
 		}
 	}
-
-	pub fn turn_start(&mut self) {
-		self.unit_mode = None;
-	}
 }
 
 impl Action {
