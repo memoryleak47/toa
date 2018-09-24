@@ -2,8 +2,15 @@ use std::sync::mpsc::{channel, Sender, Receiver, TryRecvError};
 use std::thread::{spawn, JoinHandle};
 use std::io::{stdin, stdout, Write};
 
+use toalib::team::{PlayerID, Team};
+
 pub enum TermCommand {
-	Go
+	Go,
+	Status,
+	ChangeTeam {
+		player_id: PlayerID,
+		team: Team,
+	}
 }
 
 pub struct Term {
@@ -59,8 +66,22 @@ impl Term {
 	}
 
 	fn parse_command(s: &str) -> Option<TermCommand> {
-		match s.trim() {
-			"go" => Some(TermCommand::Go),
+		let parts: Vec<_> = s.trim()
+					.split_whitespace()
+					.collect();
+		match &parts[..] {
+			["go"] => Some(TermCommand::Go),
+			["status"] => Some(TermCommand::Status),
+			["team", player_id_str, team_str] => {
+				let id = match player_id_str.parse::<usize>() {
+					Ok(x) => x,
+					Err(_) => return None,
+				};
+				let player_id = PlayerID::new(id);
+
+				Team::parse(team_str)
+					.map(|team| TermCommand::ChangeTeam { player_id, team })
+			},
 			_ => {
 				println!("unknown command!");
 				None

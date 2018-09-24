@@ -52,4 +52,8 @@ impl UserPool {
 	pub fn get_player_pool(&self) -> &PlayerPool {
 		&self.player_pool
 	}
+
+	pub fn get_player_pool_mut(&mut self) -> &mut PlayerPool {
+		&mut self.player_pool
+	}
 }

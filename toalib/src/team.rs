@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter, Error};
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Debug)]
 pub struct PlayerID(usize);
 
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Team {
 	Red, 
 	Blue
@@ -86,5 +86,22 @@ impl PlayerPool {
 
 	pub fn get_player_ids(&self) -> Vec<PlayerID> {
 		self.players.keys().cloned().collect()
+	}
+
+	pub fn change_team(&mut self, player_id: PlayerID, team: Team) -> bool {
+		if self.players.contains_key(&player_id) {
+ 			self.players.insert(player_id, team);
+			true
+		} else { false }
+	}
+}
+
+impl Team {
+	pub fn parse(s: &str) -> Option<Team> {
+		match s {
+			"red" => Some(Team::Red),
+			"blue" => Some(Team::Blue),
+			_ => None,
+		}
 	}
 }

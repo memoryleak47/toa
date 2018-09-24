@@ -27,6 +27,16 @@ fn main() {
 
 		match term.fetch_command() {
 			Some(TermCommand::Go) => break,
+			Some(TermCommand::Status) => {
+				println!("Status:\n");
+				for player_id in user_pool.get_player_pool().get_player_ids() {
+					let team = user_pool.get_player_pool().get_team_of(player_id);
+					println!("{}: {:?}", player_id, team);
+				}
+			},
+			Some(TermCommand::ChangeTeam { player_id, team }) => {
+				user_pool.get_player_pool_mut().change_team(player_id, team);
+			},
 			None => continue,
 		}
 	}
