@@ -83,7 +83,7 @@ impl Controller {
 		format!("{}\n{}", default, v.join("\n"))
 	}
 
-	pub fn tick(&mut self, w: &World, input: &Input, id: PlayerID) -> Option<Command> {
+	pub fn tick(&mut self, w: &World, input: &Input) -> Option<Command> {
 		if let Some(x) = self.pending.as_mut() {
 			x.increase_time();
 		} else {
@@ -99,7 +99,7 @@ impl Controller {
 			for info in action_infos.into_iter() {
 				if info.is_triggered(input) {
 					if let Some(x) = info.action.get_command(self.cursor) {
-						if w.is_valid_command(id, &x) {
+						if w.is_valid_command(self.player_id, &x) {
 							self.pending = Some(Pending::new(info.action));
 							return Some(x);
 						}

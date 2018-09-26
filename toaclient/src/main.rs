@@ -66,7 +66,7 @@ fn main() {
 
 		input.tick(&window);
 
-		if let Some(c) = controller.tick(&world, &input, my_id) {
+		if let Some(c) = controller.tick(&world, &input) {
 			let p = ClientToServerPacket::Command(c);
 			stream.send(p);
 		}
