@@ -124,25 +124,25 @@ impl Controller {
 		// move
 		v.push(ActionInfo {
 			text: "move up".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Up)}),
+			action: Action::MoveUnit(Direction::Up),
 			key_combination: &[Key::W],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move left".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Left)}),
+			action: Action::MoveUnit(Direction::Left),
 			key_combination: &[Key::A],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move down".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Down)}),
+			action: Action::MoveUnit(Direction::Down),
 			key_combination: &[Key::S],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move right".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Move(Direction::Right)}),
+			action: Action::MoveUnit(Direction::Right),
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});

@@ -11,7 +11,7 @@ mod graphics;
 mod sound;
 mod input;
 mod controller;
-mod view;
+mod render;
 
 use sfml::window::{Style, Event};
 use sfml::graphics::{RenderWindow, RenderTarget, Color};
@@ -57,26 +57,21 @@ fn main() {
 			Some(ServerToClientPacket::Command { author_id, command }) => {
 				assert!(world.checked_exec(author_id, &command));
 				if author_id == my_id {
-					controller.apply_view_command(&command);
+					controller.command_accepted(&world);
 				}
 			},
 			Some(_) => panic!("got wrong packet while running!"),
 			None => {},
 		}
 
-		if window.has_focus() {
-			input.tick();
-		} else {
-			input.reset();
-		}
+		input.tick(&window);
 
-		if let Some(c) = controller.tick(&world, &input) {
+		if let Some(c) = controller.tick(&world, &input, my_id) {
 			let p = ClientToServerPacket::Command(c);
 			stream.send(p);
 		}
 
-		controller.get_view(&world)
-			.render(&mut window, &world, &texture_state);
+		render::render(&mut window, &world, &texture_state, &controller);
 
 		window.display();
 		window.clear(&Color::rgb(0, 0, 0));

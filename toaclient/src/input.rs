@@ -1,5 +1,7 @@
-use std::collections::HashMap;
+use sfml::graphics::RenderWindow;
 use sfml::window::Key;
+
+use std::collections::HashMap;
 
 struct KeyState {
 	time: u32,
@@ -17,8 +19,12 @@ impl Input {
 		}
 	}
 
-	pub fn tick(&mut self) {
-		self.tick_keys();
+	pub fn tick(&mut self, window: &RenderWindow) {
+		if window.has_focus() {
+			self.tick_keys();
+		} else {
+			self.reset();
+		}
 	}
 
 	pub fn reset(&mut self) {
