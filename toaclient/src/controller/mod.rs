@@ -114,6 +114,7 @@ impl Controller {
 }
 
 impl Action {
+	// this command has to be accepted by the server before the Action can be executed
 	pub fn get_command(&self, pos: Vec2u) -> Option<Command> {
 		match self {
 			Action::Command(c) => Some(c.clone()),
