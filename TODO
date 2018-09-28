@@ -1,3 +1,0 @@
-- make rendering offsets depend on TILESIZE, use TILESIZE/2 instead of 20
-- TEXTURE_COUNT is hacky
-- networking
