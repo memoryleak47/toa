@@ -64,6 +64,8 @@ fn main() {
 						author_id: id,
 					}
 				});
+			} else {
+				user_pool.send(id, ServerToClientPacket::DeclineCommand);
 			}
 		}
 	}
