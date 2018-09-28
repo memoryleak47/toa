@@ -46,7 +46,7 @@ impl Controller {
 
 		v.push(ActionInfo {
 			text: "next turn".to_string(),
-			action: Action::Command(Command::NextTurn),
+			action: Action::RawCommand(Command::NextTurn),
 			key_combination: &[Key::N],
 			triggered: trigger::FRESH,
 		});
@@ -101,14 +101,14 @@ impl Controller {
 		// work
 		v.push(ActionInfo {
 			text: "work".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Work }),
+			action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Work }),
 			key_combination: &[Key::Q],
 			triggered: trigger::FRESH,
 		});
 
 		v.push(ActionInfo {
 			text: "unrefined work".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::UnrefinedWork }),
+			action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::UnrefinedWork }),
 			key_combination: &[Key::H],
 			triggered: trigger::FRESH,
 		});
@@ -116,7 +116,7 @@ impl Controller {
 		// burn
 		v.push(ActionInfo {
 			text: "burn building".to_string(),
-			action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::BurnBuilding }),
+			action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::BurnBuilding }),
 			key_combination: &[Key::I],
 			triggered: trigger::FRESH,
 		});
@@ -238,7 +238,7 @@ impl Controller {
 		if let Some(UnitMode::Attack { ref aim }) = self.unit_mode.as_ref() {
 			v.push(ActionInfo {
 				text: "attack".to_string(),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Attack(aim.clone())}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Attack(aim.clone())}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			});
@@ -260,7 +260,7 @@ impl Controller {
 		for (b, key) in KEYED_BUILDABLE_CLASSES.iter() {
 			v.push(ActionInfo {
 				text: format!("build {}", b.get_name()),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Build(*b)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Build(*b)}),
 				key_combination: slice::from_ref(key),
 				triggered: trigger::FRESH,
 			});
@@ -282,7 +282,7 @@ impl Controller {
 		if let ItemUnitMode::ChangeMainItem = iu_mode {
 			v.push(ActionInfo {
 				text: String::from("Unequip Item"),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(None)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(None)}),
 				key_combination: &[Key::Q],
 				triggered: trigger::FRESH,
 			});
@@ -300,25 +300,25 @@ impl Controller {
 		v.push(match iu_mode {
 			ItemUnitMode::Drop => ActionInfo {
 				text: format!("Drop Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name() , index),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::Take => ActionInfo {
 				text: format!("Take Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::ChangeMainItem => ActionInfo {
 				text: format!("Choose Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::Exec => ActionInfo {
 				text: format!("Use Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::Command(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ExecItem(index)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ExecItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
@@ -362,7 +362,7 @@ impl Controller {
 		// activate
 		v.push(ActionInfo {
 			text: format!("Craft Item {} ({})", itemclass.get_name(), index),
-			action: Action::Command(Command::UnitCommand { command: UnitCommand::Craft(itemclass), pos: self.cursor }),
+			action: Action::RawCommand(Command::UnitCommand { command: UnitCommand::Craft(itemclass), pos: self.cursor }),
 			key_combination: &[Key::Return],
 			triggered: trigger::FRESH,
 		});
@@ -453,7 +453,7 @@ impl Controller {
 
 impl ActionInfo {
 	pub fn is_valid(&self, player_id: PlayerID, w: &World) -> bool {
-		if let Action::Command(ref c) = self.action {
+		if let Action::RawCommand(ref c) = self.action {
 			w.is_valid_command(player_id, c)
 		} else {
 			true

@@ -27,7 +27,7 @@ pub enum UnitMode {
 pub enum Action {
 	ModeChange(Option<UnitMode>),
 	MoveUnit(Direction),
-	Command(Command),
+	RawCommand(Command),
 	MoveCamera(Direction),
 	MoveCursor(Direction),
 	MoveAim(Direction),
@@ -117,7 +117,7 @@ impl Action {
 	// this command has to be accepted by the server before the Action can be executed
 	pub fn get_command(&self, pos: Vec2u) -> Option<Command> {
 		match self {
-			Action::Command(c) => Some(c.clone()),
+			Action::RawCommand(c) => Some(c.clone()),
 			Action::MoveUnit(d) => Some(Command::UnitCommand { command: UnitCommand::Move(*d), pos }),
 			_ => None,
 		}
@@ -141,7 +141,7 @@ impl Action {
 			},
 			Action::MoveCamera(d) => { controller.focus_position = vector_if(d.to_vector()) / 2. + controller.focus_position; },
 			Action::MoveCursor(d) => { controller.cursor = d.plus_vector(controller.cursor); },
-			Action::Command(_) => {},
+			Action::RawCommand(_) => {},
 		}
 	}
 }
