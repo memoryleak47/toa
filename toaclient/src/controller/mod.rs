@@ -26,7 +26,10 @@ pub enum UnitMode {
 
 pub enum Action {
 	ModeChange(Option<UnitMode>),
-	MoveUnit(Direction),
+	MoveUnit {
+		pos: Vec2u,
+		direction: Direction,
+	},
 	RawCommand(Command),
 	MoveCamera(Direction),
 	MoveCursor(Direction),
@@ -98,10 +101,10 @@ impl Controller {
 
 			for info in action_infos.into_iter() {
 				if info.is_triggered(input) {
-					if let Some(x) = info.action.get_command(self.cursor) {
-						if w.is_valid_command(self.player_id, &x) {
+					if let Some(c) = info.action.get_command() {
+						if w.is_valid_command(self.player_id, &c) {
 							self.pending = Some(Pending::new(info.action));
-							return Some(x);
+							return Some(c);
 						}
 					} else {
 						info.action.execute(self, w);
@@ -115,10 +118,10 @@ impl Controller {
 
 impl Action {
 	// this command has to be accepted by the server before the Action can be executed
-	pub fn get_command(&self, pos: Vec2u) -> Option<Command> {
+	pub fn get_command(&self) -> Option<Command> {
 		match self {
 			Action::RawCommand(c) => Some(c.clone()),
-			Action::MoveUnit(d) => Some(Command::UnitCommand { command: UnitCommand::Move(*d), pos }),
+			Action::MoveUnit { direction, pos } => Some(Command::UnitCommand { command: UnitCommand::Move(*direction), pos: *pos }),
 			_ => None,
 		}
 	}
@@ -130,8 +133,8 @@ impl Action {
 					controller.cursor = x;
 				}
 			},
-			Action::MoveUnit(d) => {
-				controller.cursor = vector_iu(vector_ui(controller.cursor) + d.to_vector());
+			Action::MoveUnit { direction, pos } => {
+				controller.cursor = vector_iu(vector_ui(pos) + direction.to_vector());
 			},
 			Action::ModeChange(m) => { controller.unit_mode = m; },
 			Action::MoveAim(d) => {
@@ -143,6 +146,12 @@ impl Action {
 			Action::MoveCursor(d) => { controller.cursor = d.plus_vector(controller.cursor); },
 			Action::RawCommand(_) => {},
 		}
+	}
+
+	pub fn is_valid(&self, w: &World, player_id: PlayerID) -> bool {
+		self.get_command()
+			.map(|c| w.is_valid_command(player_id, &c))
+			.unwrap_or(true)
 	}
 }
 

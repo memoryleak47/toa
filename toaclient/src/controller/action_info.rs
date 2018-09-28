@@ -7,7 +7,6 @@ use toalib::world::buildingmap::{BUILDABLE_CLASSES, BuildingClass};
 use toalib::item::{ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
-use toalib::team::PlayerID;
 
 use crate::controller::{Controller, UnitMode, ItemUnitMode, Action};
 use crate::input::Input;
@@ -124,25 +123,25 @@ impl Controller {
 		// move
 		v.push(ActionInfo {
 			text: "move up".to_string(),
-			action: Action::MoveUnit(Direction::Up),
+			action: Action::MoveUnit { direction: Direction::Up, pos: self.cursor },
 			key_combination: &[Key::W],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move left".to_string(),
-			action: Action::MoveUnit(Direction::Left),
+			action: Action::MoveUnit { direction: Direction::Left, pos: self.cursor },
 			key_combination: &[Key::A],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move down".to_string(),
-			action: Action::MoveUnit(Direction::Down),
+			action: Action::MoveUnit { direction: Direction::Down, pos: self.cursor },
 			key_combination: &[Key::S],
 			triggered: trigger::MOD,
 		});
 		v.push(ActionInfo {
 			text: "move right".to_string(),
-			action: Action::MoveUnit(Direction::Right),
+			action: Action::MoveUnit { direction: Direction::Right, pos: self.cursor },
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});
@@ -444,7 +443,7 @@ impl Controller {
 		}
 
 		v = v.into_iter()
-			.filter(|x| x.is_valid(self.player_id, w))
+			.filter(|x| x.action.is_valid(w, self.player_id))
 			.collect();
 
 		v
@@ -452,14 +451,6 @@ impl Controller {
 }
 
 impl ActionInfo {
-	pub fn is_valid(&self, player_id: PlayerID, w: &World) -> bool {
-		if let Action::RawCommand(ref c) = self.action {
-			w.is_valid_command(player_id, c)
-		} else {
-			true
-		}
-	}
-
 	pub fn get_text(&self) -> String {
 		let v: Vec<_> = self.key_combination.iter()
 			.map(|x| format!("{:?}", x))
