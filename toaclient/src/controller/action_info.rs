@@ -433,13 +433,13 @@ impl Controller {
 
 		v.extend(self.get_general_action_infos(w));
 
-		match &self.unit_mode {
-			&Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
-			&Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
-			&Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
-			&Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index, w)),
-			&Some(UnitMode::Craft { index }) => v.extend(self.get_crafting_mode_action_infos(index, w)),
-			&None => v.extend(self.get_no_mode_action_infos(w)),
+		match self.unit_mode {
+			Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
+			Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
+			Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
+			Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index, w)),
+			Some(UnitMode::Craft { index }) => v.extend(self.get_crafting_mode_action_infos(index, w)),
+			None => v.extend(self.get_no_mode_action_infos(w)),
 		}
 
 		v = v.into_iter()
