@@ -2,14 +2,15 @@ use std::slice;
 
 use sfml::window::Key;
 
-use toalib::world::World;
 use toalib::world::buildingmap::{BUILDABLE_CLASSES, BuildingClass};
 use toalib::item::{ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
 
-use crate::controller::{Controller, UnitMode, ItemUnitMode, Action};
+use crate::app::action::Action;
 use crate::input::Input;
+use crate::app::App;
+use crate::unit_mode::{UnitMode, ItemUnitMode};
 
 lazy_static! {
 	pub static ref KEYED_BUILDABLE_CLASSES: [(BuildingClass, Key); 1] = [(BuildingClass::Farm, Key::F)];
@@ -37,8 +38,43 @@ mod trigger {
 	pub static MOD: F = |i, k| i.are_pressed_mod(k, 3);
 }
 
-impl Controller {
-	fn get_general_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
+impl ActionInfo {
+	pub fn get_text(&self) -> String {
+		let v: Vec<_> = self.key_combination.iter()
+			.map(|x| format!("{:?}", x))
+			.collect();
+		let key_string = v.join("+");
+		format!("[{}]: {}", key_string, self.text)
+	}
+
+	pub fn is_triggered(&self, input: &Input) -> bool {
+		(self.triggered)(input, self.key_combination)
+	}
+}
+
+impl App {
+	pub fn get_action_infos(&self) -> Vec<ActionInfo> {
+		let mut v = Vec::new();
+
+		v.extend(self.get_general_action_infos());
+
+		match self.unit_mode {
+			Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos()),
+			Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos()),
+			Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos()),
+			Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index)),
+			Some(UnitMode::Craft { index }) => v.extend(self.get_crafting_mode_action_infos(index)),
+			None => v.extend(self.get_no_mode_action_infos()),
+		}
+
+		v = v.into_iter()
+			.filter(|x| x.action.is_valid(&self.world, self.player_id))
+			.collect();
+
+		v
+	}
+
+	fn get_general_action_infos(&self) -> Vec<ActionInfo> {
 		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_CLASSES.len());
 
 		let mut v = Vec::new();
@@ -87,7 +123,7 @@ impl Controller {
 		v
 	}
 
-	fn get_normal_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_normal_mode_action_infos(&self) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -147,7 +183,7 @@ impl Controller {
 		});
 
 		// change mode
-		if let Some(u) = w.get_unit(self.cursor) {
+		if let Some(u) = self.world.get_unit(self.cursor) {
 			v.push(ActionInfo {
 				text: "go to attack mode".to_string(),
 				action: Action::ModeChange(Some(UnitMode::Attack { aim: u.aim() })),
@@ -201,7 +237,7 @@ impl Controller {
 		v
 	}
 
-	fn get_attack_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
+	fn get_attack_mode_action_infos(&self) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -246,7 +282,7 @@ impl Controller {
 		v
 	}
 
-	fn get_build_mode_action_infos(&self, _w: &World) -> Vec<ActionInfo> {
+	fn get_build_mode_action_infos(&self) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -268,7 +304,7 @@ impl Controller {
 		v
 	}
 
-	fn get_item_mode_action_infos(&self, iu_mode: ItemUnitMode, index: usize, w: &World) -> Vec<ActionInfo> {
+	fn get_item_mode_action_infos(&self, iu_mode: ItemUnitMode, index: usize) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -288,8 +324,8 @@ impl Controller {
 		}
 
 		let inv: &Inventory = match iu_mode { // TODO well... make this readable
-			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem | ItemUnitMode::Exec => &(if let Some(u) = w.get_unit(self.cursor) { u } else { return v; }).inventory,
-			ItemUnitMode::Take => &w.get_inventory(self.cursor),
+			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem | ItemUnitMode::Exec => &(if let Some(u) = self.world.get_unit(self.cursor) { u } else { return v; }).inventory,
+			ItemUnitMode::Take => &self.world.get_inventory(self.cursor),
 		};
 
 		let l = inv.iter().len();
@@ -344,7 +380,7 @@ impl Controller {
 		v
 	}
 
-	fn get_crafting_mode_action_infos(&self, index: usize, _w: &World) -> Vec<ActionInfo> {
+	fn get_crafting_mode_action_infos(&self, index: usize) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -387,7 +423,7 @@ impl Controller {
 		v
 	}
 
-	fn get_no_mode_action_infos(&self, w: &World) -> Vec<ActionInfo> {
+	fn get_no_mode_action_infos(&self) -> Vec<ActionInfo> {
 		let mut v = Vec::new();
 
 		v.push(ActionInfo {
@@ -414,7 +450,7 @@ impl Controller {
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});
-		if w.get_unit(self.cursor)
+		if self.world.get_unit(self.cursor)
 				.filter(|x| x.owner == self.player_id)
 				.is_some() {
 			v.push(ActionInfo {
@@ -426,40 +462,5 @@ impl Controller {
 		}
 
 		v
-	}
-
-	pub fn get_action_infos(&self, w: &World) -> Vec<ActionInfo> {
-		let mut v = Vec::new();
-
-		v.extend(self.get_general_action_infos(w));
-
-		match self.unit_mode {
-			Some(UnitMode::Normal) => v.extend(self.get_normal_mode_action_infos(w)),
-			Some(UnitMode::Attack { .. }) => v.extend(self.get_attack_mode_action_infos(w)),
-			Some(UnitMode::Build) => v.extend(self.get_build_mode_action_infos(w)),
-			Some(UnitMode::Item { iu_mode, index }) => v.extend(self.get_item_mode_action_infos(iu_mode, index, w)),
-			Some(UnitMode::Craft { index }) => v.extend(self.get_crafting_mode_action_infos(index, w)),
-			None => v.extend(self.get_no_mode_action_infos(w)),
-		}
-
-		v = v.into_iter()
-			.filter(|x| x.action.is_valid(w, self.player_id))
-			.collect();
-
-		v
-	}
-}
-
-impl ActionInfo {
-	pub fn get_text(&self) -> String {
-		let v: Vec<_> = self.key_combination.iter()
-			.map(|x| format!("{:?}", x))
-			.collect();
-		let key_string = v.join("+");
-		format!("[{}]: {}", key_string, self.text)
-	}
-
-	pub fn is_triggered(&self, input: &Input) -> bool {
-		(self.triggered)(input, self.key_combination)
 	}
 }
