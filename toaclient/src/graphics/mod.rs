@@ -29,9 +29,10 @@ pub enum TextureId {
 	SpawnerBlueBuilding,
 
 	Bag,
+	Cursor,
 }
 
-const TEXTURE_COUNT: usize = 16;
+const TEXTURE_COUNT: usize = 17;
 
 pub struct TextureState {
 	wrappers: [Texture; TEXTURE_COUNT],
@@ -81,6 +82,7 @@ impl TextureState {
 			load!(TextureId::SpawnerBlueBuilding, "building/spawner/blue.png");
 
 			load!(TextureId::Bag, "bag.png");
+			load!(TextureId::Cursor, "cursor.png");
 
 			TextureState { wrappers }
 		}

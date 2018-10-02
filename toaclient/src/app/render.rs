@@ -9,7 +9,6 @@ use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
 
-const MARKER_BORDER_SIZE: f32 = 5.;
 lazy_static! {
 	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
 	pub static ref TARGET_CURSOR_COLOR: Color = Color::rgb(200, 20, 20);
@@ -128,42 +127,22 @@ impl App {
 		let posf = vector_uf(pos) * TILESIZE;
 
 		let left_top = (posf - self.focus_position * TILESIZE) + halfscreen;
-		let right_bot = left_top + TILESIZE_VEC();
-		let (left, top) = (left_top.x, left_top.y);
-		let (right, bot) = (right_bot.x, right_bot.y);
-
-		let mut shape = RectangleShape::new();
-		let mut color = *color;
-		if let MarkerType::Transparent = marker_type {
-			color -= Color::rgba(0, 0, 0, 155);
-		}
-		shape.set_fill_color(&color);
 
 		match marker_type {
 			MarkerType::Transparent => {
+				let mut shape = RectangleShape::new();
+
+				let color = *color - Color::rgba(0, 0, 0, 155);
+
+				shape.set_fill_color(&color);
 				shape.set_position(vec2f_to_sfml(left_top));
 				shape.set_size(vec2f_to_sfml(TILESIZE_VEC()));
 				self.window.draw(&shape);
 			},
 			MarkerType::Border => {
-				// top
+				let mut shape = RectangleShape::with_texture(self.texture_state.get_texture(TextureId::Cursor));
 				shape.set_position(vec2f_to_sfml(left_top));
-				shape.set_size(vec2f_to_sfml(Vec2f::new(TILESIZE as f32, MARKER_BORDER_SIZE)));
-				self.window.draw(&shape);
-
-				// left
-				shape.set_position(vec2f_to_sfml(left_top));
-				shape.set_size(vec2f_to_sfml(Vec2f::new(MARKER_BORDER_SIZE, TILESIZE as f32)));
-				self.window.draw(&shape);
-
-				// bot
-				shape.set_position(vec2f_to_sfml(Vec2f::new(left, bot - MARKER_BORDER_SIZE)));
-				shape.set_size(vec2f_to_sfml(Vec2f::new(TILESIZE as f32, MARKER_BORDER_SIZE)));
-				self.window.draw(&shape);
-
-				// right
-				shape.set_position(vec2f_to_sfml(Vec2f::new(right - MARKER_BORDER_SIZE, top)));
-				shape.set_size(vec2f_to_sfml(Vec2f::new(MARKER_BORDER_SIZE, TILESIZE as f32)));
+				shape.set_size(vec2f_to_sfml(TILESIZE_VEC()));
 				self.window.draw(&shape);
 			},
 		}
