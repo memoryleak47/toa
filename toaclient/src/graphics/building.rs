@@ -16,6 +16,7 @@ pub fn get_texture_id(building: &Building, player_pool: &PlayerPool) -> TextureI
 		Building::Camp(_) => TextureId::CampBuilding,
 		Building::Sawmill(_) => TextureId::SawmillBuilding,
 		Building::StoneMine(_) => TextureId::StoneMineBuilding,
+		Building::IronMine(_) => TextureId::IronMineBuilding,
 	}
 }
 

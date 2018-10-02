@@ -4,6 +4,7 @@ mod farm;
 mod camp;
 mod sawmill;
 mod stone_mine;
+mod iron_mine;
 
 use std::any::Any;
 
@@ -20,16 +21,18 @@ use self::farm::Farm;
 use self::camp::Camp;
 use self::sawmill::Sawmill;
 use self::stone_mine::StoneMine;
+use self::iron_mine::IronMine;
 
 pub use self::spawner::new_spawner;
 pub use self::construction::new_construction;
 
 lazy_static! {
-	pub static ref BUILDABLE_CLASSES: [BuildingClass; 4] = [
+	pub static ref BUILDABLE_CLASSES: [BuildingClass; 5] = [
 		BuildingClass::Farm,
 		BuildingClass::Camp,
 		BuildingClass::Sawmill,
 		BuildingClass::StoneMine,
+		BuildingClass::IronMine,
 	];
 }
 
@@ -94,7 +97,7 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine);
+setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine, IronMine);
 
 pub fn new_buildingmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Building>> {
 	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);

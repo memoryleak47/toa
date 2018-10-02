@@ -4,31 +4,31 @@ use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]
-pub struct StoneClass;
+pub struct IronClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct Stone;
+pub struct Iron;
 
-impl ItemClassTrait for StoneClass {
-	type Instance = Stone;
+impl ItemClassTrait for IronClass {
+	type Instance = Iron;
 
-	fn get_name() -> &'static str { "Stone" }
+	fn get_name() -> &'static str { "Iron" }
 	fn get_weight() -> u32 { 10 }
 	fn build() -> Item {
-		Item::Stone(Stone)
+		Item::Iron(Iron)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { None }
 }
 
-impl ItemTrait for Stone {
-	type Class = StoneClass;
+impl ItemTrait for Iron {
+	type Class = IronClass;
 
 	fn get_class(&self) -> ItemClass {
-		ItemClass::Stone
+		ItemClass::Iron
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
 	fn aim(&self) -> Aim {
-		new_meelee_aim(Damage(7))
+		new_meelee_aim(Damage(8))
 	}
 }
