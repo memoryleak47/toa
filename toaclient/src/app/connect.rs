@@ -1,4 +1,4 @@
-use sfml::window::Style;
+use sfml::window::{Style, VideoMode};
 use sfml::graphics::RenderWindow;
 
 use toalib::packet::ServerToClientPacket;
@@ -26,7 +26,7 @@ impl App {
 			cursor: Vec2u::new(0, 0),
 			pending: None,
 			world,
-			window: RenderWindow::new((800, 600), "Toa client", Style::CLOSE, &Default::default()),
+			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),
 			texture_state: TextureState::new(),
 			sound_state: SoundState::new().unwrap(),
