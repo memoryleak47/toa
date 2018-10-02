@@ -24,7 +24,7 @@ pub struct Camp {
 impl BuildingClassTrait for CampClass {
 	type Instance = Camp;
 
-	fn get_required_terrain() -> Option<Terrain> { Some(Terrain::GRASS) }
+	fn get_required_terrain() -> Option<Terrain> { None }
 	fn get_build_item_cost() -> &'static [ItemClass] {
 		&BUILD_ITEM_COST[..]
 	}
