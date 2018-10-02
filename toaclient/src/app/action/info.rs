@@ -14,7 +14,7 @@ use crate::unit_mode::{UnitMode, ItemUnitMode};
 
 lazy_static! {
 	pub static ref KEYED_BUILDABLE_CLASSES: [(BuildingClass, Key); 1] = [(BuildingClass::Farm, Key::F)];
-	pub static ref CRAFTABLE_CLASSES: [ItemClass; 1] = [ItemClass::Club];
+	pub static ref CRAFTABLE_CLASSES: [ItemClass; 1] = [ItemClass::WoodSword];
 }
 
 pub struct ActionInfo {
