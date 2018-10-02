@@ -2,6 +2,7 @@ use crate::vec::Vec2u;
 use crate::item::{Inventory, ItemClass};
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::damage::Damage;
+use crate::world::buildingmap::BuildingClass;
 
 const GROUND_DAMAGE: Damage = Damage(5);
 
@@ -13,7 +14,10 @@ impl World {
 	fn damage_items_on_ground(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				self.itemmap[index2d!(x, y)].damage(GROUND_DAMAGE);
+				let i = index2d!(x, y);
+				if let Some(BuildingClass::Camp) = self.buildingmap[i].as_ref().map(|x| x.get_class()) { } else {
+					self.itemmap[i].damage(GROUND_DAMAGE);
+				}
 			}
 		}
 	}

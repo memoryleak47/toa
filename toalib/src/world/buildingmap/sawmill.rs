@@ -8,7 +8,7 @@ use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
 lazy_static! {
-	static ref BUILD_ITEM_COST: [ItemClass; 4] = [ItemClass::Wood, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood];
+	static ref BUILD_ITEM_COST: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]

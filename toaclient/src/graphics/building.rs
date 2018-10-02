@@ -13,6 +13,7 @@ pub fn get_texture_id(building: &Building, player_pool: &PlayerPool) -> TextureI
 		},
 		Building::Construction(_) => TextureId::ConstructionBuilding,
 		Building::Farm(_) => TextureId::FarmBuilding,
+		Building::Camp(_) => TextureId::CampBuilding,
 	}
 }
 

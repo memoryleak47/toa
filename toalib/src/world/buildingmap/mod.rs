@@ -1,6 +1,7 @@
 mod spawner;
 mod construction;
 mod farm;
+mod camp;
 
 use std::any::Any;
 
@@ -14,12 +15,13 @@ use crate::team::PlayerID;
 use self::spawner::Spawner;
 use self::construction::Construction;
 use self::farm::Farm;
+use self::camp::Camp;
 
 pub use self::spawner::new_spawner;
 pub use self::construction::new_construction;
 
 lazy_static! {
-	pub static ref BUILDABLE_CLASSES: [BuildingClass; 1] = [BuildingClass::Farm];
+	pub static ref BUILDABLE_CLASSES: [BuildingClass; 2] = [BuildingClass::Farm, BuildingClass::Camp];
 }
 
 trait BuildingTrait  {
@@ -83,7 +85,7 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Construction, Farm);
+setup!(Spawner, Construction, Farm, Camp);
 
 pub fn new_buildingmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Building>> {
 	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);

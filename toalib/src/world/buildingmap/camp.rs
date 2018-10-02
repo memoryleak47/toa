@@ -8,21 +8,21 @@ use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
 lazy_static! {
-	static ref BUILD_ITEM_COST: [ItemClass; 4] = [ItemClass::Wood, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood];
+	static ref BUILD_ITEM_COST: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]
-pub struct FarmClass;
+pub struct CampClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct Farm {
+pub struct Camp {
 	health: u32,
 }
 
-impl BuildingClassTrait for FarmClass {
-	type Instance = Farm;
+impl BuildingClassTrait for CampClass {
+	type Instance = Camp;
 
 	fn get_required_terrain() -> Option<Terrain> { Some(Terrain::GRASS) }
 	fn get_build_item_cost() -> &'static [ItemClass] {
@@ -31,26 +31,26 @@ impl BuildingClassTrait for FarmClass {
 	fn get_build_stamina_cost() -> u32 { 20 }
 	fn get_height() -> u32 { 0 }
 	fn build() -> Building {
-		Building::Farm(Farm { health: 100 })
+		Building::Camp(Camp { health: 100 })
 	}
 	fn get_name() -> &'static str {
-		"Farm"
+		"Camp"
 	}
 }
 
-impl BuildingTrait for Farm {
-	type Class = FarmClass;
+impl BuildingTrait for Camp {
+	type Class = CampClass;
 
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
-	fn get_class(&self) -> BuildingClass { BuildingClass::Farm }
+	fn get_class(&self) -> BuildingClass { BuildingClass::Camp }
 	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { true }
-	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { true }
+	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { false }
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, w: &mut World, p: Vec2u) {
-		let u = w.get_unit_mut(p).unwrap();
-		u.inventory.push(ItemClass::Food.build());
+	fn work(&mut self, _w: &mut World, _p: Vec2u) {
+		panic!("can't work on camp");
 	}
+
 }
