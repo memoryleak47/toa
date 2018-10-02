@@ -24,6 +24,7 @@ pub enum TextureId {
 	StoneMineBuilding,
 	IronMineBuilding,
 	WorkshopBuilding,
+	CastleBuilding,
 
 	SpawnerRedBuilding,
 	SpawnerBlueBuilding,
@@ -32,7 +33,7 @@ pub enum TextureId {
 	Cursor,
 }
 
-const TEXTURE_COUNT: usize = 17;
+const TEXTURE_COUNT: usize = 18;
 
 pub struct TextureState {
 	wrappers: [Texture; TEXTURE_COUNT],
@@ -77,6 +78,7 @@ impl TextureState {
 			load!(TextureId::StoneMineBuilding, "building/stonemine.png");
 			load!(TextureId::IronMineBuilding, "building/ironmine.png");
 			load!(TextureId::WorkshopBuilding, "building/workshop.png");
+			load!(TextureId::CastleBuilding, "building/castle.png");
 
 			load!(TextureId::SpawnerRedBuilding, "building/spawner/red.png");
 			load!(TextureId::SpawnerBlueBuilding, "building/spawner/blue.png");
