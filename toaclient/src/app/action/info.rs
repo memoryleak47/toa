@@ -13,10 +13,11 @@ use crate::app::App;
 use crate::unit_mode::{UnitMode, ItemUnitMode};
 
 lazy_static! {
-	pub static ref KEYED_BUILDABLE_CLASSES: [(BuildingClass, Key); 3] = [
+	pub static ref KEYED_BUILDABLE_CLASSES: [(BuildingClass, Key); 4] = [
 		(BuildingClass::Farm, Key::F),
 		(BuildingClass::Camp, Key::C),
 		(BuildingClass::Sawmill, Key::S),
+		(BuildingClass::StoneMine, Key::M),
 	];
 	pub static ref CRAFTABLE_CLASSES: [ItemClass; 1] = [ItemClass::WoodSword];
 }
