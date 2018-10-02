@@ -8,30 +8,30 @@ lazy_static! {
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]
-pub struct ClubClass;
+pub struct WoodSwordClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct Club {
+pub struct WoodSword {
 	health: u32,
 }
 
-impl ItemClassTrait for ClubClass {
-	type Instance = Club;
+impl ItemClassTrait for WoodSwordClass {
+	type Instance = WoodSword;
 
-	fn get_name() -> &'static str { "Club" }
+	fn get_name() -> &'static str { "WoodSword" }
 	fn get_weight() -> u32 { 100 }
 	fn build() -> Item {
-		Item::Club(Club { health: 100 })
+		Item::WoodSword(WoodSword { health: 100 })
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
 }
 
-impl ItemTrait for Club {
-	type Class = ClubClass;
+impl ItemTrait for WoodSword {
+	type Class = WoodSwordClass;
 
 	fn get_class(&self) -> ItemClass {
-		ItemClass::Club
+		ItemClass::WoodSword
 	}
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);

@@ -1,6 +1,6 @@
 mod food;
 mod wood;
-mod club;
+mod wood_sword;
 
 use std::slice;
 use std::mem;
@@ -12,7 +12,7 @@ use crate::world::damage::Damage;
 
 use self::food::Food;
 use self::wood::Wood;
-use self::club::Club;
+use self::wood_sword::WoodSword;
 
 trait ItemTrait {
 	type Class: ItemClassTrait + Sized;
@@ -67,7 +67,7 @@ macro_rules! setup {
 	};
 }
 
-setup!(Food, Wood, Club);
+setup!(Food, Wood, WoodSword);
 
 #[derive(Serialize, Deserialize)]
 pub struct Inventory {
