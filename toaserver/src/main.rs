@@ -12,7 +12,7 @@ use self::pool::UserPool;
 use self::term::{Term, TermCommand};
 
 fn main() {
-	let mut listener = Listener::bind("localhost:4242");
+	let mut listener = Listener::bind("0.0.0.0:4242");
 
 	let mut user_pool = UserPool::new();
 	let mut term = Term::new();
