@@ -39,7 +39,7 @@ impl BuildingTrait for Construction {
 		self.health == 0
 	}
 	fn work(&mut self, world: &mut World, p: Vec2u) {
-		let property =  self.build_class.get_build_property().unwrap();
+		let property = self.build_class.get_build_property().unwrap();
 		self.invested_stamina += 10; // TODO make correct
 		if self.invested_stamina >= property.stamina_cost {
 			let b = (property.build)();
