@@ -83,7 +83,8 @@ impl App {
 					let texture_id = TextureId::Unit;
 					self.render_texture(pos, size, texture_id);
 
-					// TODO draw cloth
+					let texture_id = TextureId::UnitCloth;
+					self.render_texture(pos, size, texture_id);
 
 					if let Some(ref main_item) = self.world.unitmap[index2d!(x, y)].as_ref().unwrap().main_item {
 						let pos = raw_pos + Vec2f::new(0.5, 0.25);
