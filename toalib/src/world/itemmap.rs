@@ -32,9 +32,5 @@ impl World {
 }
 
 pub fn new_itemmap() -> Vec<Inventory> {
-	let mut x = init2d!(Inventory::new(), MAP_SIZE_X, MAP_SIZE_Y);
-
-	x[index2d!(0, 0)].get_item_vec().push(ItemClass::Food.build()); // TODO remove
-
-	x
+	init2d!(Inventory::new(), MAP_SIZE_X, MAP_SIZE_Y)
 }
