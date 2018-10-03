@@ -64,6 +64,7 @@ setup!(
 	StoneItem: "item/stone.png",
 	IronItem: "item/iron.png",
 	IronSwordItem: "item/ironsword.png",
+	WoodBowItem: "item/woodbow.png",
 
 	SpawnerRedBuilding: "building/spawner/red.png",
 	SpawnerBlueBuilding: "building/spawner/blue.png",

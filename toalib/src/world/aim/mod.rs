@@ -1,7 +1,10 @@
 mod meelee;
+mod ranged;
 
 pub use self::meelee::new_meelee_aim;
+pub use self::ranged::new_ranged_aim;
 use self::meelee::MeeleeAim;
+use self::ranged::RangedAim;
 
 use crate::vec::{Vec2u, Vec2i};
 use crate::misc::Direction;
@@ -31,4 +34,4 @@ macro_rules! setup {
 	};
 }
 
-setup!(MeeleeAim);
+setup!(MeeleeAim, RangedAim);
