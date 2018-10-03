@@ -30,18 +30,6 @@ use self::castle::Castle;
 pub use self::spawner::new_spawner;
 pub use self::construction::new_construction;
 
-lazy_static! {
-	pub static ref BUILDABLE_CLASSES: [BuildingClass; 7] = [
-		BuildingClass::Farm,
-		BuildingClass::Camp,
-		BuildingClass::Sawmill,
-		BuildingClass::StoneMine,
-		BuildingClass::IronMine,
-		BuildingClass::Workshop,
-		BuildingClass::Castle,
-	];
-}
-
 trait BuildingTrait {
 	type Class: BuildingClassTrait + Sized;
 
@@ -77,7 +65,7 @@ macro_rules! setup {
 
 		lazy_static! {
 			pub static ref BUILDING_CLASSES: Vec<BuildingClass> = vec![ $( BuildingClass::$x),* ];
-			pub static ref BUILDABLE_BUILDING_CLASSES: Vec<BuildingClass> = BUILDABLE_CLASSES.iter()
+			pub static ref BUILDABLE_BUILDING_CLASSES: Vec<BuildingClass> = BUILDING_CLASSES.iter()
 				.filter(|x| x.get_build_property().is_some())
 				.cloned()
 				.collect();

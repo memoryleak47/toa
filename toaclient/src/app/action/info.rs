@@ -2,7 +2,7 @@ use std::slice;
 
 use sfml::window::Key;
 
-use toalib::world::buildingmap::{BUILDABLE_CLASSES, BuildingClass};
+use toalib::world::buildingmap::{BUILDABLE_BUILDING_CLASSES, BuildingClass};
 use toalib::item::{ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
@@ -83,7 +83,7 @@ impl App {
 	}
 
 	fn get_general_action_infos(&self) -> Vec<ActionInfo> {
-		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_CLASSES.len());
+		assert!(KEYED_BUILDABLE_CLASSES.len() == BUILDABLE_BUILDING_CLASSES.len());
 
 		let mut v = Vec::new();
 

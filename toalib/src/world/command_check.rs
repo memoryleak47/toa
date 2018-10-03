@@ -1,6 +1,6 @@
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use crate::world::buildingmap::BUILDABLE_CLASSES;
+use crate::world::buildingmap::BUILDABLE_BUILDING_CLASSES;
 use crate::command::{Command, UnitCommand};
 use crate::misc::*;
 use crate::team::PlayerID;
@@ -23,7 +23,7 @@ impl World {
 		// <this is still missing>
 
 		// add Build
-		for c in &BUILDABLE_CLASSES[..] {
+		for c in &BUILDABLE_BUILDING_CLASSES[..] {
 			v.push(Command::UnitCommand { pos, command: UnitCommand::Build(*c) });
 		}
 
