@@ -3,6 +3,7 @@ mod wood;
 mod wood_sword;
 mod stone;
 mod iron;
+mod iron_sword;
 
 use std::slice;
 use std::mem;
@@ -17,6 +18,7 @@ use self::wood::Wood;
 use self::wood_sword::WoodSword;
 use self::stone::Stone;
 use self::iron::Iron;
+use self::iron_sword::IronSword;
 
 trait ItemTrait {
 	type Class: ItemClassTrait + Sized;
@@ -41,6 +43,14 @@ trait ItemClassTrait {
 
 macro_rules! setup {
 	($($x:ident),*) => {
+
+		lazy_static! {
+			pub static ref ITEM_CLASSES: Vec<ItemClass> = vec![ $( ItemClass::$x ),* ];
+			pub static ref CRAFTABLE_ITEM_CLASSES: Vec<ItemClass> = ITEM_CLASSES.iter()
+				.filter(|x| x.get_recipe().is_some())
+				.cloned()
+				.collect();
+		}
 
 		#[derive(Serialize, Deserialize)]
 		#[derive(Clone)]
@@ -71,7 +81,7 @@ macro_rules! setup {
 	};
 }
 
-setup!(Food, Wood, WoodSword, Stone, Iron);
+setup!(Food, Wood, WoodSword, Stone, Iron, IronSword);
 
 #[derive(Serialize, Deserialize)]
 pub struct Inventory {

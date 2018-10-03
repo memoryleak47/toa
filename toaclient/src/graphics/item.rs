@@ -9,5 +9,6 @@ pub fn get_texture_id(class: ItemClass) -> TextureId {
 		ItemClass::WoodSword => TextureId::WoodSwordItem,
 		ItemClass::Stone => TextureId::StoneItem,
 		ItemClass::Iron => TextureId::IronItem,
+		ItemClass::IronSword => TextureId::IronSwordItem,
 	}
 }

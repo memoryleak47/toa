@@ -3,7 +3,7 @@ use std::slice;
 use sfml::window::Key;
 
 use toalib::world::buildingmap::{BUILDABLE_BUILDING_CLASSES, BuildingClass};
-use toalib::item::{ItemClass, Inventory};
+use toalib::item::{CRAFTABLE_ITEM_CLASSES, ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
 
@@ -22,7 +22,6 @@ lazy_static! {
 		(BuildingClass::Workshop, Key::W),
 		(BuildingClass::Castle, Key::D),
 	];
-	pub static ref CRAFTABLE_CLASSES: [ItemClass; 1] = [ItemClass::WoodSword];
 }
 
 pub struct ActionInfo {
@@ -398,9 +397,9 @@ impl App {
 			triggered: trigger::FRESH,
 		});
 
-		let l = CRAFTABLE_CLASSES.len();
+		let l = CRAFTABLE_ITEM_CLASSES.len();
 		assert!(l > 0);
-		let itemclass: ItemClass = CRAFTABLE_CLASSES[index];
+		let itemclass: ItemClass = CRAFTABLE_ITEM_CLASSES[index];
 
 		// activate
 		v.push(ActionInfo {
