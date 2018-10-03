@@ -1,10 +1,10 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text, Font};
 
-use toalib::misc::{vector_uf, vector_iu, vector_ui};
+use toalib::misc::{vector_iu, vector_ui};
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
 use toalib::vec::{Vec2u, Vec2f, Vec2i};
 
-use crate::graphics::{terrain, building, TextureId};
+use crate::graphics::{terrain, building, item, TextureId};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -74,7 +74,7 @@ impl App {
 	fn render_unitmap(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if let Some(ref _unit) = self.world.unitmap[index2d!(x, y)] {
+				if self.world.unitmap[index2d!(x, y)].is_some() {
 					let raw_pos = Vec2f::new(x as f32, y as f32);
 					let pos = raw_pos + Vec2f::with(0.25);
 					let size = Vec2f::new(0.5, 0.75);
@@ -82,6 +82,13 @@ impl App {
 					self.render_texture(pos, size, texture_id);
 
 					// TODO draw cloth
+
+					if let Some(ref main_item) = self.world.unitmap[index2d!(x, y)].as_ref().unwrap().main_item {
+						let pos = raw_pos + Vec2f::new(0.5, 0.25);
+						let size = Vec2f::new(0.5, 0.75);
+						let texture_id = item::get_texture_id(main_item.get_class());
+						self.render_texture(pos, size, texture_id);
+					}
 				}
 			}
 		}
@@ -111,8 +118,6 @@ impl App {
 	}
 
 	fn render_marker(&mut self, pos: Vec2u, color: &Color, marker_type: MarkerType) {
-		let halfscreen = Vec2f::new(self.window.size().x as f32, self.window.size().y as f32) / 2.0;
-
 		match marker_type {
 			MarkerType::Transparent => {
 				let pos = pos.map(|x| x as f32);

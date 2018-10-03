@@ -1,5 +1,6 @@
 pub mod terrain;
 pub mod building;
+pub mod item;
 
 use sfml::graphics::Texture;
 
@@ -56,6 +57,12 @@ setup!(
 	IronMineBuilding: "building/ironmine.png",
 	WorkshopBuilding: "building/workshop.png",
 	CastleBuilding: "building/castle.png",
+
+	FoodItem:"item/food.png",
+	WoodItem:"item/wood.png",
+	WoodSwordItem:"item/woodsword.png",
+	StoneItem:"item/stone.png",
+	IronItem:"item/iron.png",
 
 	SpawnerRedBuilding: "building/spawner/red.png",
 	SpawnerBlueBuilding: "building/spawner/blue.png",
