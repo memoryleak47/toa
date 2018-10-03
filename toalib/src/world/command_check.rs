@@ -84,12 +84,16 @@ impl World {
 					.is_some()
 			},
 			UnitCommand::Build(class) => {
-				let req_terrain = class.get_required_terrain();
+				let prop = match class.get_build_property() {
+					Some(x) => x,
+					None => return false,
+				};
+				let req_terrain = prop.required_terrain;
 				self.get_building(pos).is_none()
 				&&
 				self.get_unit(pos)
 					.filter(|x| x.owner == player)
-					.filter(|x| x.inventory.contains_all(class.get_build_item_cost()))
+					.filter(|x| x.inventory.contains_all(prop.item_cost))
 					.is_some()
 				&&
 				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(pos)))

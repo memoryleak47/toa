@@ -3,10 +3,9 @@ use std::iter;
 
 use crate::vec::Vec2u;
 use crate::item::ItemClass;
-use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait};
+use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
 use crate::world::unitmap::Unit;
-use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 use crate::team::PlayerID;
 
@@ -34,18 +33,8 @@ pub struct Spawner {
 impl BuildingClassTrait for SpawnerClass {
 	type Instance = Spawner;
 
-	fn get_required_terrain() -> Option<Terrain> { None }
-	fn get_build_item_cost() -> &'static [ItemClass] {
-		panic!("you should call get_build_item_cost() on Spawner!")
-	}
-	fn get_build_stamina_cost() -> u32 {
-		panic!("you should call get_build_stamina_cost() on Spawner!")
-	}
+	fn get_build_property() -> Option<&'static BuildProperty> { None }
 	fn get_height() -> u32 { 0 }
-
-	fn build() -> Building {
-		panic!("you should never call build() on Spawner!")
-	}
 	fn get_name() -> &'static str {
 		"Spawner"
 	}

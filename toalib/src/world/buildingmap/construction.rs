@@ -1,10 +1,8 @@
 use std::any::Any;
 
 use crate::vec::Vec2u;
-use crate::item::{ItemClass};
-use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait};
+use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
-use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -22,20 +20,8 @@ pub struct Construction {
 impl BuildingClassTrait for ConstructionClass {
 	type Instance = Construction;
 
-	fn get_required_terrain() -> Option<Terrain> {
-		panic!("get_required_terrain() should not be called on a Construction")
-	}
-	fn get_build_item_cost() -> &'static [ItemClass] {
-		panic!("get_build_item_cost() should not be called on a Construction")
-	}
-	fn get_build_stamina_cost() -> u32 {
-		panic!("get_build_stamina_cost() should not be called on a Construction")
-	}
+	fn get_build_property() -> Option<&'static BuildProperty> { None }
 	fn get_height() -> u32 { 0 }
-
-	fn build() -> Building {
-		panic!("build() should not be called on a Construction")
-	}
 	fn get_name() -> &'static str {
 		"Construction"
 	}
@@ -53,9 +39,10 @@ impl BuildingTrait for Construction {
 		self.health == 0
 	}
 	fn work(&mut self, world: &mut World, p: Vec2u) {
+		let property =  self.build_class.get_build_property().unwrap();
 		self.invested_stamina += 10; // TODO make correct
-		if self.invested_stamina >= self.build_class.get_build_stamina_cost() {
-			let b = self.build_class.build();
+		if self.invested_stamina >= property.stamina_cost {
+			let b = (property.build)();
 			world.set_building(p, Some(b));
 		}
 	}

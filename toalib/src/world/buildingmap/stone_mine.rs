@@ -2,13 +2,18 @@ use std::any::Any;
 
 use crate::vec::Vec2u;
 use crate::item::ItemClass;
-use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait};
+use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
 use crate::world::terrainmap::Terrain;
 use crate::world::damage::Damage;
 
 lazy_static! {
-	static ref BUILD_ITEM_COST: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];
+	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
+		item_cost: &[ItemClass::Wood, ItemClass::Wood],
+		stamina_cost: 20,
+		build: ||  Building::StoneMine(StoneMine { health: 100 }),
+		required_terrain: Some(Terrain::STONE),
+	};
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -24,15 +29,8 @@ pub struct StoneMine {
 impl BuildingClassTrait for StoneMineClass {
 	type Instance = StoneMine;
 
-	fn get_required_terrain() -> Option<Terrain> { Some(Terrain::STONE) }
-	fn get_build_item_cost() -> &'static [ItemClass] {
-		&BUILD_ITEM_COST[..]
-	}
-	fn get_build_stamina_cost() -> u32 { 20 }
+	fn get_build_property() -> Option<&'static BuildProperty> { Some(&BUILD_PROPERTY) }
 	fn get_height() -> u32 { 0 }
-	fn build() -> Building {
-		Building::StoneMine(StoneMine { health: 100 })
-	}
 	fn get_name() -> &'static str {
 		"StoneMine"
 	}

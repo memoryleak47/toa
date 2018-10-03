@@ -42,7 +42,7 @@ lazy_static! {
 	];
 }
 
-trait BuildingTrait  {
+trait BuildingTrait {
 	type Class: BuildingClassTrait + Sized;
 
 	fn as_any_mut(&mut self) -> &mut dyn Any;
@@ -59,16 +59,29 @@ trait BuildingTrait  {
 trait BuildingClassTrait {
 	type Instance: BuildingTrait + Sized;
 
-	fn get_required_terrain() -> Option<Terrain>;
-	fn get_build_item_cost() -> &'static [ItemClass];
-	fn get_build_stamina_cost() -> u32;
+	fn get_build_property() -> Option<&'static BuildProperty>;
 	fn get_height() -> u32;
-	fn build() -> Building;
 	fn get_name() -> &'static str;
+}
+
+#[derive(Clone)]
+pub struct BuildProperty {
+	pub item_cost: &'static [ItemClass],
+	pub stamina_cost: u32,
+	pub build: fn() -> Building,
+	pub required_terrain: Option<Terrain>,
 }
 
 macro_rules! setup {
 	($($x:ident),*) => {
+
+		lazy_static! {
+			pub static ref BUILDING_CLASSES: Vec<BuildingClass> = vec![ $( BuildingClass::$x),* ];
+			pub static ref BUILDABLE_BUILDING_CLASSES: Vec<BuildingClass> = BUILDABLE_CLASSES.iter()
+				.filter(|x| x.get_build_property().is_some())
+				.cloned()
+				.collect();
+		}
 
 		#[derive(Clone)]
 		#[derive(Serialize, Deserialize)]
@@ -92,11 +105,8 @@ macro_rules! setup {
 		}
 
 		impl BuildingClass {
-			pub fn get_required_terrain(&self) -> Option<Terrain>		{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_required_terrain() ),* } }
-			pub fn get_build_item_cost(&self) -> &'static [ItemClass]	{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_item_cost() ),* } }
-			pub fn get_build_stamina_cost(&self) -> u32					{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_stamina_cost() ),* } }
+			pub fn get_build_property(&self) -> Option<&'static BuildProperty> { match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_property() ),* } }
 			pub fn get_height(&self) -> u32								{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_height() ),* } }
-			pub fn build(&self) -> Building								{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::build() ),* } }
 			pub fn get_name(&self) -> &'static str						{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_name() ),* } }
 		}
 	};

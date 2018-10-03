@@ -82,8 +82,12 @@ impl World {
 	fn exec_build(&mut self, at: Vec2u, class: BuildingClass) {
 		self.buildingmap[index2d!(at.x, at.y)] = Some(new_construction(class));
 
+
+		let cost = class.get_build_property()
+				.unwrap()
+				.item_cost;
 		self.get_unit_mut(at).unwrap()
-			.inventory.reduce(class.get_build_item_cost());
+			.inventory.reduce(cost);
 	}
 
 	fn exec_work(&mut self, at: Vec2u) {
