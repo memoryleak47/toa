@@ -1,13 +1,14 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text, Font};
 
 use toalib::misc::{vector_iu, vector_ui};
-use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y, TILESIZE, TILESIZE_VEC};
+use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use toalib::vec::{Vec2u, Vec2f, Vec2i};
 
 use crate::graphics::{terrain, building, item, TextureId};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
+use crate::config::TILESIZE;
 
 lazy_static! {
 	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
@@ -176,7 +177,7 @@ fn render_shape(focus_position: Vec2f, window: &mut RenderWindow, pos: Vec2f, si
 	let left_top = (posf - focus_position * TILESIZE) + halfscreen;
 
 	shape.set_position(vec2f_to_sfml(left_top));
-	shape.set_size(vec2f_to_sfml(size * TILESIZE_VEC()));
+	shape.set_size(vec2f_to_sfml(size * Vec2f::with(TILESIZE)));
 
 	window.draw(&shape);
 }

@@ -3,6 +3,7 @@ extern crate sfml;
 #[macro_use]
 extern crate lazy_static;
 
+mod config;
 mod cli;
 #[macro_use]
 mod index;
