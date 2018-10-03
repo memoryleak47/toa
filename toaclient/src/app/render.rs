@@ -1,4 +1,4 @@
-use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text, Font};
+use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text};
 
 use toalib::misc::{vector_iu, vector_ui};
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
@@ -9,6 +9,7 @@ use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
 use crate::config::TILESIZE;
+use crate::font::get_font;
 
 lazy_static! {
 	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
@@ -136,7 +137,7 @@ impl App {
 	}
 
 	fn render_hud(&mut self) {
-		let f = Font::from_file("/usr/share/fonts/TTF/DejaVuSerif.ttf").unwrap();
+		let f = get_font();
 		let s = self.get_text();
 		let t = Text::new(&*s, &f, 15);
 		self.window.draw(&t);
