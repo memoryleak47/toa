@@ -1,5 +1,5 @@
 use crate::vec::Vec2u;
-use crate::item::{Inventory, ItemClass};
+use crate::item::Inventory;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::damage::Damage;
 use crate::world::buildingmap::BuildingClass;
