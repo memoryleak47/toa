@@ -2,7 +2,7 @@ use crate::vec::Vec2u;
 use crate::item::ItemClass;
 use crate::misc::Direction;
 use crate::world::World;
-use crate::world::aim::Aim;
+use crate::aim::Aim;
 use crate::world::buildingmap::BuildingClass;
 
 #[derive(Serialize, Deserialize, Clone)]

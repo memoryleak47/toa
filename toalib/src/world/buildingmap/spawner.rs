@@ -6,7 +6,7 @@ use crate::item::ItemClass;
 use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
 use crate::world::unitmap::Unit;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 use crate::team::PlayerID;
 
 const REQUIRED_FOOD: u32 = 10;

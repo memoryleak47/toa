@@ -10,9 +10,9 @@ use std::slice;
 use std::mem;
 
 use crate::vec::Vec2u;
-use crate::world::aim::Aim;
+use crate::aim::Aim;
 use crate::world::World;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 
 use self::food::Food;
 use self::wood::Wood;

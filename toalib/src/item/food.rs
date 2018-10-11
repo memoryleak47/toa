@@ -1,8 +1,8 @@
 use crate::vec::Vec2u;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
-use crate::world::aim::{Aim, new_meelee_aim};
-use crate::world::damage::Damage;
+use crate::aim::{Aim, new_meelee_aim};
+use crate::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]

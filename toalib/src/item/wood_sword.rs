@@ -1,6 +1,6 @@
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::world::aim::{Aim, new_meelee_aim};
-use crate::world::damage::Damage;
+use crate::aim::{Aim, new_meelee_aim};
+use crate::damage::Damage;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];

@@ -1,5 +1,5 @@
-use crate::world::aim::{Aim, AimTrait};
-use crate::world::damage::Damage;
+use crate::aim::{Aim, AimTrait};
+use crate::damage::Damage;
 use crate::vec::{Vec2u, Vec2i};
 use crate::world::World;
 use crate::misc::Direction;

@@ -20,5 +20,7 @@ pub mod team;
 pub mod item;
 pub mod command;
 pub mod world;
+pub mod aim;
+pub mod damage;
 pub mod packet;
 pub mod net;

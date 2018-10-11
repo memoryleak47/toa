@@ -4,8 +4,6 @@ pub mod terrainmap;
 pub mod buildingmap;
 pub mod unitmap;
 pub mod itemmap;
-pub mod aim;
-pub mod damage;
 
 pub use self::command_check::*;
 pub use self::command_exec::*;
@@ -18,7 +16,7 @@ use crate::vec::Vec2u;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::Building;
 use crate::item::Inventory;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 use crate::team::{PlayerPool, PlayerID};
 
 // represents the current world situation

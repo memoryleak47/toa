@@ -1,4 +1,4 @@
-use toalib::world::aim::Aim;
+use toalib::aim::Aim;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ItemUnitMode {

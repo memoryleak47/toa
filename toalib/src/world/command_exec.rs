@@ -5,7 +5,7 @@ use crate::item::ItemClass;
 use crate::command::{Command, UnitCommand};
 use crate::misc::Direction;
 use crate::world::World;
-use crate::world::aim::Aim;
+use crate::aim::Aim;
 use crate::world::unitmap::Unit;
 use crate::world::buildingmap::{BuildingClass, new_construction};
 use crate::team::PlayerID;

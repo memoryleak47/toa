@@ -5,7 +5,7 @@ use crate::item::ItemClass;
 use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
 use crate::world::terrainmap::Terrain;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 
 lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {

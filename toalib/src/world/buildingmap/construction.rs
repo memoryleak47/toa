@@ -3,7 +3,7 @@ use std::any::Any;
 use crate::vec::Vec2u;
 use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]

@@ -2,8 +2,8 @@ use std::cmp::min;
 
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use crate::world::aim::{Aim, new_meelee_aim};
-use crate::world::damage::Damage;
+use crate::aim::{Aim, new_meelee_aim};
+use crate::damage::Damage;
 use crate::item::{Inventory, Item};
 use crate::team::PlayerID;
 

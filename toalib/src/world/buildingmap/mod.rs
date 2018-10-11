@@ -13,7 +13,7 @@ use std::any::Any;
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
-use crate::world::damage::Damage;
+use crate::damage::Damage;
 use crate::item::ItemClass;
 use crate::team::PlayerID;
 
