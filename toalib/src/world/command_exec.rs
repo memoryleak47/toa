@@ -35,7 +35,7 @@ impl World {
 		match command {
 			&UnitCommand::Move(direction) => self.exec_move(pos, direction),
 			&UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim),
-			&UnitCommand::Build(class)  => self.exec_build(pos, class),
+			&UnitCommand::Build(class) => self.exec_build(pos, class),
 			&UnitCommand::Work => self.exec_work(pos),
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
 			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),

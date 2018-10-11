@@ -11,7 +11,7 @@ lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
 		item_cost: &[ItemClass::Wood, ItemClass::Wood],
 		stamina_cost: 20,
-		build: ||  Building::StoneMine(StoneMine { health: 100 }),
+		build: || Building::StoneMine(StoneMine { health: 100 }),
 		required_terrain: Some(Terrain::STONE),
 	};
 }
