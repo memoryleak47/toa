@@ -49,7 +49,7 @@ impl App {
 				if let Some(ref building) = self.world.buildingmap[index2d!(x, y)].as_ref() {
 					let pos = Vec2f::new(x as f32, y as f32);
 					let size = Vec2f::new(1., 0.5);
-					let texture_id = building::get_texture_id(building, &self.world.pool);
+					let texture_id = building::get_texture_id(building);
 					self.render_texture(pos, size, texture_id);
 				}
 			}

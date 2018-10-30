@@ -73,14 +73,10 @@ impl Term {
 			["go"] => Some(TermCommand::Go),
 			["status"] => Some(TermCommand::Status),
 			["team", player_id_str, team_str] => {
-				let id = match player_id_str.parse::<usize>() {
-					Ok(x) => x,
-					Err(_) => return None,
-				};
-				let player_id = PlayerID::new(id);
+				let player_id = PlayerID(player_id_str.parse::<usize>().ok()?);
+				let team = Team(team_str.parse::<usize>().ok()?);
 
-				Team::parse(team_str)
-					.map(|team| TermCommand::ChangeTeam { player_id, team })
+				Some(TermCommand::ChangeTeam { player_id, team })
 			},
 			_ => {
 				println!("unknown command!");

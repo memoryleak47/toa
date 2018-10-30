@@ -21,7 +21,7 @@ fn main() {
 	loop {
 		// add new connections
 		if let Some(stream) = listener.accept_nonblocking() {
-			user_pool.add(Team::Red, stream);
+			user_pool.add(Team(0), stream);
 			println!("a new player joined");
 		}
 

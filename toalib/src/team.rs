@@ -2,13 +2,10 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Error};
 
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Debug)]
-pub struct PlayerID(usize);
+pub struct PlayerID(pub usize);
 
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Team {
-	Red, 
-	Blue
-}
+pub struct Team(pub usize);
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct PlayerPool {
@@ -22,8 +19,16 @@ impl Display for PlayerID {
 }
 
 impl PlayerID {
-	pub fn new(x: usize) -> PlayerID {
-		PlayerID(x)
+	pub fn get_color(&self) -> (u8, u8, u8) {
+		match self.0 {
+			0 => (255, 0, 0),
+			1 => (0, 255, 0),
+			2 => (0, 0, 255),
+			_ => {
+				println!("used fallback color!");
+				(100, 100, 100)
+			},
+		}
 	}
 }
 
@@ -74,7 +79,7 @@ impl PlayerPool {
 			.map(|(x, _)| x.0 + 1)
 			.max()
 			.unwrap_or(0);
-		let player_id = PlayerID::new(new_id);
+		let player_id = PlayerID(new_id);
 		self.players.insert(player_id, team);
 
 		player_id
@@ -93,15 +98,5 @@ impl PlayerPool {
  			self.players.insert(player_id, team);
 			true
 		} else { false }
-	}
-}
-
-impl Team {
-	pub fn parse(s: &str) -> Option<Team> {
-		match s {
-			"red" => Some(Team::Red),
-			"blue" => Some(Team::Blue),
-			_ => None,
-		}
 	}
 }
