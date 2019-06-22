@@ -1,6 +1,12 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Error};
 
+pub const COLORS: [(u8, u8, u8); 3] = [
+	(255, 0, 0),
+	(0, 255, 0),
+	(0, 0, 255),
+];
+
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Debug)]
 pub struct PlayerID(pub usize);
 
@@ -20,15 +26,7 @@ impl Display for PlayerID {
 
 impl PlayerID {
 	pub fn get_color(&self) -> (u8, u8, u8) {
-		match self.0 {
-			0 => (255, 0, 0),
-			1 => (0, 255, 0),
-			2 => (0, 0, 255),
-			_ => {
-				println!("used fallback color!");
-				(100, 100, 100)
-			},
-		}
+		COLORS[self.0]
 	}
 }
 
@@ -80,6 +78,7 @@ impl PlayerPool {
 			.max()
 			.unwrap_or(0);
 		let player_id = PlayerID(new_id);
+		assert!(new_id < COLORS.len(), "too many players!");
 		self.players.insert(player_id, team);
 
 		player_id

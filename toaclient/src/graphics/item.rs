@@ -1,15 +1,15 @@
 use toalib::item::ItemClass;
 
-use crate::graphics::TextureId;
+use crate::graphics::{RawTextureId, TextureId};
 
 pub fn get_texture_id(class: ItemClass) -> TextureId {
 	match class {
-		ItemClass::Food => TextureId::FoodItem,
-		ItemClass::Wood => TextureId::WoodItem,
-		ItemClass::WoodSword => TextureId::WoodSwordItem,
-		ItemClass::Stone => TextureId::StoneItem,
-		ItemClass::Iron => TextureId::IronItem,
-		ItemClass::IronSword => TextureId::IronSwordItem,
-		ItemClass::WoodBow => TextureId::WoodBowItem,
-	}
+		ItemClass::Food => RawTextureId::FoodItem,
+		ItemClass::Wood => RawTextureId::WoodItem,
+		ItemClass::WoodSword => RawTextureId::WoodSwordItem,
+		ItemClass::Stone => RawTextureId::StoneItem,
+		ItemClass::Iron => RawTextureId::IronItem,
+		ItemClass::IronSword => RawTextureId::IronSwordItem,
+		ItemClass::WoodBow => RawTextureId::WoodBowItem,
+	}.into()
 }

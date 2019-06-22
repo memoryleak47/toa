@@ -1,23 +1,23 @@
 use toalib::world::buildingmap::Building;
 
-use crate::graphics::TextureId;
+use crate::graphics::{HuedTextureId, RawTextureId, TextureId};
 
 pub fn get_texture_id(building: &Building) -> TextureId {
 	match building {
 		Building::Spawner(spawner) => {
-			match spawner.get_player_id().0 {
-				0 => TextureId::SpawnerRedBuilding, // TODO fix this!
-				_ => TextureId::SpawnerBlueBuilding,
-			}
+			HuedTextureId {
+				raw: RawTextureId::SpawnerBuilding,
+				player_id: spawner.get_player_id()
+			}.into()
 		},
-		Building::Construction(_) => TextureId::ConstructionBuilding,
-		Building::Farm(_) => TextureId::FarmBuilding,
-		Building::Camp(_) => TextureId::CampBuilding,
-		Building::Sawmill(_) => TextureId::SawmillBuilding,
-		Building::StoneMine(_) => TextureId::StoneMineBuilding,
-		Building::IronMine(_) => TextureId::IronMineBuilding,
-		Building::Workshop(_) => TextureId::WorkshopBuilding,
-		Building::Castle(_) => TextureId::CastleBuilding,
+		Building::Construction(_) => RawTextureId::ConstructionBuilding.into(),
+		Building::Farm(_) => RawTextureId::FarmBuilding.into(),
+		Building::Camp(_) => RawTextureId::CampBuilding.into(),
+		Building::Sawmill(_) => RawTextureId::SawmillBuilding.into(),
+		Building::StoneMine(_) => RawTextureId::StoneMineBuilding.into(),
+		Building::IronMine(_) => RawTextureId::IronMineBuilding.into(),
+		Building::Workshop(_) => RawTextureId::WorkshopBuilding.into(),
+		Building::Castle(_) => RawTextureId::CastleBuilding.into(),
 	}
 }
 

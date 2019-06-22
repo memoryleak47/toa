@@ -4,7 +4,7 @@ use toalib::misc::{vector_iu, vector_ui};
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use toalib::vec::{Vec2u, Vec2f, Vec2i};
 
-use crate::graphics::{terrain, building, item, TextureId};
+use crate::graphics::{terrain, building, item, RawTextureId, TextureId};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -66,7 +66,7 @@ impl App {
 					let raw_pos = Vec2f::new(x as f32, y as f32);
 					let pos = raw_pos + Vec2f::new(0., 0.5);
 					let size = Vec2f::new(0.25, 0.5);
-					let texture_id = TextureId::Bag;
+					let texture_id = RawTextureId::Bag.into();
 					self.render_texture(pos, size, texture_id);
 				}
 			}
@@ -80,10 +80,10 @@ impl App {
 					let raw_pos = Vec2f::new(x as f32, y as f32);
 					let pos = raw_pos + Vec2f::with(0.25);
 					let size = Vec2f::new(0.5, 0.75);
-					let texture_id = TextureId::Unit;
+					let texture_id = RawTextureId::Unit.into();
 					self.render_texture(pos, size, texture_id);
 
-					let texture_id = TextureId::UnitCloth;
+					let texture_id = RawTextureId::UnitCloth.into();
 					self.render_texture(pos, size, texture_id);
 
 					if let Some(ref main_item) = self.world.unitmap[index2d!(x, y)].as_ref().unwrap().main_item {
@@ -131,7 +131,7 @@ impl App {
 			MarkerType::Border => {
 				let pos = pos.map(|x| x as f32);
 				let size = Vec2f::with(1.);
-				let texture_id = TextureId::Cursor;
+				let texture_id = RawTextureId::Cursor.into();
 				self.render_texture(pos, size, texture_id);
 			},
 		}

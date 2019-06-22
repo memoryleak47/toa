@@ -1,46 +1,111 @@
+mod hue;
 pub mod terrain;
 pub mod building;
 pub mod item;
 
+use std::collections::HashMap;
+
 use sfml::graphics::Texture;
+
+use toalib::team::{PlayerID, COLORS};
+
+// TextureId % (COLORS.len()+1) = hue (0 means no hue, i=1.. corresponds to PlayerID i-1)
+// TextureId / (COLORS.len()+1) = raw_img
+
+/*
+[grassterrain, hueless]
+[grassterrain, red]
+[grassterrain, blue]
+[grassterrain, yellow]
+[waterterrain, hueless]
+[waterterrain, red]
+[waterterrain, blue]
+[waterterrain, yellow]
+*/
+
+// the non-hued graphics are all loaded on startup in (TextureState::new)
+// the hued graphics are loaded lazily using lazy_load
 
 macro_rules! setup {
 	($($x:ident : $y:expr),*) => {
 
-		#[derive(Copy, Clone)]
+		#[derive(Copy, Clone, Debug)]
 		#[repr(usize)]
-		pub enum TextureId {
+		pub enum RawTextureId {
 			$($x),*
-		}
-
-		pub struct TextureState {
-			wrappers: Vec<Texture>,
-		}
-
-		fn get_image_path(s: &str) -> String {
-			use toalib::misc::res_dir;
-
-			let mut dir = res_dir();
-			dir.push("image");
-			let path_string = dir.to_str().unwrap();
-			format!("{}/{}", path_string, s)
 		}
 
 		impl TextureState {
 			pub fn new() -> TextureState {
-				let nope_texture = Texture::from_file(&get_image_path("nope.png")).unwrap();
-				let wrappers = vec![$( Texture::from_file(&get_image_path($y)).unwrap_or(nope_texture.clone())),*];
+				let nope_texture = load_texture("nope.png").unwrap();
+				let mut wrappers = HashMap::new();
+				let mut i = 0;
+				$( {
+					i += 1;
+					wrappers.insert(TextureId((i-1) * (COLORS.len() + 1)), load_texture($y).unwrap_or(nope_texture.clone()));
+				}; );*
 				TextureState { wrappers }
-			}
-
-			pub fn get_texture(&self, id: TextureId) -> &Texture {
-				&self.wrappers[id as usize]
 			}
 		}
 	};
 }
 
+#[derive(Debug)]
+pub struct HuedTextureId {
+	pub raw: RawTextureId,
+	pub player_id: PlayerID,
+}
+
+#[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
+pub struct TextureId(pub usize);
+
+pub struct TextureState {
+	wrappers: HashMap<TextureId, Texture>,
+}
+
+fn load_texture(s: &str) -> Option<Texture> {
+	use toalib::misc::res_dir;
+
+	let mut dir = res_dir();
+	dir.push("image");
+	let path_string = dir.to_str().unwrap();
+	let path = format!("{}/{}", path_string, s);
+	Texture::from_file(&path)
+}
+
+impl From<HuedTextureId> for TextureId {
+	fn from(hued: HuedTextureId) -> TextureId {
+		TextureId(hued.raw as usize * (COLORS.len() + 1) + hued.player_id.0 + 1)
+	}
+}
+
+impl From<RawTextureId> for TextureId {
+	fn from(raw: RawTextureId) -> TextureId {
+		TextureId(raw as usize * (COLORS.len() + 1))
+	}
+}
+
+impl TextureState {
+	fn lazy_load(&mut self, tid: TextureId) {
+		if self.wrappers.get(&tid).is_some() { return; }
+
+		let tmp = (tid.0 / (COLORS.len()+1)) * (COLORS.len()+1);
+		let raw = self.wrappers.get(&TextureId(tmp)).unwrap();
+		let color_id = tid.0 % (COLORS.len()+1); 
+		let tex = hue::hue(raw, COLORS[color_id-1]);
+		self.wrappers.insert(tid, tex);
+	}
+
+	pub fn get_texture<T: Into<TextureId>>(&mut self, id: T) -> &Texture {
+		let tid = id.into();
+		self.lazy_load(tid);
+		self.wrappers.get(&tid).unwrap()
+	}
+}
+
 setup!(
+	// non-hued:
+
 	GrassTerrain: "terrain/grass.png",
 	ForestTerrain: "terrain/forest.png",
 	StoneTerrain: "terrain/stone.png",
@@ -66,9 +131,10 @@ setup!(
 	IronSwordItem: "item/ironsword.png",
 	WoodBowItem: "item/woodbow.png",
 
-	SpawnerRedBuilding: "building/spawner/red.png",
-	SpawnerBlueBuilding: "building/spawner/blue.png",
-
 	Bag: "bag.png",
-	Cursor: "cursor.png"
+	Cursor: "cursor.png",
+
+	// hued:
+
+	SpawnerBuilding: "building/spawner_template.png"
 );
