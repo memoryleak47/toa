@@ -8,7 +8,6 @@ use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, Text
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
-use crate::config::TILESIZE;
 use crate::font::get_font;
 
 lazy_static! {
@@ -165,22 +164,22 @@ impl App {
 		let mut shape = RectangleShape::new();
 		shape.set_fill_color(&color);
 
-		render_shape(self.focus_position, &mut self.window, pos, size, shape);
+		render_shape(self.focus_position, &mut self.window, pos, size, shape, self.tilesize);
 	}
 
 	fn render_texture(&mut self, pos: Vec2f, size: Vec2f, texture_id: TextureId) {
 		let shape = RectangleShape::with_texture(self.texture_state.get_texture(texture_id));
-		render_shape(self.focus_position, &mut self.window, pos, size, shape);
+		render_shape(self.focus_position, &mut self.window, pos, size, shape, self.tilesize);
 	}
 }
 
-fn render_shape(focus_position: Vec2f, window: &mut RenderWindow, pos: Vec2f, size: Vec2f, mut shape: RectangleShape) {
+fn render_shape(focus_position: Vec2f, window: &mut RenderWindow, pos: Vec2f, size: Vec2f, mut shape: RectangleShape, tilesize: f32) {
 	let halfscreen = Vec2f::new(window.size().x as f32, window.size().y as f32) / 2.0;
-	let posf = pos * TILESIZE;
-	let left_top = (posf - focus_position * TILESIZE) + halfscreen;
+	let posf = pos * tilesize;
+	let left_top = (posf - focus_position * tilesize) + halfscreen;
 
 	shape.set_position(vec2f_to_sfml(left_top));
-	shape.set_size(vec2f_to_sfml(size * Vec2f::with(TILESIZE)));
+	shape.set_size(vec2f_to_sfml(size * Vec2f::with(tilesize)));
 
 	window.draw(&shape);
 }

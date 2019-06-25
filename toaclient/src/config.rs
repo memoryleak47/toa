@@ -1,1 +1,1 @@
-pub const TILESIZE: f32 = 40.;
+pub const DEFAULT_TILESIZE: f32 = 40.;

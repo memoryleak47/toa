@@ -21,6 +21,7 @@ pub struct App {
 	player_id: PlayerID,
 	unit_mode: Option<UnitMode>, // None -> no unit focused
 	focus_position: Vec2f,
+	tilesize: f32, // zoom
 	cursor: Vec2u,
 	pending: Option<Action>,
 	world: World,

@@ -9,6 +9,7 @@ use crate::input::Input;
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
 use crate::app::App;
+use crate::config::DEFAULT_TILESIZE;
 
 impl App {
 	pub fn connect(ip: &str) -> App {
@@ -23,6 +24,7 @@ impl App {
 			player_id: my_id,
 			unit_mode: None,
 			focus_position: Vec2f::new(0., 0.),
+			tilesize: DEFAULT_TILESIZE,
 			cursor: Vec2u::new(0, 0),
 			pending: None,
 			world,

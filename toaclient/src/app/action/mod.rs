@@ -19,6 +19,8 @@ pub enum Action {
 	MoveCamera(Direction),
 	MoveCursor(Direction),
 	MoveAim(Direction),
+	ZoomIn,
+	ZoomOut,
 	NextUnit,
 }
 
@@ -41,6 +43,8 @@ impl App {
 			},
 			Action::MoveCamera(d) => { self.focus_position = vector_if(d.to_vector()) / 2. + self.focus_position; },
 			Action::MoveCursor(d) => { self.cursor = d.plus_vector(self.cursor); },
+			Action::ZoomIn => { self.tilesize += 1.; },
+			Action::ZoomOut => { if self.tilesize > 0. { self.tilesize -= 1.; } },
 			Action::RawCommand(_) => {},
 		}
 	}

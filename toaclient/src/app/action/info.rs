@@ -126,6 +126,21 @@ impl App {
 			triggered: trigger::PERMANENT,
 		});
 
+		// zoom
+		v.push(ActionInfo {
+			text: "zoom in".to_string(),
+			action: Action::ZoomIn,
+			key_combination: &[Key::Num9],
+			triggered: trigger::PERMANENT,
+		});
+
+		v.push(ActionInfo {
+			text: "zoom out".to_string(),
+			action: Action::ZoomOut,
+			key_combination: &[Key::Num0],
+			triggered: trigger::PERMANENT,
+		});
+
 
 		v
 	}
