@@ -4,7 +4,7 @@ use toalib::misc::{vector_iu, vector_ui};
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use toalib::vec::{Vec2u, Vec2f, Vec2i};
 
-use crate::graphics::{terrain, building, item, RawTextureId, TextureId};
+use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, TextureId};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -76,14 +76,15 @@ impl App {
 	fn render_unitmap(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				if self.world.unitmap[index2d!(x, y)].is_some() {
+				if let Some(ref u) = self.world.unitmap[index2d!(x, y)] {
+					let player_id = u.owner;
 					let raw_pos = Vec2f::new(x as f32, y as f32);
 					let pos = raw_pos + Vec2f::with(0.25);
 					let size = Vec2f::new(0.5, 0.75);
 					let texture_id = RawTextureId::Unit.into();
 					self.render_texture(pos, size, texture_id);
 
-					let texture_id = RawTextureId::UnitCloth.into();
+					let texture_id = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
 					self.render_texture(pos, size, texture_id);
 
 					if let Some(ref main_item) = self.world.unitmap[index2d!(x, y)].as_ref().unwrap().main_item {

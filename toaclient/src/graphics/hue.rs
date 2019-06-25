@@ -1,4 +1,4 @@
-use sfml::graphics::{Texture, Image, Color};
+use sfml::graphics::Texture;
 
 pub fn hue(tex: &Texture, hue: (u8, u8, u8)) -> Texture {
 	let (w, h) = (tex.size().x, tex.size().y);

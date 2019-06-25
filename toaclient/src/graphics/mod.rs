@@ -112,7 +112,6 @@ setup!(
 	IronTerrain: "terrain/iron.png",
 
 	Unit: "unit.png",
-	UnitCloth: "unit_cloth.png",
 
 	ConstructionBuilding: "building/construction.png",
 	FarmBuilding: "building/farm.png",
@@ -136,5 +135,6 @@ setup!(
 
 	// hued:
 
-	SpawnerBuilding: "building/spawner_template.png"
+	SpawnerBuilding: "building/spawner_template.png",
+	UnitCloth: "unit_cloth_template.png"
 );
