@@ -16,6 +16,7 @@ pub enum Action {
 		direction: Direction,
 	},
 	RawCommand(Command),
+	ItemCommand(Command),
 	MoveCamera(Direction),
 	MoveCursor(Direction),
 	MoveAim(Direction),
@@ -46,6 +47,9 @@ impl App {
 			Action::ZoomIn => { self.tilesize *= 1.1; },
 			Action::ZoomOut => { if self.tilesize > 0. { self.tilesize /= 1.1; } },
 			Action::RawCommand(_) => {},
+			Action::ItemCommand(_) => {
+				self.unit_mode = Some(UnitMode::Normal);
+			}
 		}
 	}
 
@@ -56,6 +60,7 @@ impl Action {
 	pub fn get_command(&self) -> Option<Command> {
 		match self {
 			Action::RawCommand(c) => Some(c.clone()),
+			Action::ItemCommand(c) => Some(c.clone()),
 			Action::MoveUnit { direction, pos } => Some(Command::UnitCommand { command: UnitCommand::Move(*direction), pos: *pos }),
 			_ => None,
 		}

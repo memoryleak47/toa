@@ -339,7 +339,7 @@ impl App {
 		if let ItemUnitMode::ChangeMainItem = iu_mode {
 			v.push(ActionInfo {
 				text: String::from("Unequip Item"),
-				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(None)}),
+				action: Action::ItemCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(None)}),
 				key_combination: &[Key::Q],
 				triggered: trigger::FRESH,
 			});
@@ -357,25 +357,25 @@ impl App {
 		v.push(match iu_mode {
 			ItemUnitMode::Drop => ActionInfo {
 				text: format!("Drop Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name() , index),
-				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
+				action: Action::ItemCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::Take => ActionInfo {
 				text: format!("Take Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
+				action: Action::ItemCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::TakeItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::ChangeMainItem => ActionInfo {
 				text: format!("Choose Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
+				action: Action::ItemCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ChangeMainItem(Some(index))}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
 			ItemUnitMode::Exec => ActionInfo {
 				text: format!("Use Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
-				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ExecItem(index)}),
+				action: Action::ItemCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::ExecItem(index)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
