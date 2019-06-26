@@ -18,6 +18,8 @@ impl App {
 
 			self.window.display();
 			self.window.clear(&Color::rgb(0, 0, 0));
+
+			std::thread::sleep(std::time::Duration::from_millis(10));
 		}
 		
 	}

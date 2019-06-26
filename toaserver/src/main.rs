@@ -68,5 +68,6 @@ fn main() {
 				user_pool.send(id, ServerToClientPacket::DeclineCommand);
 			}
 		}
+		std::thread::sleep(std::time::Duration::from_millis(10));
 	}
 }
