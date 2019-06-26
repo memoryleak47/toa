@@ -14,7 +14,7 @@ impl ItemClassTrait for WoodClass {
 	type Instance = Wood;
 
 	fn get_name() -> &'static str { "Wood" }
-	fn get_weight() -> u32 { 10 }
+	fn get_weight() -> u32 { 2 }
 	fn build() -> Item {
 		Item::Wood(Wood)
 	}
