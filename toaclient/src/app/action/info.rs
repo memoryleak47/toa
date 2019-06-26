@@ -322,7 +322,7 @@ impl App {
 		for (b, key) in KEYED_BUILDABLE_CLASSES.iter() {
 			v.push(ActionInfo {
 				text: format!("build {}", b.get_name()),
-				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Build(*b)}),
+				action: Action::RawCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::Build(*b)}),
 				key_combination: slice::from_ref(key),
 				triggered: trigger::FRESH,
 			});
