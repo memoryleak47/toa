@@ -47,7 +47,7 @@ impl BuildingTrait for Construction {
 		}
 	}
 	fn get_info_string(&self) -> String {
-		format!("Construction( health: {}, inv-stamina: {}, building: {})", self.health, self.invested_stamina, self.build_class.get_name())
+		format!("Construction( health: {}, {}/{}, building: {})", self.health, self.invested_stamina, self.build_class.get_build_property().unwrap().stamina_cost, self.build_class.get_name())
 	}
 
 }
