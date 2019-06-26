@@ -12,17 +12,6 @@ use toalib::team::{PlayerID, COLORS};
 // TextureId % (COLORS.len()+1) = hue (0 means no hue, i=1.. corresponds to PlayerID i-1)
 // TextureId / (COLORS.len()+1) = raw_img
 
-/*
-[grassterrain, hueless]
-[grassterrain, red]
-[grassterrain, blue]
-[grassterrain, yellow]
-[waterterrain, hueless]
-[waterterrain, red]
-[waterterrain, blue]
-[waterterrain, yellow]
-*/
-
 // the non-hued graphics are all loaded on startup in (TextureState::new)
 // the hued graphics are loaded lazily using lazy_load
 
