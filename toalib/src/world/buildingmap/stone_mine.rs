@@ -51,4 +51,8 @@ impl BuildingTrait for StoneMine {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(ItemClass::Stone.build());
 	}
+	fn get_info_string(&self) -> String {
+		format!("StoneMine( health: {})", self.health)
+	}
+
 }

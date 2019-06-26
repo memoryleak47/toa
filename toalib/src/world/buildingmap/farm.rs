@@ -51,4 +51,8 @@ impl BuildingTrait for Farm {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(ItemClass::Food.build());
 	}
+	fn get_info_string(&self) -> String {
+		format!("Farm( health: {})", self.health)
+	}
+
 }

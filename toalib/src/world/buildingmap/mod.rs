@@ -42,6 +42,8 @@ trait BuildingTrait {
 	// while this method is executed, the `self`-building is swapped out of the &mut World
 	// `self` will only be placed back, if it wouldn't replace anything
 	fn work(&mut self, _w: &mut World, _p: Vec2u);
+
+	fn get_info_string(&self) -> String;
 }
 
 trait BuildingClassTrait {
@@ -90,6 +92,7 @@ macro_rules! setup {
 			pub fn is_workable(&self, w: &World, p: Vec2u) -> bool		{ match self { $( Building::$x(a) => a.is_workable(w, p) ),* } }
 			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Building::$x(a) => a.damage(damage) ),* } }
 			pub fn work(&mut self, w: &mut World, p: Vec2u)				{ match self { $( Building::$x(a) => a.work(w, p) ),* } }
+			pub fn get_info_string(&self) -> String						{ match self { $( Building::$x(a) => a.get_info_string() ),* } }
 		}
 
 		impl BuildingClass {

@@ -51,4 +51,8 @@ impl BuildingTrait for IronMine {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(ItemClass::Iron.build());
 	}
+	fn get_info_string(&self) -> String {
+		format!("IronMine( health: {})", self.health)
+	}
+
 }

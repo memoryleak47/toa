@@ -64,6 +64,10 @@ impl BuildingTrait for Spawner {
 		let new_unit = Unit::new(u.owner);
 		w.set_unit(p2, Some(new_unit));
 	}
+	fn get_info_string(&self) -> String {
+		format!("Spawner( health: {}, player: {})", self.health, self.player)
+	}
+
 }
 
 impl Spawner {

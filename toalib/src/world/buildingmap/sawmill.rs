@@ -52,4 +52,8 @@ impl BuildingTrait for Sawmill {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(ItemClass::Wood.build());
 	}
+	fn get_info_string(&self) -> String {
+		format!("Sawmill( health: {})", self.health)
+	}
+
 }

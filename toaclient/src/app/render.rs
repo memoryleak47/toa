@@ -149,7 +149,7 @@ impl App {
 		let unit = self.world.get_unit(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
 		let inventory = self.world.get_inventory(pos);
 
-		let default = format!("Terrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", terrain, building.map(|x| x.get_class().get_name()).unwrap_or("None"), unit, inventory.get_info_string());
+		let default = format!("Terrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", terrain, building.map(|x| x.get_info_string()).unwrap_or("None".to_string()), unit, inventory.get_info_string());
 		let action_infos = self.get_action_infos();
 
 		let v: Vec<_> = action_infos.iter()

@@ -46,6 +46,10 @@ impl BuildingTrait for Construction {
 			world.set_building(p, Some(b));
 		}
 	}
+	fn get_info_string(&self) -> String {
+		format!("Construction( health: {}, inv-stamina: {}, building: {})", self.health, self.invested_stamina, self.build_class.get_name())
+	}
+
 }
 
 pub fn new_construction(class: BuildingClass) -> Building {

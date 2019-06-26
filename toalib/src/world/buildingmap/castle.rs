@@ -49,5 +49,9 @@ impl BuildingTrait for Castle {
 	fn work(&mut self, _w: &mut World, _p: Vec2u) {
 		panic!("can't work on castle");
 	}
+	fn get_info_string(&self) -> String {
+		format!("Castle( health: {})", self.health)
+	}
+
 
 }

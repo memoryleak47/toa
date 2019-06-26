@@ -49,5 +49,9 @@ impl BuildingTrait for Camp {
 	fn work(&mut self, _w: &mut World, _p: Vec2u) {
 		panic!("can't work on camp");
 	}
+	fn get_info_string(&self) -> String {
+		format!("Camp( health: {})", self.health)
+	}
+
 
 }
