@@ -153,7 +153,7 @@ impl App {
 		let action_infos = self.get_action_infos();
 
 		let v: Vec<_> = action_infos.iter()
-				.map(|x| x.get_text())
+				.map(|x| x.get_text(&self.world))
 				.collect();
 		format!("{}\n{}", default, v.join("\n"))
 	}

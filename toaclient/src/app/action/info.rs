@@ -3,6 +3,7 @@ use std::slice;
 use sfml::window::Key;
 
 use toalib::world::buildingmap::{BUILDABLE_BUILDING_CLASSES, BuildingClass};
+use toalib::world::World;
 use toalib::item::{CRAFTABLE_ITEM_CLASSES, ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
 use toalib::misc::Direction;
@@ -46,12 +47,16 @@ mod trigger {
 }
 
 impl ActionInfo {
-	pub fn get_text(&self) -> String {
+	pub fn get_text(&self, w: &World) -> String {
 		let v: Vec<_> = self.key_combination.iter()
 			.map(|x| format!("{:?}", x))
 			.collect();
 		let key_string = v.join("+");
-		format!("[{}]: {}", key_string, self.text)
+		let mut s = format!("[{}]: {}", key_string, self.text);
+		if let Some(Command::UnitCommand { command: c, pos }) = self.action.get_command() {
+			s = format!("{} ({})", s, c.get_stamina_cost(pos, w));
+		}
+		s
 	}
 
 	pub fn is_triggered(&self, input: &Input) -> bool {
