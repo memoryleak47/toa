@@ -10,6 +10,7 @@ use crate::graphics::TextureState;
 use crate::sound::SoundState;
 use crate::app::App;
 use crate::config::DEFAULT_TILESIZE;
+use crate::font::load_font;
 
 impl App {
 	pub fn connect(ip: &str) -> App {
@@ -33,6 +34,7 @@ impl App {
 			texture_state: TextureState::new(),
 			sound_state: SoundState::new().unwrap(),
 			stream,
+			font: load_font(),
 		};
 
 		app.init();

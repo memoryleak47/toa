@@ -17,7 +17,7 @@ fn get_font_path() -> PathBuf {
 	}
 }
 
-pub fn get_font() -> Font {
+pub fn load_font() -> Font {
 	let path = get_font_path();
 	Font::from_file(path.to_str().unwrap()).unwrap()
 }

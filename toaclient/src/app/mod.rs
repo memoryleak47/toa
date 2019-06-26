@@ -4,7 +4,7 @@ mod tick;
 mod render;
 mod action;
 
-use sfml::graphics::RenderWindow;
+use sfml::graphics::{RenderWindow, Font};
 
 use toalib::world::World;
 use toalib::vec::{Vec2u, Vec2f};
@@ -30,4 +30,5 @@ pub struct App {
 	texture_state: TextureState,
 	sound_state: SoundState,
 	stream: Stream,
+	font: Font,
 }
