@@ -9,7 +9,7 @@ use crate::damage::Damage;
 lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
 		item_cost: &[ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Stone],
-		stamina_cost: 20,
+		stamina_cost: 120,
 		build: || Building::Castle(Castle { health: 300 }),
 		required_terrain: None,
 	};
