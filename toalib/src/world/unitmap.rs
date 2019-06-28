@@ -1,4 +1,5 @@
 use std::cmp::min;
+use std::mem::swap;
 
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
@@ -95,10 +96,10 @@ impl World {
 						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
 					}
 				}
-				if u.as_mut()
+				if u.as_ref()
 						.filter(|x| x.health == 0)
 						.is_some() {
-					*u = None;
+					self.kill_unit(Vec2u::new(x as u32, y as u32));
 				}
 			}
 		}
@@ -150,5 +151,20 @@ impl World {
 
 	pub fn set_unit(&mut self, p: Vec2u, unit: Option<Unit>) {
 		self.unitmap[index2d!(p.x, p.y)] = unit;
+	}
+
+	pub fn kill_unit(&mut self, p: Vec2u) {
+		let mut unit = None;
+		swap(&mut unit, &mut self.unitmap[index2d!(p.x, p.y)]);
+		if let Some(mut u) = unit {
+			let ground_inv = self.get_inventory_mut(p).get_item_vec();
+			if let Some(i) = u.main_item {
+				ground_inv.push(i);
+			}
+			let v = u.inventory.get_item_vec();
+			while let Some(x) = v.pop() { 
+				ground_inv.push(x);
+			}
+		}
 	}
 }

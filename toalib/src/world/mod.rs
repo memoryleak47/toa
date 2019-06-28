@@ -70,7 +70,7 @@ impl World {
 		}
 		if let Some(x) = self.get_unit_mut(p) {
 			if x.damage(damage) {
-				self.set_unit(p, None);
+				self.kill_unit(p);
 			}
 			return;
 		}
