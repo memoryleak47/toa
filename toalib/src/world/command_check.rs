@@ -1,6 +1,6 @@
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
-use crate::world::buildingmap::BUILDABLE_BUILDING_CLASSES;
+use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
 use crate::command::{Command, UnitCommand};
 use crate::misc::*;
 use crate::team::PlayerID;
@@ -126,10 +126,12 @@ impl World {
 			},
 			UnitCommand::Craft(class) => {
 				let recipe = match class.get_recipe() { Some(x) => x, None => return false };
-				self.get_unit(pos)
-					.filter(|x| x.owner == player)
-					.filter(|x| x.inventory.contains_all(recipe))
-					.is_some()
+				if let Some(Building::Workshop(_)) = self.get_building(pos) {
+					self.get_unit(pos)
+						.filter(|x| x.owner == player)
+						.filter(|x| x.inventory.contains_all(recipe))
+						.is_some()
+				} else { false }
 			},
 			UnitCommand::ChangeMainItem(opt_index) => {
 				if let Some(i) = opt_index {
