@@ -33,7 +33,7 @@ impl UnitCommand {
 				let to = dir.plus_vector(pos);
 				let terrain_summand = (w.get_terrain(pos).get_stamina_cost() + w.get_terrain(to).get_stamina_cost()) / 2;
 				let height_summand = 10 * (w.get_height(pos) as i32 - w.get_height(to) as i32).abs() as u32;
-				let weight_summand = w.get_unit(pos).unwrap().get_weight();
+				let weight_summand = w.get_unit(pos).unwrap().get_weight() / 5;
 				terrain_summand + height_summand + weight_summand
 			},
 			UnitCommand::Attack(_) => { 10 },

@@ -44,7 +44,7 @@ impl Unit {
 	}
 
 	pub fn get_weight(&self) -> u32 {
-		5 + self.inventory.get_weight() + self.main_item.as_ref().map(|x| x.get_class().get_weight()).unwrap_or(0)
+		50 + self.inventory.get_weight() + self.main_item.as_ref().map(|x| x.get_class().get_weight()).unwrap_or(0)
 	}
 
 	pub fn aim(&self) -> Aim {

@@ -16,7 +16,7 @@ impl ItemClassTrait for FoodClass {
 	type Instance = Food;
 	
 	fn get_name() -> &'static str { "Food" }
-	fn get_weight() -> u32 { 1 }
+	fn get_weight() -> u32 { 2 }
 	fn build() -> Item {
 		Item::Food(Food)
 	}
