@@ -38,6 +38,6 @@ impl ItemTrait for WoodBow {
 		self.health == 0
 	}
 	fn aim(&self) -> Aim {
-		new_ranged_aim(5, Damage(5))
+		new_ranged_aim(3, Damage(5))
 	}
 }
