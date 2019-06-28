@@ -20,7 +20,7 @@ impl ItemClassTrait for WoodBowClass {
 	type Instance = WoodBow;
 
 	fn get_name() -> &'static str { "WoodBow" }
-	fn get_weight() -> u32 { 100 }
+	fn get_weight() -> u32 { 20 }
 	fn build() -> Item {
 		Item::WoodBow(WoodBow { health: 100 })
 	}

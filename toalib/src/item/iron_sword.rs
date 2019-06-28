@@ -20,7 +20,7 @@ impl ItemClassTrait for IronSwordClass {
 	type Instance = IronSword;
 
 	fn get_name() -> &'static str { "IronSword" }
-	fn get_weight() -> u32 { 100 }
+	fn get_weight() -> u32 { 25 }
 	fn build() -> Item {
 		Item::IronSword(IronSword { health: 100 })
 	}
