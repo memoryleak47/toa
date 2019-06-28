@@ -40,7 +40,7 @@ impl UnitCommand {
 			UnitCommand::Build(_) => { 10 },
 			UnitCommand::Work => { 40 },
 			UnitCommand::UnrefinedWork => { 80 },
-			UnitCommand::DropItem(_) => 10,
+			UnitCommand::DropItem(_) => 0,
 			UnitCommand::TakeItem(_) => 10,
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
