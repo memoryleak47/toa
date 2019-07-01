@@ -17,10 +17,10 @@ pub enum Terrain {
 impl Terrain {
 	pub fn get_stamina_cost(&self) -> u32 {
 		match self {
-			Terrain::GRASS => 10,
-			Terrain::FOREST => 20,
-			Terrain::STONE => 20,
-			Terrain::IRON => 20,
+			Terrain::GRASS => 0,
+			Terrain::FOREST => 10,
+			Terrain::STONE => 10,
+			Terrain::IRON => 10,
 		}
 	}
 
