@@ -38,7 +38,7 @@ impl World {
 
 		World {
 			terrainmap: new_terrainmap(),
-			buildingmap: new_buildingmap(&spawns[..]),
+			buildingmap: new_buildingmap(),
 			unitmap: new_unitmap(&spawns[..]),
 			itemmap: new_itemmap(),
 			pool,

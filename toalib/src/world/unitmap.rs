@@ -5,7 +5,7 @@ use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
-use crate::item::{Inventory, Item};
+use crate::item::{Inventory, Item, ItemClass};
 use crate::team::PlayerID;
 
 const FULL_STAMINA: u32 = 100;
@@ -64,7 +64,9 @@ pub fn new_unitmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Unit>> {
 	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
 	for (player_id, spawn) in spawns {
-		unitmap[index2d!(spawn.x, spawn.y)] = Some(Unit::new(*player_id));
+		let mut u = Unit::new(*player_id);
+		u.inventory.push(ItemClass::SettlementKit.build());
+		unitmap[index2d!(spawn.x, spawn.y)] = Some(u);
 	}
 
 	unitmap

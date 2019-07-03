@@ -15,7 +15,6 @@ use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
 use crate::damage::Damage;
 use crate::item::ItemClass;
-use crate::team::PlayerID;
 
 use self::spawner::Spawner;
 use self::construction::Construction;
@@ -106,12 +105,8 @@ macro_rules! setup {
 
 setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle);
 
-pub fn new_buildingmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Building>> {
-	let mut buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
-
-	for (player_id, spawn) in spawns {
-		buildingmap[index2d!(spawn.x, spawn.y)] = Some(new_spawner(*player_id));
-	}
+pub fn new_buildingmap() -> Vec<Option<Building>> {
+	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
 	buildingmap
 }
