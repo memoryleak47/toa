@@ -41,7 +41,14 @@ impl UnitCommand {
 			UnitCommand::Work => { 40 },
 			UnitCommand::UnrefinedWork => { 80 },
 			UnitCommand::DropItem(_, _) => 0,
-			UnitCommand::TakeItem(_) => 10,
+			UnitCommand::TakeItem(i) => {
+				w.get_inventory(pos)
+					.iter()
+					.nth(*i)
+					.unwrap()
+					.get_class()
+					.get_weight()
+			},
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
 			UnitCommand::ChangeMainItem(_) => 0,
