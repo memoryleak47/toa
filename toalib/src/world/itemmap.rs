@@ -15,8 +15,11 @@ impl World {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
 				let i = index2d!(x, y);
-				if let Some(BuildingClass::Camp) = self.buildingmap[i].as_ref().map(|x| x.get_class()) { } else {
-					self.itemmap[i].damage(GROUND_DAMAGE);
+				let c = self.buildingmap[i].as_ref().map(|x| x.get_class());
+				if let Some(BuildingClass::Camp) = c { } else {
+					if let Some(BuildingClass::Spawner) = c { } else {
+						self.itemmap[i].damage(GROUND_DAMAGE);
+					}
 				}
 			}
 		}

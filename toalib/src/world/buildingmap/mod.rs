@@ -16,7 +16,7 @@ use crate::world::terrainmap::Terrain;
 use crate::damage::Damage;
 use crate::item::ItemClass;
 
-use self::spawner::Spawner;
+pub use self::spawner::Spawner;
 use self::construction::Construction;
 use self::farm::Farm;
 use self::camp::Camp;
