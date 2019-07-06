@@ -43,7 +43,7 @@ mod trigger {
 		i.is_fresh_pressed(*k.last().unwrap())
 	};
 	pub static PERMANENT: F = |i, k| i.are_pressed(k);
-	pub static MOD: F = |i, k| i.are_pressed_mod(k, 3);
+	pub static MOD: F = |i, k| i.are_pressed_mod(k, 3, 4);
 }
 
 impl ActionInfo {
@@ -188,25 +188,25 @@ impl App {
 			text: "move up".to_string(),
 			action: Action::MoveUnit { direction: Direction::Up, pos: self.cursor },
 			key_combination: &[Key::W],
-			triggered: trigger::MOD,
+			triggered: trigger::FRESH,
 		});
 		v.push(ActionInfo {
 			text: "move left".to_string(),
 			action: Action::MoveUnit { direction: Direction::Left, pos: self.cursor },
 			key_combination: &[Key::A],
-			triggered: trigger::MOD,
+			triggered: trigger::FRESH,
 		});
 		v.push(ActionInfo {
 			text: "move down".to_string(),
 			action: Action::MoveUnit { direction: Direction::Down, pos: self.cursor },
 			key_combination: &[Key::S],
-			triggered: trigger::MOD,
+			triggered: trigger::FRESH,
 		});
 		v.push(ActionInfo {
 			text: "move right".to_string(),
 			action: Action::MoveUnit { direction: Direction::Right, pos: self.cursor },
 			key_combination: &[Key::D],
-			triggered: trigger::MOD,
+			triggered: trigger::FRESH,
 		});
 
 		// change mode

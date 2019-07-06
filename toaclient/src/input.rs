@@ -46,9 +46,9 @@ impl Input {
 	}
 
 	#[allow(dead_code)]
-	pub fn is_pressed_mod(&self, key: Key, modulo: u32) -> bool {
+	pub fn is_pressed_mod(&self, key: Key, modulo: u32, gap: u32) -> bool {
 		let state = &self.keymap[&key];
-		state.pressed && state.time % modulo == 0
+		state.pressed && state.time % modulo == 0 && (state.time == 0 || state.time >= gap)
 	}
 
 	fn check_modifiers(&self, keys: &[Key]) -> bool {
@@ -57,7 +57,7 @@ impl Input {
 			.all(|m| self.is_pressed(*m) == keys.contains(m))
 	}
 
-	pub fn are_pressed_mod(&self, keys: &[Key], modulo: u32) -> bool {
+	pub fn are_pressed_mod(&self, keys: &[Key], modulo: u32, gap: u32) -> bool {
 		if !self.check_modifiers(keys) { return false; }
 
 		keys.iter()
@@ -68,7 +68,7 @@ impl Input {
 			.map(|x| &self.keymap[x])
 			.map(|x| x.time)
 			.min()
-			.filter(|m| m % modulo == 0)
+			.filter(|m| m % modulo == 0 && (*m == 0 || m >= &gap))
 			.is_some()
 	}
 
