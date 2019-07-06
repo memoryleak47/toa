@@ -110,9 +110,11 @@ impl World {
 				if let Some(Building::Spawner(s)) = self.get_building(p) {
 					let player = s.get_player_id();
 					if self.get_unit(p).is_some() { continue; }
-					self.get_inventory_mut(p).reduce(&SPAWN_FOOD_VEC[..]);
-					let new_unit = Unit::new(player);
-					self.set_unit(p, Some(new_unit));
+					if self.get_inventory(p).contains_all(&SPAWN_FOOD_VEC[..]) {
+						self.get_inventory_mut(p).reduce(&SPAWN_FOOD_VEC[..]);
+						let new_unit = Unit::new(player);
+						self.set_unit(p, Some(new_unit));
+					}
 				}
 			}
 		}
