@@ -109,10 +109,17 @@ impl World {
 						.is_unrefined_workable(u)
 					).is_some()
 			}
-			UnitCommand::DropItem(i) => {
+			UnitCommand::DropItem(i, dir) => {
 				self.get_unit(pos)
 					.filter(|u| u.inventory.iter().len() > *i)
 					.is_some()
+				&& match dir {
+					Some(Direction::Left) => pos.x != 0,
+					Some(Direction::Down) => pos.y != MAP_SIZE_Y as u32-1,
+					Some(Direction::Right) => pos.x != MAP_SIZE_X as u32-1,
+					Some(Direction::Up) => pos.y != 0,
+					None => true,
+				}
 			},
 			UnitCommand::TakeItem(i) => {
 				self.get_inventory(pos)

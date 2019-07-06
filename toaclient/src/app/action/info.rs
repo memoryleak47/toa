@@ -361,8 +361,8 @@ impl App {
 		// activate
 		v.push(match iu_mode {
 			ItemUnitMode::Drop => ActionInfo {
-				text: format!("Drop Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name() , index),
-				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index)}),
+				text: format!("Drop Item {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index, None)}),
 				key_combination: &[Key::Return],
 				triggered: trigger::FRESH,
 			},
@@ -385,6 +385,33 @@ impl App {
 				triggered: trigger::FRESH,
 			},
 		});
+
+		if let ItemUnitMode::Drop = iu_mode {
+			v.push(ActionInfo {
+				text: format!("Drop Item Left {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index, Some(Direction::Left))}),
+				key_combination: &[Key::A],
+				triggered: trigger::FRESH,
+			});
+			v.push(ActionInfo {
+				text: format!("Drop Item Down {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index, Some(Direction::Down))}),
+				key_combination: &[Key::S],
+				triggered: trigger::FRESH,
+			});
+			v.push(ActionInfo {
+				text: format!("Drop Item Right {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index, Some(Direction::Right))}),
+				key_combination: &[Key::D],
+				triggered: trigger::FRESH,
+			});
+			v.push(ActionInfo {
+				text: format!("Drop Item Up {} ({})", inv.iter().nth(index).unwrap().get_class().get_name(), index),
+				action: Action::BackCommand(Command::UnitCommand { pos: self.cursor, command: UnitCommand::DropItem(index, Some(Direction::Up))}),
+				key_combination: &[Key::W],
+				triggered: trigger::FRESH,
+			});
+		}
 
 		// next
 		let next_index = (index + 1) % l;

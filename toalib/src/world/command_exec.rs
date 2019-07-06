@@ -38,7 +38,7 @@ impl World {
 			&UnitCommand::Build(class) => self.exec_build(pos, class),
 			&UnitCommand::Work => self.exec_work(pos),
 			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
-			&UnitCommand::DropItem(i) => self.exec_drop_item(pos, i),
+			&UnitCommand::DropItem(i, dir) => self.exec_drop_item(pos, i, dir),
 			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
@@ -106,14 +106,15 @@ impl World {
 		u.inventory.push(item_class.build());
 	}
 
-	fn exec_drop_item(&mut self, at: Vec2u, i: usize) {
+	fn exec_drop_item(&mut self, at: Vec2u, i: usize, dir: Option<Direction>) {
+		let droppos = dir.map(|x| x.plus_vector(at)).unwrap_or(at);
 		let item = self.get_unit_mut(at)
 			.unwrap()
 			.inventory
 			.get_item_vec()
 			.remove(i);
 
-		self.get_inventory_mut(at)
+		self.get_inventory_mut(droppos)
 			.push(item);
 	}
 

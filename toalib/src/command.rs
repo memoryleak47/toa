@@ -12,7 +12,7 @@ pub enum UnitCommand {
 	Build(BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work
-	DropItem(usize),
+	DropItem(usize, Option<Direction>),
 	TakeItem(usize),
 	BurnBuilding,
 	Craft(ItemClass),
@@ -40,7 +40,7 @@ impl UnitCommand {
 			UnitCommand::Build(_) => { 10 },
 			UnitCommand::Work => { 40 },
 			UnitCommand::UnrefinedWork => { 80 },
-			UnitCommand::DropItem(_) => 0,
+			UnitCommand::DropItem(_, _) => 0,
 			UnitCommand::TakeItem(_) => 10,
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
