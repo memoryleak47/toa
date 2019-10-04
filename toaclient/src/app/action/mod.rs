@@ -32,6 +32,7 @@ impl App {
 				for x in self.world.find_next_unit_tile(self.cursor, self.player_id) {
 					self.cursor = x;
 				}
+				self.unit_mode = None;
 			},
 			Action::MoveUnit { direction, pos } => {
 				self.cursor = vector_iu(vector_ui(pos) + direction.to_vector());
