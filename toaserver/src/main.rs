@@ -1,5 +1,8 @@
 extern crate toalib;
 
+use std::io::{Read, Write};
+use std::fs::File;
+
 use toalib::world::World;
 use toalib::team::Team;
 use toalib::packet::{ServerToClientPacket, ClientToServerPacket};
@@ -18,7 +21,7 @@ fn main() {
 	let mut term = Term::new();
 
 	// lobby
-	loop {
+	let mut w: World = loop {
 		// add new connections
 		if let Some(stream) = listener.accept_nonblocking() {
 			user_pool.add(Team(0), stream);
@@ -26,7 +29,12 @@ fn main() {
 		}
 
 		match term.fetch_command() {
-			Some(TermCommand::Go) => break,
+			Some(TermCommand::Go(Some(x))) => {
+				break load_world_from_file(&x);
+			},
+			Some(TermCommand::Go(None)) => {
+				break World::gen(user_pool.get_player_pool().clone());
+			},
 			Some(TermCommand::Status) => {
 				println!("Status:\n");
 				for player_id in user_pool.get_player_pool().get_player_ids() {
@@ -39,9 +47,7 @@ fn main() {
 			},
 			None => continue,
 		}
-	}
-
-	let mut w = World::gen(user_pool.get_player_pool().clone());
+	};
 
 	user_pool.broadcast(|id| {
 		ServerToClientPacket::Init {
@@ -64,10 +70,36 @@ fn main() {
 						author_id: id,
 					}
 				});
+					save_world_to_file("save.toa", &w);
 			} else {
 				user_pool.send(id, ServerToClientPacket::DeclineCommand);
 			}
 		}
 		std::thread::sleep(std::time::Duration::from_millis(10));
 	}
+}
+
+fn load_world_from_file(x: &str) -> World {
+	let mut f = File::open(x).unwrap();
+	let mut bytes = vec![];
+	f.read_to_end(&mut bytes).unwrap();
+
+	deser(&bytes[..])
+}
+
+fn save_world_to_file(x: &str, w: &World) {
+	let bytes = ser(w);
+	let mut f = File::create(x).unwrap();
+	f.write_all(&bytes[..]).unwrap();
+}
+
+use bincode::{serialize, deserialize};
+use serde::{Serialize, de::DeserializeOwned};
+
+fn ser<P: Serialize>(p: P) -> Vec<u8> {
+	serialize(&p).unwrap()
+}
+
+fn deser<P: DeserializeOwned>(bytes: &[u8]) -> P {
+	deserialize(bytes).unwrap()
 }

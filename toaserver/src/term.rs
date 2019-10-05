@@ -5,7 +5,7 @@ use std::io::{stdin, stdout, Write};
 use toalib::team::{PlayerID, Team};
 
 pub enum TermCommand {
-	Go,
+	Go(Option<String>),
 	Status,
 	ChangeTeam {
 		player_id: PlayerID,
@@ -70,7 +70,8 @@ impl Term {
 					.split_whitespace()
 					.collect();
 		match &parts[..] {
-			["go"] => Some(TermCommand::Go),
+			["go"] => Some(TermCommand::Go(None)),
+			["go", x] => Some(TermCommand::Go(Some(x.to_owned().to_string()))),
 			["status"] => Some(TermCommand::Status),
 			["team", player_id_str, team_str] => {
 				let player_id = PlayerID(player_id_str.parse::<usize>().ok()?);
