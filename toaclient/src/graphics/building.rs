@@ -18,6 +18,7 @@ pub fn get_texture_id(building: &Building) -> TextureId {
 		Building::IronMine(_) => RawTextureId::IronMineBuilding.into(),
 		Building::Workshop(_) => RawTextureId::WorkshopBuilding.into(),
 		Building::Castle(_) => RawTextureId::CastleBuilding.into(),
+		Building::StoneWall(_) => RawTextureId::StoneWallBuilding.into(),
 	}
 }
 

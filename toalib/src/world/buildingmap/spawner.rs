@@ -44,6 +44,8 @@ impl BuildingTrait for Spawner {
 	fn get_info_string(&self) -> String {
 		format!("Spawner( health: {}, player: {})", self.health, self.player)
 	}
+	fn is_blocking_against(&self, pid: PlayerID) -> bool { pid != self.player }
+
 
 }
 

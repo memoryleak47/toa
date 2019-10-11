@@ -178,10 +178,10 @@ impl World {
 			return false;
 		}
 
-		if let Some(Building::Spawner(s)) = self.get_building(to) {
-			if s.get_player_id() != player_id {
-				return false;
-			}
+		if self.get_building(to)
+				.map(|b| b.is_blocking_against(player_id))
+				.unwrap_or(false) {
+			return false;
 		}
 
 		true

@@ -112,6 +112,7 @@ setup!(
 	IronMineBuilding: "building/ironmine.png",
 	WorkshopBuilding: "building/workshop.png",
 	CastleBuilding: "building/castle.png",
+	StoneWallBuilding: "building/stonewall.png",
 
 	FoodItem: "item/food.png",
 	WoodItem: "item/wood.png",

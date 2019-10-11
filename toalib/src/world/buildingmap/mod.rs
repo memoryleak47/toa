@@ -7,6 +7,7 @@ mod stone_mine;
 mod iron_mine;
 mod workshop;
 mod castle;
+mod stone_wall;
 
 use std::any::Any;
 
@@ -15,6 +16,7 @@ use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
 use crate::damage::Damage;
 use crate::item::ItemClass;
+use crate::team::PlayerID;
 
 pub use self::spawner::Spawner;
 use self::construction::Construction;
@@ -25,6 +27,7 @@ use self::stone_mine::StoneMine;
 use self::iron_mine::IronMine;
 use self::workshop::Workshop;
 use self::castle::Castle;
+use self::stone_wall::StoneWall;
 
 pub use self::spawner::new_spawner;
 pub use self::construction::new_construction;
@@ -43,6 +46,7 @@ trait BuildingTrait {
 	fn work(&mut self, _w: &mut World, _p: Vec2u);
 
 	fn get_info_string(&self) -> String;
+	fn is_blocking_against(&self, _pid: PlayerID) -> bool { false }
 }
 
 trait BuildingClassTrait {
@@ -92,6 +96,8 @@ macro_rules! setup {
 			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Building::$x(a) => a.damage(damage) ),* } }
 			pub fn work(&mut self, w: &mut World, p: Vec2u)				{ match self { $( Building::$x(a) => a.work(w, p) ),* } }
 			pub fn get_info_string(&self) -> String						{ match self { $( Building::$x(a) => a.get_info_string() ),* } }
+			pub fn is_blocking_against(&self, pid: PlayerID) -> bool	{ match self { $( Building::$x(a) => a.is_blocking_against(pid) ),* } }
+			
 		}
 
 		impl BuildingClass {
@@ -103,7 +109,7 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle);
+setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, StoneWall);
 
 pub fn new_buildingmap() -> Vec<Option<Building>> {
 	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
