@@ -32,6 +32,7 @@ impl BuildingClassTrait for CampClass {
 	fn get_name() -> &'static str {
 		"Camp"
 	}
+	fn prevents_item_despawn() -> bool { true }
 }
 
 impl BuildingTrait for Camp {

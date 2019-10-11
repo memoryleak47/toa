@@ -26,6 +26,7 @@ impl BuildingClassTrait for SpawnerClass {
 	fn get_name() -> &'static str {
 		"Spawner"
 	}
+	fn prevents_item_despawn() -> bool { true }
 }
 
 impl BuildingTrait for Spawner {

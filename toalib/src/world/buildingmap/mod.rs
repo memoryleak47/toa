@@ -54,6 +54,7 @@ trait BuildingClassTrait {
 
 	fn get_build_property() -> Option<&'static BuildProperty>;
 	fn get_name() -> &'static str;
+	fn prevents_item_despawn() -> bool { false }
 }
 
 #[derive(Clone)]
@@ -102,6 +103,7 @@ macro_rules! setup {
 		impl BuildingClass {
 			pub fn get_build_property(&self) -> Option<&'static BuildProperty> { match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_property() ),* } }
 			pub fn get_name(&self) -> &'static str						{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_name() ),* } }
+			pub fn prevents_item_despawn(&self) -> bool					{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::prevents_item_despawn() ),* } }
 		}
 	};
 
