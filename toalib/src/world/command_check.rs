@@ -91,6 +91,8 @@ impl World {
 				let req_terrain = prop.required_terrain;
 				self.get_building(pos).is_none()
 				&&
+				!self.get_terrain(pos).prevents_building()
+				&&
 				self.get_unit(pos)
 					.filter(|x| x.owner == player)
 					.filter(|x| x.inventory.contains_all(prop.item_cost))

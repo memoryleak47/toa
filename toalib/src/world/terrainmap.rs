@@ -59,6 +59,13 @@ impl Terrain {
 			_ => false,
 		}
 	}
+
+	pub fn prevents_building(&self) -> bool {
+		match self {
+			Terrain::MOUNTAIN | Terrain::MARSH => true,
+			_ => false,
+		}
+	}
 }
 
 pub fn new_terrainmap() -> Vec<Terrain> {
