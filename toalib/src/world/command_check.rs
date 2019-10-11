@@ -1,6 +1,7 @@
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
+use crate::world::terrainmap::Terrain;
 use crate::command::{Command, UnitCommand};
 use crate::misc::*;
 use crate::team::PlayerID;
@@ -169,5 +170,20 @@ impl World {
 			Command::NextTurn => true,
 			Command::UnitCommand { ref command, pos } => self.is_valid_unit_command(player, *pos, command),
 		}
+	}
+
+	fn allowed_to_go_to(&self, from: Vec2u, to: Vec2u) -> bool {
+		let player_id = self.get_unit(from).unwrap().owner;
+		if let Terrain::MOUNTAIN = self.get_terrain(to) {
+			return false;
+		}
+
+		if let Some(Building::Spawner(s)) = self.get_building(to) {
+			if s.get_player_id() != player_id {
+				return false;
+			}
+		}
+
+		true
 	}
 }
