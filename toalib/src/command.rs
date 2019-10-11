@@ -36,7 +36,9 @@ impl UnitCommand {
 				terrain_summand + weight_summand
 			},
 			UnitCommand::Attack(_) => { 10 },
-			UnitCommand::Build(_) => { 10 },
+			UnitCommand::Build(class) => {
+				class.get_build_property().unwrap().stamina_cost
+			},
 			UnitCommand::Work => { 40 },
 			UnitCommand::UnrefinedWork => { 80 },
 			UnitCommand::DropItem(_, _) => 0,

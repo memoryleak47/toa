@@ -104,7 +104,6 @@ setup!(
 
 	Unit: "unit.png",
 
-	ConstructionBuilding: "building/construction.png",
 	FarmBuilding: "building/farm.png",
 	CampBuilding: "building/camp.png",
 	SawmillBuilding: "building/sawmill.png",

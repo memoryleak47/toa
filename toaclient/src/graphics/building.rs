@@ -10,7 +10,6 @@ pub fn get_texture_id(building: &Building) -> TextureId {
 				player_id: spawner.get_player_id()
 			}.into()
 		},
-		Building::Construction(_) => RawTextureId::ConstructionBuilding.into(),
 		Building::Farm(_) => RawTextureId::FarmBuilding.into(),
 		Building::Camp(_) => RawTextureId::CampBuilding.into(),
 		Building::Sawmill(_) => RawTextureId::SawmillBuilding.into(),

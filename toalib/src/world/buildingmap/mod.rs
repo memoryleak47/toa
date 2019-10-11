@@ -1,5 +1,4 @@
 mod spawner;
-mod construction;
 mod farm;
 mod camp;
 mod sawmill;
@@ -19,7 +18,6 @@ use crate::item::ItemClass;
 use crate::team::PlayerID;
 
 pub use self::spawner::Spawner;
-use self::construction::Construction;
 use self::farm::Farm;
 use self::camp::Camp;
 use self::sawmill::Sawmill;
@@ -30,7 +28,6 @@ use self::castle::Castle;
 use self::stone_wall::StoneWall;
 
 pub use self::spawner::new_spawner;
-pub use self::construction::new_construction;
 
 trait BuildingTrait {
 	type Class: BuildingClassTrait + Sized;
@@ -109,7 +106,7 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Construction, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, StoneWall);
+setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, StoneWall);
 
 pub fn new_buildingmap() -> Vec<Option<Building>> {
 	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);

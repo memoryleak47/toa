@@ -7,7 +7,7 @@ use crate::misc::Direction;
 use crate::world::World;
 use crate::aim::Aim;
 use crate::world::unitmap::Unit;
-use crate::world::buildingmap::{BuildingClass, new_construction};
+use crate::world::buildingmap::BuildingClass;
 use crate::team::PlayerID;
 
 impl World {
@@ -80,7 +80,8 @@ impl World {
 	}
 
 	fn exec_build(&mut self, at: Vec2u, class: BuildingClass) {
-		self.buildingmap[index2d!(at.x, at.y)] = Some(new_construction(class));
+		let b = class.get_build_property().unwrap().build;
+		self.buildingmap[index2d!(at.x, at.y)] = Some((b)());
 
 
 		let cost = class.get_build_property()
