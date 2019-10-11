@@ -67,12 +67,6 @@ impl World {
 		self.tick_spawners();
 	}
 
-	pub fn get_height(&self, pos: Vec2u) -> u32 {
-		self.get_building(pos)
-			.map(|x| x.get_class().get_height())
-			.unwrap_or(0)
-	}
-
 	pub fn damage(&mut self, p: Vec2u, damage: Damage) {
 		if let Some(x) = self.get_building_mut(p) {
 			if x.damage(damage) {

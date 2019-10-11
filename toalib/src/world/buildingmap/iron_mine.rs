@@ -30,7 +30,6 @@ impl BuildingClassTrait for IronMineClass {
 	type Instance = IronMine;
 
 	fn get_build_property() -> Option<&'static BuildProperty> { Some(&BUILD_PROPERTY) }
-	fn get_height() -> u32 { 0 }
 	fn get_name() -> &'static str {
 		"IronMine"
 	}

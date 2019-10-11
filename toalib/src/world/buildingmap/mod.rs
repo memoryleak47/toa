@@ -53,7 +53,6 @@ trait BuildingClassTrait {
 	type Instance: BuildingTrait + Sized;
 
 	fn get_build_property() -> Option<&'static BuildProperty>;
-	fn get_height() -> u32;
 	fn get_name() -> &'static str;
 }
 
@@ -102,7 +101,6 @@ macro_rules! setup {
 
 		impl BuildingClass {
 			pub fn get_build_property(&self) -> Option<&'static BuildProperty> { match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_property() ),* } }
-			pub fn get_height(&self) -> u32								{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_height() ),* } }
 			pub fn get_name(&self) -> &'static str						{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_name() ),* } }
 		}
 	};

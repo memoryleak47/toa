@@ -30,7 +30,6 @@ impl BuildingClassTrait for FarmClass {
 	type Instance = Farm;
 
 	fn get_build_property() -> Option<&'static BuildProperty> { Some(&BUILD_PROPERTY) }
-	fn get_height() -> u32 { 0 }
 	fn get_name() -> &'static str {
 		"Farm"
 	}
