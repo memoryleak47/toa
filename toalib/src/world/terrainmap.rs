@@ -16,6 +16,16 @@ pub enum Terrain {
 	MARSH,
 }
 
+const SPAWN_DISTRIBUTION: [(Terrain, u32); 6] =
+[
+	(Terrain::GRASS, 30),
+	(Terrain::FOREST, 15),
+	(Terrain::STONE, 5),
+	(Terrain::IRON, 3),
+	(Terrain::MOUNTAIN, 10),
+	(Terrain::MARSH, 10),
+];
+
 impl Terrain {
 	pub fn get_stamina_cost(&self) -> u32 {
 		match self {
@@ -51,23 +61,23 @@ impl Terrain {
 	}
 }
 
-pub fn new_terrainmap() -> Vec<Terrain> { // TODO
+pub fn new_terrainmap() -> Vec<Terrain> {
 	let mut rng = thread_rng();
 
 	let mut terrainmap = init2d!(Terrain::GRASS, MAP_SIZE_Y, MAP_SIZE_X);
+
+	let sum: u32 = SPAWN_DISTRIBUTION.iter().map(|x| x.1).sum();
+
 	for x in 0..MAP_SIZE_X {
 		for y in 0..MAP_SIZE_Y {
-			let r = rng.next_u32();
-			if r % 3 == 0 {
-				terrainmap[index2d!(x, y)] = Terrain::FOREST;
-			} else if r % 7 == 0 {
-				terrainmap[index2d!(x, y)] = Terrain::STONE;
-			} else if r % 11 == 0 {
-				terrainmap[index2d!(x, y)] = Terrain::IRON;
-			} else if r % 13 == 0 {
-				terrainmap[index2d!(x, y)] = Terrain::MOUNTAIN;
-			} else if r % 17 == 0 {
-				terrainmap[index2d!(x, y)] = Terrain::MARSH;
+			let mut r: u32 = rng.next_u32() % sum;
+			for &(t, n) in SPAWN_DISTRIBUTION.iter() {
+				if r < n {
+					terrainmap[index2d!(x, y)] = t;
+					break;
+				} else {
+					r -= n;
+				}
 			}
 		}
 	}
