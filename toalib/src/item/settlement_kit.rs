@@ -6,7 +6,7 @@ use crate::damage::Damage;
 use crate::world::buildingmap::new_spawner;
 
 lazy_static! {
-	static ref RECIPE: [ItemClass; 6] = [ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood];
+	static ref RECIPE: [ItemClass; 8] = [ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood];
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]

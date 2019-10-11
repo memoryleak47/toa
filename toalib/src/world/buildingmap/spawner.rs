@@ -56,5 +56,5 @@ impl Spawner {
 }
 
 pub fn new_spawner(player: PlayerID) -> Building {
-	Building::Spawner(Spawner { player, health: 500}) // TODO un-hardcode
+	Building::Spawner(Spawner { player, health: 100 }) // TODO un-hardcode
 }
