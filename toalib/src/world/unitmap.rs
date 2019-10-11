@@ -3,6 +3,7 @@ use std::mem::swap;
 
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use crate::world::terrainmap::Terrain;
 use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 use crate::item::{Inventory, Item, ItemClass};
@@ -168,5 +169,14 @@ impl World {
 				ground_inv.push(x);
 			}
 		}
+	}
+
+	pub fn allowed_to_go_to(&self, _from: Vec2u, to: Vec2u) -> bool {
+		// let player_id = self.get_unit(from).unwrap().player_id;
+		if let Terrain::MOUNTAIN = self.get_terrain(to) {
+			return false;
+		}
+
+		true
 	}
 }

@@ -8,5 +8,6 @@ pub fn get_texture_id(terrain: Terrain) -> TextureId {
 		Terrain::FOREST => RawTextureId::ForestTerrain,
 		Terrain::STONE => RawTextureId::StoneTerrain,
 		Terrain::IRON => RawTextureId::IronTerrain,
+		Terrain::MOUNTAIN => RawTextureId::MountainTerrain,
 	}.into()
 }

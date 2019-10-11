@@ -72,6 +72,7 @@ impl World {
 
 				self.get_unit(to).is_none()
 				&& self.get_height(to).saturating_sub(self.get_height(pos)) != 2 // can't climb a wall!
+				&& self.allowed_to_go_to(pos, to)
 				&& self.get_unit(pos)
 					.filter(|x| x.owner == player)
 					.is_some()

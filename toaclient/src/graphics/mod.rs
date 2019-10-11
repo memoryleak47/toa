@@ -99,6 +99,7 @@ setup!(
 	ForestTerrain: "terrain/forest.png",
 	StoneTerrain: "terrain/stone.png",
 	IronTerrain: "terrain/iron.png",
+	MountainTerrain: "terrain/mountain.png",
 
 	Unit: "unit.png",
 
