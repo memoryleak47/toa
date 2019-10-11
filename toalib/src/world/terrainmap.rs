@@ -13,6 +13,7 @@ pub enum Terrain {
 	STONE,
 	IRON,
 	MOUNTAIN,
+	MARSH,
 }
 
 impl Terrain {
@@ -23,6 +24,7 @@ impl Terrain {
 			Terrain::STONE => 10,
 			Terrain::IRON => 10,
 			Terrain::MOUNTAIN => 20,
+			Terrain::MARSH => 40,
 		}
 	}
 
@@ -64,6 +66,8 @@ pub fn new_terrainmap() -> Vec<Terrain> { // TODO
 				terrainmap[index2d!(x, y)] = Terrain::IRON;
 			} else if r % 13 == 0 {
 				terrainmap[index2d!(x, y)] = Terrain::MOUNTAIN;
+			} else if r % 17 == 0 {
+				terrainmap[index2d!(x, y)] = Terrain::MARSH;
 			}
 		}
 	}

@@ -100,6 +100,7 @@ setup!(
 	StoneTerrain: "terrain/stone.png",
 	IronTerrain: "terrain/iron.png",
 	MountainTerrain: "terrain/mountain.png",
+	MarshTerrain: "terrain/marsh.png",
 
 	Unit: "unit.png",
 
