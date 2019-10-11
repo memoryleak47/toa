@@ -1,7 +1,6 @@
 use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
-use crate::world::terrainmap::Terrain;
 use crate::command::{Command, UnitCommand};
 use crate::misc::*;
 use crate::team::PlayerID;
@@ -174,7 +173,8 @@ impl World {
 
 	fn allowed_to_go_to(&self, from: Vec2u, to: Vec2u) -> bool {
 		let player_id = self.get_unit(from).unwrap().owner;
-		if let Terrain::MOUNTAIN = self.get_terrain(to) {
+
+		if self.get_terrain(to).is_blocking() {
 			return false;
 		}
 

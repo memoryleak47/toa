@@ -40,6 +40,13 @@ impl Terrain {
 			_ => panic!("get_item() can only be called on GRASS/FOREST"),
 		}
 	}
+
+	pub fn is_blocking(&self) -> bool {
+		match self {
+			Terrain::MOUNTAIN => true,
+			_ => false,
+		}
+	}
 }
 
 pub fn new_terrainmap() -> Vec<Terrain> { // TODO
