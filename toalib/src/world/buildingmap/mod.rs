@@ -6,6 +6,7 @@ mod stone_mine;
 mod iron_mine;
 mod workshop;
 mod castle;
+mod wood_wall;
 mod stone_wall;
 
 use std::any::Any;
@@ -25,6 +26,7 @@ use self::stone_mine::StoneMine;
 use self::iron_mine::IronMine;
 use self::workshop::Workshop;
 use self::castle::Castle;
+use self::wood_wall::WoodWall;
 use self::stone_wall::StoneWall;
 
 pub use self::spawner::new_spawner;
@@ -106,7 +108,7 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, StoneWall);
+setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall);
 
 pub fn new_buildingmap() -> Vec<Option<Building>> {
 	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);

@@ -9,9 +9,9 @@ use crate::team::PlayerID;
 
 lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
-		item_cost: &[ItemClass::Stone],
-		stamina_cost: 40,
-		build: || Building::StoneWall(StoneWall { health: 100 }),
+		item_cost: &[ItemClass::Stone, ItemClass::Stone],
+		stamina_cost: 80,
+		build: || Building::StoneWall(StoneWall { health: 200 }),
 		required_terrain: None,
 	};
 }
