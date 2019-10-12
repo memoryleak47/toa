@@ -31,7 +31,7 @@ impl UnitCommand {
 		match self {
 			UnitCommand::Move(dir) => {
 				let to = dir.plus_vector(pos);
-				let terrain_summand = (w.get_terrain(pos).get_stamina_cost() + w.get_terrain(to).get_stamina_cost()) / 2;
+				let terrain_summand = (stamina_cost_at(pos, w) + stamina_cost_at(to, w)) / 2;
 				let weight_summand = 2 * w.get_unit(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand
 			},
@@ -56,4 +56,12 @@ impl UnitCommand {
 			UnitCommand::ExecItem(_) => 0,
 		}
 	}
+}
+
+fn stamina_cost_at(pos: Vec2u, w: &World) -> u32 {
+	w.get_building(pos).and_then(
+			|x| x.get_class().reduces_walk_stamina()
+		).unwrap_or_else(
+			|| w.get_terrain(pos).get_stamina_cost()
+		)
 }

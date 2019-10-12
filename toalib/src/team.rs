@@ -2,10 +2,10 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Error};
 
 pub const COLORS: [(u8, u8, u8); 4] = [
-	(255, 0, 0),
+	(200, 0, 0),
 	(70, 200, 70),
-	(0, 60, 255),
-	(200, 200, 0)
+	(0, 60, 220),
+	(200, 170, 0)
 ];
 
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Debug)]

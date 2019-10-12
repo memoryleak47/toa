@@ -19,6 +19,7 @@ pub fn get_texture_id(building: &Building) -> TextureId {
 		Building::Castle(_) => RawTextureId::CastleBuilding.into(),
 		Building::WoodWall(_) => RawTextureId::WoodWallBuilding.into(),
 		Building::StoneWall(_) => RawTextureId::StoneWallBuilding.into(),
+		Building::Street(_) => RawTextureId::StreetBuilding.into(),
 	}
 }
 

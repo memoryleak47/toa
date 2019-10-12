@@ -113,6 +113,7 @@ setup!(
 	CastleBuilding: "building/castle.png",
 	WoodWallBuilding: "building/woodwall.png",
 	StoneWallBuilding: "building/stonewall.png",
+	StreetBuilding: "building/street.png",
 
 	FoodItem: "item/food.png",
 	WoodItem: "item/wood.png",

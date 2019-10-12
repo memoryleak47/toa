@@ -8,6 +8,7 @@ mod workshop;
 mod castle;
 mod wood_wall;
 mod stone_wall;
+mod street;
 
 use std::any::Any;
 
@@ -28,6 +29,7 @@ use self::workshop::Workshop;
 use self::castle::Castle;
 use self::wood_wall::WoodWall;
 use self::stone_wall::StoneWall;
+use self::street::Street;
 
 pub use self::spawner::new_spawner;
 
@@ -54,6 +56,7 @@ trait BuildingClassTrait {
 	fn get_build_property() -> Option<&'static BuildProperty>;
 	fn get_name() -> &'static str;
 	fn prevents_item_despawn() -> bool { false }
+	fn reduces_walk_stamina() -> Option<u32> { None }
 }
 
 #[derive(Clone)]
@@ -103,12 +106,13 @@ macro_rules! setup {
 			pub fn get_build_property(&self) -> Option<&'static BuildProperty> { match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_build_property() ),* } }
 			pub fn get_name(&self) -> &'static str						{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::get_name() ),* } }
 			pub fn prevents_item_despawn(&self) -> bool					{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::prevents_item_despawn() ),* } }
+			pub fn reduces_walk_stamina(&self) -> Option<u32>			{ match self { $( BuildingClass::$x => <$x as BuildingTrait>::Class::reduces_walk_stamina() ),* } }
 		}
 	};
 
 }
 
-setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall);
+setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall, Street);
 
 pub fn new_buildingmap() -> Vec<Option<Building>> {
 	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
