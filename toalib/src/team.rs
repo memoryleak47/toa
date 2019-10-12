@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter, Error};
 
 pub const COLORS: [(u8, u8, u8); 3] = [
 	(255, 0, 0),
-	(0, 255, 0),
+	(70, 125, 70),
 	(0, 0, 255),
 ];
 
