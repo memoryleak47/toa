@@ -86,10 +86,12 @@ impl World {
 	fn gen_spawns(pool: &PlayerPool) -> Vec<(PlayerID, Vec2u)> {
 		let v = vec![
 			Vec2u::new((MAP_SIZE_X/2) as u32, 0),
-			Vec2u::new((MAP_SIZE_X/2) as u32, (MAP_SIZE_Y-1) as u32)
+			Vec2u::new((MAP_SIZE_X/2) as u32, (MAP_SIZE_Y-1) as u32),
+			Vec2u::new(0, (MAP_SIZE_Y/2) as u32),
+			Vec2u::new((MAP_SIZE_X-1) as u32, (MAP_SIZE_Y/2) as u32)
 		];
 
-		assert!(pool.get_player_ids().len() <= 2);
+		assert!(pool.get_player_ids().len() <= v.len());
 
 		pool.get_player_ids()
 				.into_iter()

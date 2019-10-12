@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Error};
 
-pub const COLORS: [(u8, u8, u8); 3] = [
+pub const COLORS: [(u8, u8, u8); 4] = [
 	(255, 0, 0),
-	(70, 125, 70),
-	(0, 0, 255),
+	(70, 200, 70),
+	(0, 60, 255),
+	(200, 200, 0)
 ];
 
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Debug)]
