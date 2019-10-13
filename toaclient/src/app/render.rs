@@ -15,8 +15,17 @@ lazy_static! {
 }
 
 enum MarkerType {
-	Transparent,
-	Border,
+	Normal,
+	Combat,
+}
+
+impl MarkerType {
+	fn get_raw_texture_id(&self) -> RawTextureId {
+		match self {
+			MarkerType::Normal => RawTextureId::Cursor,
+			MarkerType::Combat => RawTextureId::CombatCursor,
+		}
+	}
 }
 
 impl App {
@@ -97,7 +106,7 @@ impl App {
 	}
 
 	fn render_markers(&mut self) {
-		self.render_marker(self.cursor, &CURSOR_COLOR, MarkerType::Border); 
+		self.render_marker(self.cursor, MarkerType::Normal); 
 
 		let opt_tiles: Option<Vec<Vec2i>> = self.unit_mode.as_ref().and_then(|m| {
 			match m {
@@ -114,26 +123,16 @@ impl App {
 					.filter(|x| x.x >= 0 && x.y >= 0)
 					.map(|x| vector_iu(x)) {
 
-				self.render_marker(x, &TARGET_CURSOR_COLOR, MarkerType::Transparent);
+				self.render_marker(x, MarkerType::Combat);
 			}
 		}
 	}
 
-	fn render_marker(&mut self, pos: Vec2u, color: &Color, marker_type: MarkerType) {
-		match marker_type {
-			MarkerType::Transparent => {
-				let pos = pos.map(|x| x as f32);
-				let size = Vec2f::with(1.);
-				let color = *color - Color::rgba(0, 0, 0, 155);
-				self.render_rectangle(pos, size, color);
-			},
-			MarkerType::Border => {
-				let pos = pos.map(|x| x as f32);
-				let size = Vec2f::with(1.);
-				let texture_id = RawTextureId::Cursor.into();
-				self.render_texture(pos, size, texture_id);
-			},
-		}
+	fn render_marker(&mut self, pos: Vec2u, marker_type: MarkerType) {
+		let pos = pos.map(|x| x as f32);
+		let size = Vec2f::with(1.);
+		let texture_id = marker_type.get_raw_texture_id().into();
+		self.render_texture(pos, size, texture_id);
 	}
 
 	fn render_hud(&mut self) {
@@ -158,6 +157,7 @@ impl App {
 		format!("{}\n{}", default, v.join("\n"))
 	}
 
+	#[allow(unused)]
 	fn render_rectangle(&mut self, pos: Vec2f, size: Vec2f, color: Color) {
 		let mut shape = RectangleShape::new();
 		shape.set_fill_color(&color);

@@ -125,6 +125,7 @@ setup!(
 
 	Bag: "bag.png",
 	Cursor: "cursor.png",
+	CombatCursor: "combat_cursor.png",
 
 	// hued:
 
