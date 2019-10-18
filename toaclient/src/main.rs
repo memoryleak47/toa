@@ -2,10 +2,8 @@ extern crate toalib;
 extern crate sfml;
 #[macro_use]
 extern crate lazy_static;
-extern crate font_kit;
 
 mod config;
-mod font;
 mod cli;
 #[macro_use]
 mod index;
