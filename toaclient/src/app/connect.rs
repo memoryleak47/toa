@@ -5,6 +5,7 @@ use toalib::packet::ServerToClientPacket;
 use toalib::net::Stream;
 use toalib::vec::{Vec2u, Vec2f};
 
+use crate::misc::resource;
 use crate::input::Input;
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
@@ -33,7 +34,7 @@ impl App {
 			texture_state: TextureState::new(),
 			sound_state: SoundState::new().unwrap(),
 			stream,
-			font: Font::from_file("res/font/Monospace.ttf").unwrap(),
+			font: Font::from_file(&resource("font/Monospace.ttf")).unwrap(),
 		};
 
 		app.init();

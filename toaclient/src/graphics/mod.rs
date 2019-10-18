@@ -53,13 +53,10 @@ pub struct TextureState {
 }
 
 fn load_texture(s: &str) -> Option<Texture> {
-	use toalib::misc::res_dir;
+	use crate::misc::resource;
 
-	let mut dir = res_dir();
-	dir.push("image");
-	let path_string = dir.to_str().unwrap();
-	let path = format!("{}/{}", path_string, s);
-	Texture::from_file(&path)
+	let p = resource(&format!("image/{}", s));
+	Texture::from_file(&p)
 }
 
 impl From<HuedTextureId> for TextureId {

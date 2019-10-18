@@ -1,5 +1,4 @@
 use std::cmp::{min, max};
-use std::path::PathBuf;
 
 use crate::vec::{Vec2u, Vec2i, Vec2f};
 
@@ -65,19 +64,4 @@ macro_rules! index2d {
 
 		($width as usize) + ($height as usize) * MAP_SIZE_X
 	}}
-}
-
-pub fn res_dir() -> PathBuf {
-	use std::env;
-
-	let s = env::args()
-		.next()
-		.unwrap();
-
-	let mut p = PathBuf::from(s);
-	p.pop();
-	p.pop();
-	p.pop();
-	p.push("res");
-	p
 }

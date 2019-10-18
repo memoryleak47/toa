@@ -6,13 +6,9 @@ pub struct SoundState {
 
 impl SoundState {
 	pub fn new() -> Result<SoundState, String> {
-		use toalib::misc::res_dir;
+		use crate::misc::resource;
 
-		let res_dir = res_dir();
-		let res_dir_str = res_dir.to_str()
-			.ok_or_else(|| "SoundState::new(): failed to get path-string for res-directory".to_string())?;
-		let dir = format!("{}/sound/full.ogg", res_dir_str);
-		let mut music = Music::from_file(&dir)
+		let mut music = Music::from_file(&resource("sound/full.ogg"))
 			.ok_or_else(|| "SoundState::new(): failed loading music from file".to_string())?;
 		music.set_looping(true);
 
