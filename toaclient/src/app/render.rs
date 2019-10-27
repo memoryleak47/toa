@@ -120,9 +120,7 @@ impl App {
 		if let Some(tiles) = opt_tiles {
 			for x in tiles.into_iter()
 					.map(|x| x + vector_ui(cursor))
-					.filter(|x| x.x >= 0 && x.y >= 0)
-					.map(|x| vector_iu(x))
-					.filter_map(|x| x) {
+					.filter_map(|x| vector_iu(x)) {
 
 				self.render_marker(x, MarkerType::Combat);
 			}
