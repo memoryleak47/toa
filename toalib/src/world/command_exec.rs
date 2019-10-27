@@ -51,7 +51,7 @@ impl World {
 		let x1 = from.x as usize;
 		let y1 = from.y as usize;
 
-		let p = direction.plus_vector(from);
+		let p = direction.plus_vector(from).unwrap();
 
 		let x2 = p.x as usize;
 		let y2 = p.y as usize;
@@ -108,7 +108,7 @@ impl World {
 	}
 
 	fn exec_drop_item(&mut self, at: Vec2u, i: usize, dir: Option<Direction>) {
-		let droppos = dir.map(|x| x.plus_vector(at)).unwrap_or(at);
+		let droppos = dir.map(|x| x.plus_vector(at).unwrap()).unwrap_or(at);
 		let item = self.get_unit_mut(at)
 			.unwrap()
 			.inventory

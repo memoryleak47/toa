@@ -121,7 +121,8 @@ impl App {
 			for x in tiles.into_iter()
 					.map(|x| x + vector_ui(cursor))
 					.filter(|x| x.x >= 0 && x.y >= 0)
-					.map(|x| vector_iu(x)) {
+					.map(|x| vector_iu(x))
+					.filter_map(|x| x) {
 
 				self.render_marker(x, MarkerType::Combat);
 			}

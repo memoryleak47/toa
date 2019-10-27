@@ -27,10 +27,11 @@ pub enum Command {
 }
 
 impl UnitCommand {
+	// this function assumes that the command is valid
 	pub fn get_stamina_cost(&self, pos: Vec2u, w: &World) -> u32 {
 		match self {
 			UnitCommand::Move(dir) => {
-				let to = dir.plus_vector(pos);
+				let to = dir.plus_vector(pos).unwrap();
 				let terrain_summand = (stamina_cost_at(pos, w) + stamina_cost_at(to, w)) / 2;
 				let weight_summand = 2 * w.get_unit(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand

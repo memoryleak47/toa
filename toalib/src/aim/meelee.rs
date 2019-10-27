@@ -17,7 +17,10 @@ impl AimTrait for MeeleeAim {
 	}
 
 	fn exec(&self, owner_pos: Vec2u, w: &mut World) {
-		let p = self.dir.plus_vector(owner_pos);
+		let p = match self.dir.plus_vector(owner_pos) {
+			Some(x) => x,
+			None => return,
+		};
 		w.damage(p, self.damage);
 	}
 

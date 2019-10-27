@@ -10,7 +10,20 @@ pub enum Direction {
 	Up, Left, Down, Right
 }
 
-pub fn vector_iu(v: Vec2i) -> Vec2u {
+pub fn vector_iu(v: Vec2i) -> Option<Vec2u> {
+	if v.x < 0 { return None; }
+	if v.y < 0 { return None; }
+
+	let x = v.x as u32;
+	let y = v.y as u32;
+
+	if x >= MAP_SIZE_X as u32 { return None; }
+	if y >= MAP_SIZE_Y as u32 { return None; }
+
+	Some(Vec2u::new(x, y))
+}
+
+pub fn vector_iu_round(v: Vec2i) -> Vec2u {
 	Vec2u::new(
 		max(0, min(MAP_SIZE_X as i32 - 1, v.x)) as u32,
 		max(0, min(MAP_SIZE_Y as i32 - 1, v.y)) as u32,
@@ -29,7 +42,6 @@ pub fn vector_if(v: Vec2i) -> Vec2f {
 	Vec2f::new(v.x as f32, v.y as f32)
 }
 
-
 impl Direction {
 	pub fn to_vector(&self) -> Vec2i {
 		match self {
@@ -40,8 +52,12 @@ impl Direction {
 		}
 	}
 
-	pub fn plus_vector(&self, p: Vec2u) -> Vec2u {
+	pub fn plus_vector(&self, p: Vec2u) -> Option<Vec2u> {
 		vector_iu(self.to_vector() + vector_ui(p))
+	}
+
+	pub fn plus_vector_round(&self, p: Vec2u) -> Vec2u {
+		vector_iu_round(self.to_vector() + vector_ui(p))
 	}
 }
 

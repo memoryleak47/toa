@@ -35,7 +35,7 @@ impl App {
 				self.unit_mode = None;
 			},
 			Action::MoveUnit { direction, pos } => {
-				self.cursor = vector_iu(vector_ui(pos) + direction.to_vector());
+				self.cursor = vector_iu(vector_ui(pos) + direction.to_vector()).unwrap();
 			},
 			Action::ModeChange(m) => { self.unit_mode = m; },
 			Action::MoveAim(d) => {
@@ -44,7 +44,7 @@ impl App {
 				} else { assert!(false); }
 			},
 			Action::MoveCamera(d) => { self.focus_position = vector_if(d.to_vector()) / 2. + self.focus_position; },
-			Action::MoveCursor(d) => { self.cursor = d.plus_vector(self.cursor); },
+			Action::MoveCursor(d) => { self.cursor = d.plus_vector_round(self.cursor); },
 			Action::ZoomIn => { self.tilesize *= 1.1; },
 			Action::ZoomOut => { if self.tilesize > 0. { self.tilesize /= 1.1; } },
 			Action::RawCommand(_) => {},

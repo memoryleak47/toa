@@ -68,7 +68,10 @@ impl World {
 		&&
 		match command {
 			UnitCommand::Move(direction) => {
-				let to = direction.plus_vector(pos);
+				let to = match direction.plus_vector(pos) {
+					Some(x) => x,
+					None => return false,
+				};
 
 				self.get_unit(to).is_none()
 				&& self.allowed_to_go_to(pos, to)
