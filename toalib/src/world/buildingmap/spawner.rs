@@ -8,6 +8,8 @@ use crate::team::PlayerID;
 
 // see tick_spawners()!
 
+const MAX_HEALTH: u32 = 100;
+
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]
 pub struct SpawnerClass;
@@ -56,5 +58,5 @@ impl Spawner {
 }
 
 pub fn new_spawner(player: PlayerID) -> Building {
-	Building::Spawner(Spawner { player, health: 100 }) // TODO un-hardcode
+	Building::Spawner(Spawner { player, health: MAX_HEALTH })
 }
