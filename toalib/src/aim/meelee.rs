@@ -1,8 +1,8 @@
 use crate::aim::{Aim, AimTrait};
 use crate::damage::Damage;
-use crate::vec::{Vec2u, Vec2i};
+use crate::vec::{Pos, Vec2i};
 use crate::world::World;
-use crate::misc::Direction;
+use crate::vec::Direction;
 
 #[derive(Clone, Copy)]
 #[derive(Serialize, Deserialize)]
@@ -16,8 +16,8 @@ impl AimTrait for MeeleeAim {
 		self.dir = d;
 	}
 
-	fn exec(&self, owner_pos: Vec2u, w: &mut World) {
-		let p = match self.dir.plus_vector(owner_pos) {
+	fn exec(&self, owner_pos: Pos, w: &mut World) {
+		let p = match owner_pos.map(|x| x + *self.dir) {
 			Some(x) => x,
 			None => return,
 		};
@@ -25,7 +25,7 @@ impl AimTrait for MeeleeAim {
 	}
 
 	fn get_relative_tiles(&self) -> Vec<Vec2i> {
-		vec![self.dir.to_vector()]
+		vec![*self.dir]
 	}
 }
 

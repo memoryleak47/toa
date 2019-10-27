@@ -1,6 +1,6 @@
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::item::ItemClass;
-use crate::misc::Direction;
+use crate::vec::Direction;
 use crate::world::World;
 use crate::aim::Aim;
 use crate::world::buildingmap::BuildingClass;
@@ -22,16 +22,16 @@ pub enum UnitCommand {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum Command {
-	UnitCommand { command: UnitCommand, pos: Vec2u },
+	UnitCommand { command: UnitCommand, pos: Pos },
 	NextTurn,
 }
 
 impl UnitCommand {
 	// this function assumes that the command is valid
-	pub fn get_stamina_cost(&self, pos: Vec2u, w: &World) -> u32 {
+	pub fn get_stamina_cost(&self, pos: Pos, w: &World) -> u32 {
 		match self {
 			UnitCommand::Move(dir) => {
-				let to = dir.plus_vector(pos).unwrap();
+				let to = pos.map(|x| x + **dir).unwrap();
 				let terrain_summand = (stamina_cost_at(pos, w) + stamina_cost_at(to, w)) / 2;
 				let weight_summand = 2 * w.get_unit(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand
@@ -59,7 +59,7 @@ impl UnitCommand {
 	}
 }
 
-fn stamina_cost_at(pos: Vec2u, w: &World) -> u32 {
+fn stamina_cost_at(pos: Pos, w: &World) -> u32 {
 	w.get_building(pos).and_then(
 			|x| x.get_class().reduces_walk_stamina()
 		).unwrap_or_else(

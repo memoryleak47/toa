@@ -3,8 +3,8 @@ mod info;
 use toalib::team::PlayerID;
 use toalib::world::World;
 use toalib::command::{Command, UnitCommand};
-use toalib::misc::{Direction, vector_if, vector_iu, vector_ui};
-use toalib::vec::Vec2u;
+use toalib::vec::Direction;
+use toalib::vec::Pos;
 
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -12,7 +12,7 @@ use crate::app::App;
 pub enum Action {
 	ModeChange(Option<UnitMode>),
 	MoveUnit {
-		pos: Vec2u,
+		pos: Pos,
 		direction: Direction,
 	},
 	RawCommand(Command),
@@ -26,6 +26,7 @@ pub enum Action {
 }
 
 impl App {
+	// this functino assumes that the action is valid
 	pub fn execute_action(&mut self, action: Action) {
 		match action {
 			Action::NextUnit => {
@@ -35,7 +36,7 @@ impl App {
 				self.unit_mode = None;
 			},
 			Action::MoveUnit { direction, pos } => {
-				self.cursor = vector_iu(vector_ui(pos) + direction.to_vector()).unwrap();
+				self.cursor = pos.map(|x| x + *direction).unwrap();
 			},
 			Action::ModeChange(m) => { self.unit_mode = m; },
 			Action::MoveAim(d) => {
@@ -43,8 +44,12 @@ impl App {
 					aim.apply_direction(d, &self.world);
 				} else { assert!(false); }
 			},
-			Action::MoveCamera(d) => { self.focus_position = vector_if(d.to_vector()) / 2. + self.focus_position; },
-			Action::MoveCursor(d) => { self.cursor = d.plus_vector_round(self.cursor); },
+			Action::MoveCamera(d) => { self.focus_position = (*d).to_f() / 2. + self.focus_position; },
+			Action::MoveCursor(d) => {
+				if let Some(p) = self.cursor.map(|x| x + *d) {
+					self.cursor = p;
+				}
+			},
 			Action::ZoomIn => { self.tilesize *= 1.1; },
 			Action::ZoomOut => { if self.tilesize > 0. { self.tilesize /= 1.1; } },
 			Action::RawCommand(_) => {},

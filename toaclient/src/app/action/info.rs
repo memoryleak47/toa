@@ -6,7 +6,7 @@ use toalib::world::buildingmap::{BUILDABLE_BUILDING_CLASSES, BuildingClass};
 use toalib::world::World;
 use toalib::item::{CRAFTABLE_ITEM_CLASSES, ItemClass, Inventory};
 use toalib::command::{Command, UnitCommand};
-use toalib::misc::Direction;
+use toalib::vec::Direction;
 
 use crate::app::action::Action;
 use crate::input::Input;

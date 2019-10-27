@@ -10,7 +10,7 @@ mod settlement_kit;
 use std::slice;
 use std::mem;
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::aim::Aim;
 use crate::world::World;
 use crate::damage::Damage;
@@ -32,8 +32,8 @@ trait ItemTrait {
 	// returns whether the item got destroyed
 	fn damage(&mut self, damage: Damage) -> bool;
 	fn aim(&self) -> Aim;
-	fn is_execable(&self, _p: Vec2u, _w: &World) -> bool { false }
-	fn exec(&self, _p: Vec2u, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
+	fn is_execable(&self, _p: Pos, _w: &World) -> bool { false }
+	fn exec(&self, _p: Pos, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
 }
 
 trait ItemClassTrait {
@@ -72,8 +72,8 @@ macro_rules! setup {
 			pub fn get_class(&self) -> ItemClass						{ match self { $( Item::$x(a) => a.get_class() ),* } }
 			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Item::$x(a) => a.damage(damage) ),* } }
 			pub fn aim(&self) -> Aim									{ match self { $( Item::$x(a) => a.aim() ),* } }
-			pub fn is_execable(&self, p: Vec2u, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
-			pub fn exec(&self, p: Vec2u, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
+			pub fn is_execable(&self, p: Pos, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
+			pub fn exec(&self, p: Pos, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
 		}
 
 		impl ItemClass {

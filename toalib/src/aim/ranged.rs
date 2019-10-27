@@ -1,8 +1,8 @@
 use crate::aim::{Aim, AimTrait};
 use crate::damage::Damage;
-use crate::vec::{Vec2u, Vec2i};
+use crate::vec::{Pos, Vec2i};
 use crate::world::World;
-use crate::misc::{Direction, vector_iu, vector_ui};
+use crate::vec::Direction;
 
 #[derive(Clone, Copy)]
 #[derive(Serialize, Deserialize)]
@@ -14,19 +14,16 @@ pub struct RangedAim {
 
 impl AimTrait for RangedAim {
 	fn apply_direction(&mut self, d: Direction, _w: &World) {
-		let tmp = self.target + d.to_vector();
+		let tmp = self.target + *d;
 		if magnitude(tmp) <= self.range {
 			self.target = tmp;
 		}
 	}
 
-	fn exec(&self, owner_pos: Vec2u, w: &mut World) {
-		let pos = self.target + vector_ui(owner_pos);
-		let pos = match vector_iu(pos) {
-			Some(x) => x,
-			None => return,
-		};
-		w.damage(pos, self.damage);
+	fn exec(&self, owner_pos: Pos, w: &mut World) {
+		if let Some(pos) = owner_pos.map(|x| x + self.target) {
+			w.damage(pos, self.damage);
+		}
 	}
 
 	fn get_relative_tiles(&self) -> Vec<Vec2i> {

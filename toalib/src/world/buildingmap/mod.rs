@@ -12,7 +12,7 @@ mod street;
 
 use std::any::Any;
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::terrainmap::Terrain;
 use crate::damage::Damage;
@@ -38,13 +38,13 @@ trait BuildingTrait {
 
 	fn as_any_mut(&mut self) -> &mut dyn Any;
 	fn get_class(&self) -> BuildingClass;
-	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool;
-	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool;
+	fn is_burnable(&self, _w: &World, _p: Pos) -> bool;
+	fn is_workable(&self, _w: &World, _p: Pos) -> bool;
 	fn damage(&mut self, damage: Damage) -> bool; // returns whether the building got destroyed
 
 	// while this method is executed, the `self`-building is swapped out of the &mut World
 	// `self` will only be placed back, if it wouldn't replace anything
-	fn work(&mut self, _w: &mut World, _p: Vec2u);
+	fn work(&mut self, _w: &mut World, _p: Pos);
 
 	fn get_info_string(&self) -> String;
 	fn is_blocking_against(&self, _pid: PlayerID) -> bool { false }
@@ -93,10 +93,10 @@ macro_rules! setup {
 		impl Building {
 			pub fn as_any_mut(&mut self) -> &mut dyn Any				{ match self { $( Building::$x(a) => a.as_any_mut() ),* } }
 			pub fn get_class(&self) -> BuildingClass					{ match self { $( Building::$x(a) => a.get_class() ),* }  }
-			pub fn is_burnable(&self, w: &World, p: Vec2u) -> bool		{ match self { $( Building::$x(a) => a.is_burnable(w, p) ),* } }
-			pub fn is_workable(&self, w: &World, p: Vec2u) -> bool		{ match self { $( Building::$x(a) => a.is_workable(w, p) ),* } }
+			pub fn is_burnable(&self, w: &World, p: Pos) -> bool		{ match self { $( Building::$x(a) => a.is_burnable(w, p) ),* } }
+			pub fn is_workable(&self, w: &World, p: Pos) -> bool		{ match self { $( Building::$x(a) => a.is_workable(w, p) ),* } }
 			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Building::$x(a) => a.damage(damage) ),* } }
-			pub fn work(&mut self, w: &mut World, p: Vec2u)				{ match self { $( Building::$x(a) => a.work(w, p) ),* } }
+			pub fn work(&mut self, w: &mut World, p: Pos)				{ match self { $( Building::$x(a) => a.work(w, p) ),* } }
 			pub fn get_info_string(&self) -> String						{ match self { $( Building::$x(a) => a.get_info_string() ),* } }
 			pub fn is_blocking_against(&self, pid: PlayerID) -> bool	{ match self { $( Building::$x(a) => a.is_blocking_against(pid) ),* } }
 			
@@ -121,18 +121,18 @@ pub fn new_buildingmap() -> Vec<Option<Building>> {
 }
 
 impl World {
-	pub fn get_building(&self, p: Vec2u) -> Option<&Building> {
+	pub fn get_building(&self, p: Pos) -> Option<&Building> {
 		self.buildingmap[index2d!(p.x, p.y)]
 			.as_ref()
 	}
 
 	#[allow(dead_code)]
-	pub fn get_building_mut(&mut self, p: Vec2u) -> Option<&mut Building> {
+	pub fn get_building_mut(&mut self, p: Pos) -> Option<&mut Building> {
 		self.buildingmap[index2d!(p.x, p.y)]
 			.as_mut()
 	}
 
-	pub fn set_building(&mut self, p: Vec2u, b: Option<Building>) {
+	pub fn set_building(&mut self, p: Pos, b: Option<Building>) {
 		self.buildingmap[index2d!(p.x, p.y)] = b;
 	}
 }

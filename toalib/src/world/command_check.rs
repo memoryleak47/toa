@@ -1,8 +1,8 @@
-use crate::vec::Vec2u;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
 use crate::command::{Command, UnitCommand};
-use crate::misc::*;
+
+use crate::vec::*;
 use crate::team::PlayerID;
 
 impl World {
@@ -11,7 +11,7 @@ impl World {
 	}
 
 	#[allow(dead_code)]
-	fn get_unchecked_commands_by_unit(&self, _player: PlayerID, pos: Vec2u) -> Vec<Command> {
+	fn get_unchecked_commands_by_unit(&self, _player: PlayerID, pos: Pos) -> Vec<Command> {
 		let mut v = Vec::new();
 
 		// add Move
@@ -34,7 +34,7 @@ impl World {
 	}
 
 	#[allow(dead_code)]
-	pub fn get_commands_by_unit(&self, player: PlayerID, pos: Vec2u) -> Vec<Command> {
+	pub fn get_commands_by_unit(&self, player: PlayerID, pos: Pos) -> Vec<Command> {
 		self.get_unchecked_commands_by_unit(player, pos).into_iter()
 			.filter(|x| self.is_valid_command(player, x))
 			.collect()
@@ -45,7 +45,7 @@ impl World {
 		let mut v = Vec::new();
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let pos = Vec2u::new(x as u32, y as u32);
+				let pos = Pos::build(x as i32, y as i32).unwrap();
 				if self.get_unit(pos)
 						.filter(|x| x.owner == player)
 						.is_some() {
@@ -59,7 +59,7 @@ impl World {
 		v
 	}
 
-	fn is_valid_unit_command(&self, player: PlayerID, pos: Vec2u, command: &UnitCommand) -> bool {
+	fn is_valid_unit_command(&self, player: PlayerID, pos: Pos, command: &UnitCommand) -> bool {
 		self.unitmap[index2d!(pos.x, pos.y)]
 		.as_ref()
 		.filter(|x| x.owner == player)
@@ -68,7 +68,7 @@ impl World {
 		&&
 		match command {
 			UnitCommand::Move(direction) => {
-				let to = match direction.plus_vector(pos) {
+				let to = match pos.map(|x| x + **direction) {
 					Some(x) => x,
 					None => return false,
 				};
@@ -118,8 +118,8 @@ impl World {
 					.is_some()
 				&& match dir {
 					Some(Direction::Left) => pos.x != 0,
-					Some(Direction::Down) => pos.y != MAP_SIZE_Y as u32-1,
-					Some(Direction::Right) => pos.x != MAP_SIZE_X as u32-1,
+					Some(Direction::Down) => pos.y != MAP_SIZE_Y as i32-1,
+					Some(Direction::Right) => pos.x != MAP_SIZE_X as i32-1,
 					Some(Direction::Up) => pos.y != 0,
 					None => true,
 				}
@@ -173,7 +173,7 @@ impl World {
 		}
 	}
 
-	fn allowed_to_go_to(&self, from: Vec2u, to: Vec2u) -> bool {
+	fn allowed_to_go_to(&self, from: Pos, to: Pos) -> bool {
 		let player_id = self.get_unit(from).unwrap().owner;
 
 		if self.get_terrain(to).is_blocking() {

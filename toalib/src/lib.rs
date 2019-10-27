@@ -12,10 +12,10 @@ extern crate serde_derive;
 extern crate serde;
 extern crate bincode;
 
+#[macro_use]
 pub mod vec;
 pub mod config;
 #[macro_use]
-pub mod misc;
 pub mod team;
 pub mod item;
 pub mod command;

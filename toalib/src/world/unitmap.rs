@@ -1,7 +1,7 @@
 use std::cmp::min;
 use std::mem::swap;
 
-use crate::vec::Vec2u;
+use crate::vec::{Vec2i, Pos};
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
@@ -60,7 +60,7 @@ impl Unit {
 	}
 }
 
-pub fn new_unitmap(spawns: &[(PlayerID, Vec2u)]) -> Vec<Option<Unit>> {
+pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> Vec<Option<Unit>> {
 	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
 
 	for (player_id, spawn) in spawns {
@@ -101,7 +101,7 @@ impl World {
 				if u.as_ref()
 						.filter(|x| x.health == 0)
 						.is_some() {
-					self.kill_unit(Vec2u::new(x as u32, y as u32));
+					self.kill_unit(Pos::build(x as i32, y as i32).unwrap());
 				}
 			}
 		}
@@ -118,17 +118,13 @@ impl World {
 		}
 	}
 
-	fn next_tile(&self, tile: Vec2u) -> Vec2u {
-		if tile.x < MAP_SIZE_X as u32 - 1 {
-			Vec2u::new(tile.x + 1, tile.y)
-		} else if tile.y < MAP_SIZE_Y as u32 - 1 {
-			Vec2u::new(0, tile.y + 1)
-		} else {
-			Vec2u::new(0, 0)
-		}
+	fn next_tile(&self, tile: Pos) -> Pos {
+		if let Some(p) = tile.map(|a| Vec2i::new(a.x + 1, a.y)) { return p; }
+		if let Some(p) = tile.map(|a| Vec2i::new(a.x, a.y + 1)) { return p; }
+		Pos::build(0, 0).unwrap()
 	}
 
-	pub fn find_next_unit_tile(&self, start: Vec2u, player: PlayerID) -> Option<Vec2u> {
+	pub fn find_next_unit_tile(&self, start: Pos, player: PlayerID) -> Option<Pos> {
 		let mut i = start;
 
 		for _ in 0..(MAP_SIZE_X * MAP_SIZE_Y) {
@@ -143,19 +139,19 @@ impl World {
 		None
 	}
 
-	pub fn get_unit(&self, p: Vec2u) -> Option<&Unit> {
+	pub fn get_unit(&self, p: Pos) -> Option<&Unit> {
 		self.unitmap[index2d!(p.x, p.y)].as_ref()
 	}
 
-	pub fn get_unit_mut(&mut self, p: Vec2u) -> Option<&mut Unit> {
+	pub fn get_unit_mut(&mut self, p: Pos) -> Option<&mut Unit> {
 		self.unitmap[index2d!(p.x, p.y)].as_mut()
 	}
 
-	pub fn set_unit(&mut self, p: Vec2u, unit: Option<Unit>) {
+	pub fn set_unit(&mut self, p: Pos, unit: Option<Unit>) {
 		self.unitmap[index2d!(p.x, p.y)] = unit;
 	}
 
-	pub fn kill_unit(&mut self, p: Vec2u) {
+	pub fn kill_unit(&mut self, p: Pos) {
 		let mut unit = None;
 		swap(&mut unit, &mut self.unitmap[index2d!(p.x, p.y)]);
 		if let Some(mut u) = unit {

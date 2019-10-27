@@ -1,4 +1,4 @@
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::item::Inventory;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::damage::Damage;
@@ -23,11 +23,11 @@ impl World {
 		}
 	}
 
-	pub fn get_inventory(&self, p: Vec2u) -> &Inventory {
+	pub fn get_inventory(&self, p: Pos) -> &Inventory {
 		&self.itemmap[index2d!(p.x, p.y)]
 	}
 
-	pub fn get_inventory_mut(&mut self, p: Vec2u) -> &mut Inventory {
+	pub fn get_inventory_mut(&mut self, p: Pos) -> &mut Inventory {
 		&mut self.itemmap[index2d!(p.x, p.y)]
 	}
 }

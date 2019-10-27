@@ -1,8 +1,7 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text};
 
-use toalib::misc::{vector_iu, vector_ui};
 use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
-use toalib::vec::{Vec2u, Vec2f, Vec2i};
+use toalib::vec::{Pos, Vec2f, Vec2i};
 
 use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, TextureId};
 use crate::vec_compat::*;
@@ -115,23 +114,22 @@ impl App {
 			}
 		});
 
-		let cursor = self.cursor;
+		let cursor: Pos = self.cursor;
 
 		if let Some(tiles) = opt_tiles {
-			for x in tiles.into_iter()
-					.map(|x| x + vector_ui(cursor))
-					.filter_map(|x| vector_iu(x)) {
-
-				self.render_marker(x, MarkerType::Combat);
+			for rel in tiles.into_iter() {
+				if let Some(p) = cursor.map(|x| x + rel) {
+					self.render_marker(p, MarkerType::Combat);
+				}
 			}
 		}
 	}
 
-	fn render_marker(&mut self, pos: Vec2u, marker_type: MarkerType) {
-		let pos = pos.map(|x| x as f32);
+	fn render_marker(&mut self, pos: Pos, marker_type: MarkerType) {
+		let posf = (*pos).map(|x| x as f32);
 		let size = Vec2f::with(1.);
 		let texture_id = marker_type.get_raw_texture_id().into();
-		self.render_texture(pos, size, texture_id);
+		self.render_texture(posf, size, texture_id);
 	}
 
 	fn render_hud(&mut self) {

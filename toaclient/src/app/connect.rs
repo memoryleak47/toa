@@ -3,7 +3,7 @@ use sfml::graphics::{RenderWindow, Font};
 
 use toalib::packet::ServerToClientPacket;
 use toalib::net::Stream;
-use toalib::vec::{Vec2u, Vec2f};
+use toalib::vec::{Pos, Vec2f};
 
 use crate::misc::resource;
 use crate::input::Input;
@@ -26,7 +26,7 @@ impl App {
 			unit_mode: None,
 			focus_position: Vec2f::new(0., 0.),
 			tilesize: DEFAULT_TILESIZE,
-			cursor: Vec2u::new(0, 0),
+			cursor: Pos::build(0, 0).unwrap(),
 			pending: None,
 			world,
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),

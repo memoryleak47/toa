@@ -14,7 +14,7 @@ pub use self::itemmap::*;
 
 use std::iter;
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::buildingmap::Building;
 use crate::item::{ItemClass, Inventory};
@@ -67,7 +67,7 @@ impl World {
 		self.tick_spawners();
 	}
 
-	pub fn damage(&mut self, p: Vec2u, damage: Damage) {
+	pub fn damage(&mut self, p: Pos, damage: Damage) {
 		if let Some(x) = self.get_building_mut(p) {
 			if x.damage(damage) {
 				self.set_building(p, None);
@@ -83,12 +83,12 @@ impl World {
 		self.get_inventory_mut(p).damage(damage);
 	}
 
-	fn gen_spawns(pool: &PlayerPool) -> Vec<(PlayerID, Vec2u)> {
+	fn gen_spawns(pool: &PlayerPool) -> Vec<(PlayerID, Pos)> {
 		let v = vec![
-			Vec2u::new((MAP_SIZE_X/2) as u32, 0),
-			Vec2u::new((MAP_SIZE_X/2) as u32, (MAP_SIZE_Y-1) as u32),
-			Vec2u::new(0, (MAP_SIZE_Y/2) as u32),
-			Vec2u::new((MAP_SIZE_X-1) as u32, (MAP_SIZE_Y/2) as u32)
+			Pos::build((MAP_SIZE_X/2) as i32, 0).unwrap(),
+			Pos::build((MAP_SIZE_X/2) as i32, (MAP_SIZE_Y-1) as i32).unwrap(),
+			Pos::build(0, (MAP_SIZE_Y/2) as i32).unwrap(),
+			Pos::build((MAP_SIZE_X-1) as i32, (MAP_SIZE_Y/2) as i32).unwrap()
 		];
 
 		assert!(pool.get_player_ids().len() <= v.len());
@@ -102,7 +102,7 @@ impl World {
 	fn tick_spawners(&mut self) {
 		for x in 0..MAP_SIZE_X {
 			for y in 0..MAP_SIZE_Y {
-				let p = Vec2u::new(x as u32, y as u32);
+				let p = Pos::build(x as i32, y as i32).unwrap();
 				if let Some(Building::Spawner(s)) = self.get_building(p) {
 					let player = s.get_player_id();
 					if self.get_unit(p).is_some() { continue; }

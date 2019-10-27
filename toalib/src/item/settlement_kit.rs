@@ -1,4 +1,4 @@
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
 use crate::aim::{Aim, new_meelee_aim};
@@ -38,10 +38,10 @@ impl ItemTrait for SettlementKit {
 	fn aim(&self) -> Aim {
 		new_meelee_aim(Damage(1))
 	}
-	fn is_execable(&self, p: Vec2u, w: &World) -> bool {
+	fn is_execable(&self, p: Pos, w: &World) -> bool {
 		w.get_building(p).is_none() && !w.get_terrain(p).prevents_building()
 	}
-	fn exec(&self, p: Vec2u, w: &mut World) {
+	fn exec(&self, p: Pos, w: &mut World) {
 		let s = new_spawner(w.get_unit(p).unwrap().owner);
         w.set_building(p, Some(s));
 	}

@@ -1,6 +1,6 @@
 use rand::{RngCore, thread_rng};
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
 use crate::world::unitmap::Unit;
 use crate::item::ItemClass;
@@ -93,7 +93,7 @@ pub fn new_terrainmap() -> Vec<Terrain> {
 }
 
 impl World {
-	pub fn get_terrain(&self, p: Vec2u) -> &Terrain {
+	pub fn get_terrain(&self, p: Pos) -> &Terrain {
 		&self.terrainmap[index2d!(p.x, p.y)]
 	}
 }

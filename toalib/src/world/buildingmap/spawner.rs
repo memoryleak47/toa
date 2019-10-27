@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
 use crate::damage::Damage;
@@ -36,13 +36,13 @@ impl BuildingTrait for Spawner {
 
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_class(&self) -> BuildingClass { BuildingClass::Spawner }
-	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { false }
-	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { false }
+	fn is_burnable(&self, _w: &World, _p: Pos) -> bool { false }
+	fn is_workable(&self, _w: &World, _p: Pos) -> bool { false }
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, _w: &mut World, _p: Vec2u) { }
+	fn work(&mut self, _w: &mut World, _p: Pos) { }
 	fn get_info_string(&self) -> String {
 		format!("Spawner( health: {}, player: {})", self.health, self.player)
 	}

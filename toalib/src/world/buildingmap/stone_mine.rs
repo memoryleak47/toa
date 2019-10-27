@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::item::ItemClass;
 use crate::world::buildingmap::{BuildingClass, Building, BuildingClassTrait, BuildingTrait, BuildProperty};
 use crate::world::World;
@@ -40,13 +40,13 @@ impl BuildingTrait for StoneMine {
 
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_class(&self) -> BuildingClass { BuildingClass::StoneMine }
-	fn is_burnable(&self, _w: &World, _p: Vec2u) -> bool { true }
-	fn is_workable(&self, _w: &World, _p: Vec2u) -> bool { true }
+	fn is_burnable(&self, _w: &World, _p: Pos) -> bool { true }
+	fn is_workable(&self, _w: &World, _p: Pos) -> bool { true }
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, w: &mut World, p: Vec2u) {
+	fn work(&mut self, w: &mut World, p: Pos) {
 		let u = w.get_unit_mut(p).unwrap();
 		u.inventory.push(ItemClass::Stone.build());
 	}

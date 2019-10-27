@@ -11,13 +11,25 @@ pub struct Vec2t<T> {
 #[allow(dead_code)]
 pub type Vec2f = Vec2t<f32>;
 #[allow(dead_code)]
-pub type Vec2u = Vec2t<u32>;
-#[allow(dead_code)]
 pub type Vec2i = Vec2t<i32>;
+
+#[allow(dead_code)]
+impl Vec2f {
+	pub fn to_i(self) -> Vec2i {
+		self.map(|x| x as i32)
+	}
+}
+
+#[allow(dead_code)]
+impl Vec2i {
+	pub fn to_f(self) -> Vec2f {
+		self.map(|x| x as f32)
+	}
+}
 
 
 impl<T> Vec2t<T> {
-	pub fn new(x: T, y: T) -> Vec2t<T> {
+	pub const fn new(x: T, y: T) -> Vec2t<T> {
 		Vec2t { x, y }
 	}
 }

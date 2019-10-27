@@ -7,7 +7,7 @@ mod action;
 use sfml::graphics::{RenderWindow, Font};
 
 use toalib::world::World;
-use toalib::vec::{Vec2u, Vec2f};
+use toalib::vec::{Pos, Vec2f};
 use toalib::team::PlayerID;
 use toalib::net::Stream;
 
@@ -22,7 +22,7 @@ pub struct App {
 	unit_mode: Option<UnitMode>, // None -> no unit focused
 	focus_position: Vec2f,
 	tilesize: f32, // zoom
-	cursor: Vec2u,
+	cursor: Pos,
 	pending: Option<Action>,
 	world: World,
 	window: RenderWindow,

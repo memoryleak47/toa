@@ -1,4 +1,4 @@
-use crate::vec::Vec2u;
+use crate::vec::Pos;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
 use crate::aim::{Aim, new_meelee_aim};
@@ -33,8 +33,8 @@ impl ItemTrait for Food {
 	fn aim(&self) -> Aim {
 		new_meelee_aim(Damage(1))
 	}
-	fn is_execable(&self, _p: Vec2u, _w: &World) -> bool { true }
-	fn exec(&self, p: Vec2u, w: &mut World) {
+	fn is_execable(&self, _p: Pos, _w: &World) -> bool { true }
+	fn exec(&self, p: Pos, w: &mut World) {
 		w.get_unit_mut(p).unwrap()
 			.food += 20;
 	}
