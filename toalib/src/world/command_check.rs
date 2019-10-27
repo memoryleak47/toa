@@ -80,8 +80,6 @@ impl World {
 					.is_some()
 			},
 			UnitCommand::Attack(_aim) => {
-				// TODO check that the aim is of the unit at pos
-
 				self.get_unit(pos)
 					.filter(|x| x.owner == player)
 					.is_some()
