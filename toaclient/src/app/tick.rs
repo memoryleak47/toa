@@ -46,7 +46,7 @@ impl App {
 	fn fetch_command(&mut self) -> Option<Command> {
 		if self.pending.is_none() {
 			// in case the cursored unit died
-			if self.world.get_unit(self.cursor)
+			if self.world.unitmap.get(self.cursor)
 					.filter(|x| x.owner == self.player_id)
 					.is_none() {
 				self.unit_mode = None;

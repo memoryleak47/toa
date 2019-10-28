@@ -35,7 +35,7 @@ impl ItemTrait for Food {
 	}
 	fn is_execable(&self, _p: Pos, _w: &World) -> bool { true }
 	fn exec(&self, p: Pos, w: &mut World) {
-		w.get_unit_mut(p).unwrap()
+		w.unitmap.get_mut(p).unwrap()
 			.food += 20;
 	}
 }

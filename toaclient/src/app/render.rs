@@ -1,6 +1,5 @@
 use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text};
 
-use toalib::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use toalib::vec::{Pos, Vec2f, Vec2i};
 
 use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, TextureId};
@@ -38,67 +37,56 @@ impl App {
 	}
 
 	fn render_terrainmap(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-
-				let pos = Vec2f::new(x as f32, y as f32);
-				let size = Vec2f::with(1.);
-				let texture_id = terrain::get_texture_id(self.world.terrainmap[index2d!(x, y)]);
-				self.render_texture(pos, size, texture_id);
-			}
+		for p in Pos::iter_all(){ 
+			let posf = p.to_f();
+			let size = Vec2f::with(1.);
+			let texture_id = terrain::get_texture_id(*self.world.terrainmap.get(p));
+			self.render_texture(posf, size, texture_id);
 		}
 	}
 
 	fn render_buildingmap(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(ref building) = self.world.buildingmap[index2d!(x, y)].as_ref() {
-					let pos = Vec2f::new(x as f32, y as f32);
-					let size = Vec2f::new(1., 0.5);
-					let texture_id = building::get_texture_id(building);
-					self.render_texture(pos, size, texture_id);
-				}
+		for p in Pos::iter_all() {
+			if let Some(ref building) = self.world.buildingmap.get(p) {
+				let posf = p.to_f();
+				let size = Vec2f::new(1., 0.5);
+				let texture_id = building::get_texture_id(building);
+				self.render_texture(posf, size, texture_id);
 			}
 		}
 	}
 
 	fn render_itemmap(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if self.world.itemmap[index2d!(x, y)]
-						.iter()
-						.next()
-						.is_some() {
-					let raw_pos = Vec2f::new(x as f32, y as f32);
-					let pos = raw_pos + Vec2f::new(0., 0.5);
-					let size = Vec2f::new(0.25, 0.5);
-					let texture_id = RawTextureId::Bag.into();
-					self.render_texture(pos, size, texture_id);
-				}
+		for p in Pos::iter_all() {
+			if self.world.itemmap.get(p)
+					.iter()
+					.next()
+					.is_some() {
+				let posf = p.to_f() + Vec2f::new(0., 0.5);
+				let size = Vec2f::new(0.25, 0.5);
+				let texture_id = RawTextureId::Bag.into();
+				self.render_texture(posf, size, texture_id);
 			}
 		}
 	}
 
 	fn render_unitmap(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(ref u) = self.world.unitmap[index2d!(x, y)] {
-					let player_id = u.owner;
-					let raw_pos = Vec2f::new(x as f32, y as f32);
-					let pos = raw_pos + Vec2f::with(0.25);
+		for p in Pos::iter_all() {
+			if let Some(ref u) = self.world.unitmap.get(p) {
+				let player_id = u.owner;
+				let posf = p.to_f() + Vec2f::with(0.25);
+				let size = Vec2f::new(0.5, 0.75);
+				let texture_id = RawTextureId::Unit.into();
+				self.render_texture(posf, size, texture_id);
+
+				let texture_id = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
+				self.render_texture(posf, size, texture_id);
+
+				if let Some(ref main_item) = self.world.unitmap.get(p).unwrap().main_item {
+					let pos = p.to_f() + Vec2f::new(0.5, 0.25);
 					let size = Vec2f::new(0.5, 0.75);
-					let texture_id = RawTextureId::Unit.into();
+					let texture_id = item::get_texture_id(main_item.get_class());
 					self.render_texture(pos, size, texture_id);
-
-					let texture_id = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
-					self.render_texture(pos, size, texture_id);
-
-					if let Some(ref main_item) = self.world.unitmap[index2d!(x, y)].as_ref().unwrap().main_item {
-						let pos = raw_pos + Vec2f::new(0.5, 0.25);
-						let size = Vec2f::new(0.5, 0.75);
-						let texture_id = item::get_texture_id(main_item.get_class());
-						self.render_texture(pos, size, texture_id);
-					}
 				}
 			}
 		}
@@ -140,10 +128,10 @@ impl App {
 
 	fn get_text(&self) -> String {
 		let pos = self.cursor;
-		let terrain = self.world.get_terrain(pos);
-		let building = self.world.get_building(pos);
-		let unit = self.world.get_unit(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
-		let inventory = self.world.get_inventory(pos);
+		let terrain = self.world.terrainmap.get(pos);
+		let building = self.world.buildingmap.get(pos);
+		let unit = self.world.unitmap.get(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
+		let inventory = self.world.itemmap.get(pos);
 
 		let default = format!("Terrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", terrain, building.map(|x| x.get_info_string()).unwrap_or("None".to_string()), unit, inventory.get_info_string());
 		let action_infos = self.get_action_infos();

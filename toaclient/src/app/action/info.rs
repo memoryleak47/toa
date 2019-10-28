@@ -213,7 +213,7 @@ impl App {
 		});
 
 		// change mode
-		if let Some(u) = self.world.get_unit(self.cursor) {
+		if let Some(u) = self.world.unitmap.get(self.cursor) {
 			v.push(ActionInfo {
 				text: "go to attack mode".to_string(),
 				action: Action::ModeChange(Some(UnitMode::Attack { aim: u.aim() })),
@@ -354,8 +354,8 @@ impl App {
 		}
 
 		let inv: &Inventory = match iu_mode { // TODO well... make this readable
-			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem | ItemUnitMode::Exec => &(if let Some(u) = self.world.get_unit(self.cursor) { u } else { return v; }).inventory,
-			ItemUnitMode::Take => &self.world.get_inventory(self.cursor),
+			ItemUnitMode::Drop | ItemUnitMode::ChangeMainItem | ItemUnitMode::Exec => &(if let Some(u) = self.world.unitmap.get(self.cursor) { u } else { return v; }).inventory,
+			ItemUnitMode::Take => &self.world.itemmap.get(self.cursor),
 		};
 
 		let l = inv.iter().len();
@@ -507,7 +507,7 @@ impl App {
 			key_combination: &[Key::D],
 			triggered: trigger::MOD,
 		});
-		if self.world.get_unit(self.cursor)
+		if self.world.unitmap.get(self.cursor)
 				.filter(|x| x.owner == self.player_id)
 				.is_some() {
 			v.push(ActionInfo {

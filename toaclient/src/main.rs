@@ -6,8 +6,6 @@ extern crate lazy_static;
 mod misc;
 mod config;
 mod cli;
-#[macro_use]
-mod index;
 mod vec_compat;
 mod graphics;
 mod sound;

@@ -13,7 +13,7 @@ mod street;
 use std::any::Any;
 
 use crate::vec::Pos;
-use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use crate::world::World;
 use crate::world::terrainmap::Terrain;
 use crate::damage::Damage;
 use crate::item::ItemClass;
@@ -113,26 +113,3 @@ macro_rules! setup {
 }
 
 setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall, Street);
-
-pub fn new_buildingmap() -> Vec<Option<Building>> {
-	let buildingmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
-
-	buildingmap
-}
-
-impl World {
-	pub fn get_building(&self, p: Pos) -> Option<&Building> {
-		self.buildingmap[index2d!(p.x, p.y)]
-			.as_ref()
-	}
-
-	#[allow(dead_code)]
-	pub fn get_building_mut(&mut self, p: Pos) -> Option<&mut Building> {
-		self.buildingmap[index2d!(p.x, p.y)]
-			.as_mut()
-	}
-
-	pub fn set_building(&mut self, p: Pos, b: Option<Building>) {
-		self.buildingmap[index2d!(p.x, p.y)] = b;
-	}
-}

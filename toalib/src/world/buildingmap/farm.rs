@@ -47,7 +47,7 @@ impl BuildingTrait for Farm {
 		self.health == 0
 	}
 	fn work(&mut self, w: &mut World, p: Pos) {
-		let u = w.get_unit_mut(p).unwrap();
+		let u = w.unitmap.get_mut(p).unwrap();
 		u.inventory.push(ItemClass::Food.build());
 	}
 	fn get_info_string(&self) -> String {

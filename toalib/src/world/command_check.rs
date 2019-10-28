@@ -1,4 +1,4 @@
-use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use crate::world::World;
 use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
 use crate::command::{Command, UnitCommand};
 
@@ -43,14 +43,11 @@ impl World {
 	#[allow(dead_code)]
 	pub fn get_commands(&self, player: PlayerID) -> Vec<Command> {
 		let mut v = Vec::new();
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				let pos = Pos::build(x as i32, y as i32).unwrap();
-				if self.get_unit(pos)
-						.filter(|x| x.owner == player)
-						.is_some() {
-					v.extend(self.get_commands_by_unit(player, pos));
-				}
+		for p in Pos::iter_all() {
+			if self.unitmap.get(p)
+					.filter(|x| x.owner == player)
+					.is_some() {
+				v.extend(self.get_commands_by_unit(player, p));
 			}
 		}
 
@@ -60,8 +57,7 @@ impl World {
 	}
 
 	fn is_valid_unit_command(&self, player: PlayerID, pos: Pos, command: &UnitCommand) -> bool {
-		self.unitmap[index2d!(pos.x, pos.y)]
-		.as_ref()
+		self.unitmap.get(pos)
 		.filter(|x| x.owner == player)
 		.filter(|x| x.stamina > 0)
 		.is_some()
@@ -73,14 +69,14 @@ impl World {
 					None => return false,
 				};
 
-				self.get_unit(to).is_none()
+				self.unitmap.get(to).is_none()
 				&& self.allowed_to_go_to(pos, to)
-				&& self.get_unit(pos)
+				&& self.unitmap.get(pos)
 					.filter(|x| x.owner == player)
 					.is_some()
 			},
 			UnitCommand::Attack(_aim) => {
-				self.get_unit(pos)
+				self.unitmap.get(pos)
 					.filter(|x| x.owner == player)
 					.is_some()
 			},
@@ -90,54 +86,50 @@ impl World {
 					None => return false,
 				};
 				let req_terrain = prop.required_terrain;
-				self.get_building(pos).is_none()
+				self.buildingmap.get(pos).is_none()
 				&&
-				!self.get_terrain(pos).prevents_building()
+				!self.terrainmap.get(pos).prevents_building()
 				&&
-				self.get_unit(pos)
+				self.unitmap.get(pos)
 					.filter(|x| x.owner == player)
 					.filter(|x| x.inventory.contains_all(prop.item_cost))
 					.is_some()
 				&&
-				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.get_terrain(pos)))
+				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.terrainmap.get(pos)))
 			},
 			UnitCommand::Work => {
-				self.get_building(pos)
+				self.buildingmap.get(pos)
 					.filter(|b| b.is_workable(self, pos))
 					.is_some()
 			},
 			UnitCommand::UnrefinedWork => {
-				self.get_unit(pos)
-					.filter(|u| self.get_terrain(pos)
+				self.unitmap.get(pos)
+					.filter(|u| self.terrainmap.get(pos)
 						.is_unrefined_workable(u)
 					).is_some()
 			}
-			UnitCommand::DropItem(i, dir) => {
-				self.get_unit(pos)
+			UnitCommand::DropItem(i, opt_dir) => {
+				self.unitmap.get(pos)
 					.filter(|u| u.inventory.iter().len() > *i)
 					.is_some()
-				&& match dir {
-					Some(Direction::Left) => pos.x != 0,
-					Some(Direction::Down) => pos.y != MAP_SIZE_Y as i32-1,
-					Some(Direction::Right) => pos.x != MAP_SIZE_X as i32-1,
-					Some(Direction::Up) => pos.y != 0,
-					None => true,
-				}
+				&& opt_dir.map(|dir| {
+					pos.map(|x| x + *dir).is_some()
+				}).unwrap_or(true)
 			},
 			UnitCommand::TakeItem(i) => {
-				self.get_inventory(pos)
+				self.itemmap.get(pos)
 					.iter()
 					.len() > *i
 			},
 			UnitCommand::BurnBuilding => {
-				self.get_building(pos)
+				self.buildingmap.get(pos)
 					.filter(|x| x.is_burnable(self, pos))
 					.is_some()
 			},
 			UnitCommand::Craft(class) => {
 				let recipe = match class.get_recipe() { Some(x) => x, None => return false };
-				if let Some(Building::Workshop(_)) = self.get_building(pos) {
-					self.get_unit(pos)
+				if let Some(Building::Workshop(_)) = self.buildingmap.get(pos) {
+					self.unitmap.get(pos)
 						.filter(|x| x.owner == player)
 						.filter(|x| x.inventory.contains_all(recipe))
 						.is_some()
@@ -145,17 +137,17 @@ impl World {
 			},
 			UnitCommand::ChangeMainItem(opt_index) => {
 				if let Some(i) = opt_index {
-					self.get_unit(pos)
+					self.unitmap.get(pos)
 						.filter(|u| u.inventory.iter().len() > *i)
 						.is_some()
 				} else {
-					self.get_unit(pos)
+					self.unitmap.get(pos)
 						.and_then(|x| x.main_item.as_ref())
 						.is_some()
 				}
 			},
 			UnitCommand::ExecItem(i) => {
-				self.get_unit(pos)
+				self.unitmap.get(pos)
 					.map(|u| u.inventory.iter())
 					.and_then(|mut inv| inv.nth(*i))
 					.filter(|x| x.is_execable(pos, self))
@@ -174,13 +166,13 @@ impl World {
 	}
 
 	fn allowed_to_go_to(&self, from: Pos, to: Pos) -> bool {
-		let player_id = self.get_unit(from).unwrap().owner;
+		let player_id = self.unitmap.get(from).unwrap().owner;
 
-		if self.get_terrain(to).is_blocking() {
+		if self.terrainmap.get(to).is_blocking() {
 			return false;
 		}
 
-		if self.get_building(to)
+		if self.buildingmap.get(to)
 				.map(|b| b.is_blocking_against(player_id))
 				.unwrap_or(false) {
 			return false;

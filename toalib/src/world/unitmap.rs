@@ -1,8 +1,9 @@
 use std::cmp::min;
 use std::mem::swap;
 
-use crate::vec::{Vec2i, Pos};
-use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use crate::vec::Pos;
+use crate::tilemap::OptTileMap;
+use crate::world::World;
 use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 use crate::item::{Inventory, Item, ItemClass};
@@ -60,13 +61,13 @@ impl Unit {
 	}
 }
 
-pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> Vec<Option<Unit>> {
-	let mut unitmap = init2d!(None, MAP_SIZE_X, MAP_SIZE_Y);
+pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> OptTileMap<Unit> {
+	let mut unitmap = <OptTileMap<Unit>>::new();
 
 	for (player_id, spawn) in spawns {
 		let mut u = Unit::new(*player_id);
 		u.inventory.push(ItemClass::SettlementKit.build());
-		unitmap[index2d!(spawn.x, spawn.y)] = Some(u);
+		unitmap.set(*spawn, Some(u));
 	}
 
 	unitmap
@@ -80,82 +81,57 @@ impl World {
 	}
 
 	fn reduce_food(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(ref mut unit) = self.unitmap[index2d!(x, y)].as_mut() {
-					unit.food = unit.food.saturating_sub(FOOD_PER_TURN);
-				}
+		for p in Pos::iter_all() {
+			if let Some(ref mut unit) = self.unitmap.get_mut(p) {
+				unit.food = unit.food.saturating_sub(FOOD_PER_TURN);
 			}
 		}
 	}
 
 	fn apply_hunger_consequences(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				let u: &mut Option<Unit> = &mut self.unitmap[index2d!(x, y)];
-				if let Some(ref mut unit) = u {
-					if unit.food == 0 {
-						unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
-					}
+		for p in Pos::iter_all() {
+			let u: &mut Option<Unit> = self.unitmap.get_mut_raw(p);
+			if let Some(ref mut unit) = u {
+				if unit.food == 0 {
+					unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
 				}
-				if u.as_ref()
-						.filter(|x| x.health == 0)
-						.is_some() {
-					self.kill_unit(Pos::build(x as i32, y as i32).unwrap());
-				}
+			}
+			if u.as_ref()
+					.filter(|x| x.health == 0)
+					.is_some() {
+				self.kill_unit(p);
 			}
 		}
 	}
 
 
 	pub fn refill_stamina(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				if let Some(ref mut unit) = self.unitmap[index2d!(x, y)].as_mut() {
-					unit.stamina = min(FULL_STAMINA as i32, unit.stamina + FULL_STAMINA as i32);
-				}
+		for p in Pos::iter_all() {
+			if let Some(ref mut unit) = self.unitmap.get_mut(p) {
+				unit.stamina = min(FULL_STAMINA as i32, unit.stamina + FULL_STAMINA as i32);
 			}
 		}
 	}
 
-	fn next_tile(&self, tile: Pos) -> Pos {
-		if let Some(p) = tile.map(|a| Vec2i::new(a.x + 1, a.y)) { return p; }
-		if let Some(p) = tile.map(|a| Vec2i::new(a.x, a.y + 1)) { return p; }
-		Pos::build(0, 0).unwrap()
-	}
-
 	pub fn find_next_unit_tile(&self, start: Pos, player: PlayerID) -> Option<Pos> {
-		let mut i = start;
-
-		for _ in 0..(MAP_SIZE_X * MAP_SIZE_Y) {
-			i = self.next_tile(i);
-			if let Some(unit) = self.get_unit(i) {
+		let mut i = start.next_repeat();
+		while i != start {
+			if let Some(unit) = self.unitmap.get(i) {
 				if unit.owner == player {
 					return Some(i);
 				}
 			}
+			i = i.next_repeat();
 		}
 
 		None
 	}
 
-	pub fn get_unit(&self, p: Pos) -> Option<&Unit> {
-		self.unitmap[index2d!(p.x, p.y)].as_ref()
-	}
-
-	pub fn get_unit_mut(&mut self, p: Pos) -> Option<&mut Unit> {
-		self.unitmap[index2d!(p.x, p.y)].as_mut()
-	}
-
-	pub fn set_unit(&mut self, p: Pos, unit: Option<Unit>) {
-		self.unitmap[index2d!(p.x, p.y)] = unit;
-	}
-
 	pub fn kill_unit(&mut self, p: Pos) {
 		let mut unit = None;
-		swap(&mut unit, &mut self.unitmap[index2d!(p.x, p.y)]);
+		swap(&mut unit, self.unitmap.get_mut_raw(p));
 		if let Some(mut u) = unit {
-			let ground_inv = self.get_inventory_mut(p).get_item_vec();
+			let ground_inv = self.itemmap.get_mut(p).get_item_vec();
 			if let Some(i) = u.main_item {
 				ground_inv.push(i);
 			}

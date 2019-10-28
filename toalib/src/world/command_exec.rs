@@ -28,7 +28,7 @@ impl World {
 
 	fn exec_unit_command(&mut self, pos: Pos, command: &UnitCommand) {
 		let s = command.get_stamina_cost(pos, self);
-		for u in self.unitmap[index2d!(pos.x, pos.y)].iter_mut() {
+		for u in self.unitmap.get_mut(pos).iter_mut() {
 			u.stamina -= s as i32;
 		}
 			
@@ -50,12 +50,9 @@ impl World {
 	fn exec_move(&mut self, from: Pos, direction: Direction) {
 		let to = from.map(|x| x + *direction).unwrap();
 
-		let (xf, yf) = (from.x, from.y);
-		let (xt, yt) = (to.x, to.y);
-
 		let mut tmp: Option<Unit> = None;
-		mem::swap(&mut tmp, &mut self.unitmap[index2d!(xf, yf)]);
-		mem::swap(&mut tmp, &mut self.unitmap[index2d!(xt, yt)]);
+		mem::swap(&mut tmp, self.unitmap.get_mut_raw(from));
+		mem::swap(&mut tmp, self.unitmap.get_mut_raw(to));
 	}
 
 	fn exec_attack(&mut self, pos: Pos, aim: &Aim) {
@@ -78,29 +75,29 @@ impl World {
 
 	fn exec_build(&mut self, at: Pos, class: BuildingClass) {
 		let b = class.get_build_property().unwrap().build;
-		self.buildingmap[index2d!(at.x, at.y)] = Some((b)());
+		self.buildingmap.set(at, Some((b)()));
 
 
 		let cost = class.get_build_property()
 				.unwrap()
 				.item_cost;
-		self.get_unit_mut(at).unwrap()
+		self.unitmap.get_mut(at).unwrap()
 			.inventory.reduce(cost);
 	}
 
 	fn exec_work(&mut self, at: Pos) {
 		let mut tmp_opt: Option<_> = None;
-		mem::swap(&mut tmp_opt, &mut self.buildingmap[index2d!(at.x, at.y)]);
+		mem::swap(&mut tmp_opt, self.buildingmap.get_mut_raw(at));
 		tmp_opt.iter_mut()
 			.for_each(|b| b.work(self, at));
-		if self.get_building(at).is_none() {
-			self.set_building(at, tmp_opt);
+		if self.buildingmap.get(at).is_none() {
+			self.buildingmap.set(at, tmp_opt);
 		}
 	}
 
 	fn exec_unrefined_work(&mut self, at: Pos) {
-		let item_class = self.get_terrain(at).get_item_class();
-		let u = self.get_unit_mut(at).unwrap();
+		let item_class = self.terrainmap.get(at).get_item_class();
+		let u = self.unitmap.get_mut(at).unwrap();
 		u.inventory.push(item_class.build());
 	}
 
@@ -109,21 +106,21 @@ impl World {
 			at.map(|x| x + *dir).unwrap()
 		}).unwrap_or(at);
 
-		let item = self.get_unit_mut(at)
+		let item = self.unitmap.get_mut(at)
 			.unwrap()
 			.inventory
 			.get_item_vec()
 			.remove(i);
 
-		self.get_inventory_mut(droppos)
+		self.itemmap.get_mut(droppos)
 			.push(item);
 	}
 
 	fn exec_take_item(&mut self, at: Pos, i: usize) {
-		let item = self.get_inventory_mut(at)
+		let item = self.itemmap.get_mut(at)
 			.get_item_vec()
 			.remove(i);
-		self.get_unit_mut(at)
+		self.unitmap.get_mut(at)
 			.unwrap()
 			.inventory
 			.get_item_vec()
@@ -131,17 +128,17 @@ impl World {
 	}
 
 	fn exec_discard_building(&mut self, at: Pos) {
-		self.set_building(at, None);
+		self.buildingmap.set(at, None);
 	}
 
 	fn exec_craft_item_class(&mut self, ic: ItemClass, at: Pos) {
-		let unit = self.get_unit_mut(at).unwrap();
+		let unit = self.unitmap.get_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());
 	}
 
 	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Pos) {
-		let unit = self.get_unit_mut(at).unwrap();
+		let unit = self.unitmap.get_mut(at).unwrap();
 
 		let mut opt = None;
 		mem::swap(&mut opt, &mut unit.main_item);
@@ -156,7 +153,7 @@ impl World {
 	}
 
 	fn exec_exec_item(&mut self, i: usize, at: Pos) {
-		let item = self.get_unit_mut(at)
+		let item = self.unitmap.get_mut(at)
 			.unwrap()
 			.inventory
 			.remove(i);

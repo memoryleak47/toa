@@ -16,6 +16,7 @@ use std::iter;
 
 use crate::vec::Pos;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
+use crate::tilemap::{TileMap, OptTileMap};
 use crate::world::buildingmap::Building;
 use crate::item::{ItemClass, Inventory};
 use crate::damage::Damage;
@@ -33,10 +34,10 @@ lazy_static! {
 // represents the current world situation
 #[derive(Serialize, Deserialize, Clone)]
 pub struct World {
-	pub terrainmap: Vec<Terrain>,
-	pub buildingmap: Vec<Option<Building>>,
-	pub unitmap: Vec<Option<Unit>>,
-	pub itemmap: Vec<Inventory>,
+	pub terrainmap: TileMap<Terrain>,
+	pub buildingmap: OptTileMap<Building>,
+	pub unitmap: OptTileMap<Unit>,
+	pub itemmap: TileMap<Inventory>,
 	pub pool: PlayerPool,
 	pub active_player_ids: Vec<PlayerID>,
 }
@@ -49,9 +50,9 @@ impl World {
 
 		World {
 			terrainmap: new_terrainmap(),
-			buildingmap: new_buildingmap(),
+			buildingmap: OptTileMap::new(),
 			unitmap: new_unitmap(&spawns[..]),
-			itemmap: new_itemmap(),
+			itemmap: TileMap::new(Inventory::new()),
 			pool,
 			active_player_ids: ids,
 		}
@@ -68,19 +69,19 @@ impl World {
 	}
 
 	pub fn damage(&mut self, p: Pos, damage: Damage) {
-		if let Some(x) = self.get_building_mut(p) {
+		if let Some(x) = self.buildingmap.get_mut(p) {
 			if x.damage(damage) {
-				self.set_building(p, None);
+				self.buildingmap.set(p, None);
 			}
 			return;
 		}
-		if let Some(x) = self.get_unit_mut(p) {
+		if let Some(x) = self.unitmap.get_mut(p) {
 			if x.damage(damage) {
 				self.kill_unit(p);
 			}
 			return;
 		}
-		self.get_inventory_mut(p).damage(damage);
+		self.itemmap.get_mut(p).damage(damage);
 	}
 
 	fn gen_spawns(pool: &PlayerPool) -> Vec<(PlayerID, Pos)> {
@@ -100,17 +101,14 @@ impl World {
 	}
 
 	fn tick_spawners(&mut self) {
-		for x in 0..MAP_SIZE_X {
-			for y in 0..MAP_SIZE_Y {
-				let p = Pos::build(x as i32, y as i32).unwrap();
-				if let Some(Building::Spawner(s)) = self.get_building(p) {
-					let player = s.get_player_id();
-					if self.get_unit(p).is_some() { continue; }
-					if self.get_inventory(p).contains_all(&SPAWN_FOOD_VEC[..]) {
-						self.get_inventory_mut(p).reduce(&SPAWN_FOOD_VEC[..]);
-						let new_unit = Unit::new(player);
-						self.set_unit(p, Some(new_unit));
-					}
+		for p in Pos::iter_all() {
+			if let Some(Building::Spawner(s)) = self.buildingmap.get(p) {
+				let player = s.get_player_id();
+				if self.unitmap.get(p).is_some() { continue; }
+				if self.itemmap.get(p).contains_all(&SPAWN_FOOD_VEC[..]) {
+					self.itemmap.get_mut(p).reduce(&SPAWN_FOOD_VEC[..]);
+					let new_unit = Unit::new(player);
+					self.unitmap.set(p, Some(new_unit));
 				}
 			}
 		}

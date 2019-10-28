@@ -1,7 +1,7 @@
 use rand::{RngCore, thread_rng};
 
 use crate::vec::Pos;
-use crate::world::{World, MAP_SIZE_X, MAP_SIZE_Y};
+use crate::tilemap::TileMap;
 use crate::world::unitmap::Unit;
 use crate::item::ItemClass;
 
@@ -68,32 +68,24 @@ impl Terrain {
 	}
 }
 
-pub fn new_terrainmap() -> Vec<Terrain> {
+pub fn new_terrainmap() -> TileMap<Terrain> {
 	let mut rng = thread_rng();
 
-	let mut terrainmap = init2d!(Terrain::GRASS, MAP_SIZE_Y, MAP_SIZE_X);
+	let mut terrainmap = TileMap::new(Terrain::GRASS);
 
 	let sum: u32 = SPAWN_DISTRIBUTION.iter().map(|x| x.1).sum();
 
-	for x in 0..MAP_SIZE_X {
-		for y in 0..MAP_SIZE_Y {
-			let mut r: u32 = rng.next_u32() % sum;
-			for &(t, n) in SPAWN_DISTRIBUTION.iter() {
-				if r < n {
-					terrainmap[index2d!(x, y)] = t;
-					break;
-				} else {
-					r -= n;
-				}
+	for p in Pos::iter_all() {
+		let mut r: u32 = rng.next_u32() % sum;
+		for &(t, n) in SPAWN_DISTRIBUTION.iter() {
+			if r < n {
+				terrainmap.set(p, t);
+				break;
+			} else {
+				r -= n;
 			}
 		}
 	}
 
 	terrainmap
-}
-
-impl World {
-	pub fn get_terrain(&self, p: Pos) -> &Terrain {
-		&self.terrainmap[index2d!(p.x, p.y)]
-	}
 }

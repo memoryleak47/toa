@@ -33,7 +33,7 @@ impl UnitCommand {
 			UnitCommand::Move(dir) => {
 				let to = pos.map(|x| x + **dir).unwrap();
 				let terrain_summand = (stamina_cost_at(pos, w) + stamina_cost_at(to, w)) / 2;
-				let weight_summand = 2 * w.get_unit(pos).unwrap().get_weight() / 5;
+				let weight_summand = 2 * w.unitmap.get(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand
 			},
 			UnitCommand::Attack(_) => { 10 },
@@ -44,7 +44,7 @@ impl UnitCommand {
 			UnitCommand::UnrefinedWork => { 80 },
 			UnitCommand::DropItem(_, _) => 0,
 			UnitCommand::TakeItem(i) => {
-				w.get_inventory(pos)
+				w.itemmap.get(pos)
 					.iter()
 					.nth(*i)
 					.unwrap()
@@ -60,9 +60,9 @@ impl UnitCommand {
 }
 
 fn stamina_cost_at(pos: Pos, w: &World) -> u32 {
-	w.get_building(pos).and_then(
+	w.buildingmap.get(pos).and_then(
 			|x| x.get_class().reduces_walk_stamina()
 		).unwrap_or_else(
-			|| w.get_terrain(pos).get_stamina_cost()
+			|| w.terrainmap.get(pos).get_stamina_cost()
 		)
 }

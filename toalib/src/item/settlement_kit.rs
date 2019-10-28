@@ -39,10 +39,10 @@ impl ItemTrait for SettlementKit {
 		new_meelee_aim(Damage(1))
 	}
 	fn is_execable(&self, p: Pos, w: &World) -> bool {
-		w.get_building(p).is_none() && !w.get_terrain(p).prevents_building()
+		w.buildingmap.get(p).is_none() && !w.terrainmap.get(p).prevents_building()
 	}
 	fn exec(&self, p: Pos, w: &mut World) {
-		let s = new_spawner(w.get_unit(p).unwrap().owner);
-        w.set_building(p, Some(s));
+		let s = new_spawner(w.unitmap.get(p).unwrap().owner);
+        w.buildingmap.set(p, Some(s));
 	}
 }

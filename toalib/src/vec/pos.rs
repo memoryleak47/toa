@@ -4,7 +4,7 @@ use std::ops::Deref;
 use crate::vec::vec2t::Vec2i;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Pos(Vec2i);
 
 impl Deref for Pos {
@@ -22,6 +22,22 @@ impl Pos {
 
 	pub fn build(x: i32, y: i32) -> Option<Pos> {
 		Vec2i::new(x, y).to_pos()
+	}
+
+	pub fn next_repeat(&self) -> Pos { // contains useless checks
+		if let Some(p) = self.map(|a| Vec2i::new(a.x + 1, a.y)) { return p; }
+		if let Some(p) = self.map(|a| Vec2i::new(0, a.y + 1)) { return p; }
+		Pos::build(0, 0).unwrap()
+	}
+
+	pub fn next(&self) -> Option<Pos> { // contains useless checks
+		if let Some(p) = self.map(|a| Vec2i::new(a.x + 1, a.y)) { return Some(p); }
+		if let Some(p) = self.map(|a| Vec2i::new(0, a.y + 1)) { return Some(p); }
+		None
+	}
+
+	pub fn iter_all() -> impl Iterator<Item=Pos> {
+		PosIter::new()
 	}
 }
 
@@ -56,3 +72,20 @@ impl Debug for Pos {
 	}
 }
 
+struct PosIter(Option<Pos>);
+
+impl PosIter {
+	fn new() -> PosIter {
+		PosIter(Some(Pos::build(0, 0).unwrap()))
+	}
+}
+
+impl Iterator for PosIter {
+	type Item = Pos;
+
+	fn next(&mut self) -> Option<Pos> {
+		let ret = self.0.clone();
+		self.0 = self.0.and_then(|x| x.next());
+		return ret;
+	}
+}
