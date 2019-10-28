@@ -1,4 +1,4 @@
-use sfml::graphics::{RenderWindow, RenderTarget, RectangleShape, Shape, Color, Transformable, Text};
+use sfml::graphics::{RenderTarget, Sprite, Color, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f, Vec2i};
 
@@ -6,6 +6,8 @@ use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, Text
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
+
+static NO_STAMINA_ALPHA: u8 = 170;
 
 lazy_static! {
 	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
@@ -77,16 +79,17 @@ impl App {
 				let posf = p.to_f() + Vec2f::with(0.25);
 				let size = Vec2f::new(0.5, 0.75);
 				let texture_id = RawTextureId::Unit.into();
-				self.render_texture(posf, size, texture_id);
+				let color = if u.stamina <= 0 { Some(Color::rgba(255, 255, 255, NO_STAMINA_ALPHA)) } else { None };
+				self.render_colored_texture(posf, size, texture_id, color);
 
 				let texture_id = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
-				self.render_texture(posf, size, texture_id);
+				self.render_colored_texture(posf, size, texture_id, color);
 
 				if let Some(ref main_item) = self.world.unitmap.get(p).unwrap().main_item {
 					let pos = p.to_f() + Vec2f::new(0.5, 0.25);
 					let size = Vec2f::new(0.5, 0.75);
 					let texture_id = item::get_texture_id(main_item.get_class());
-					self.render_texture(pos, size, texture_id);
+					self.render_colored_texture(pos, size, texture_id, color);
 				}
 			}
 		}
@@ -142,27 +145,30 @@ impl App {
 		format!("{}\n{}", default, v.join("\n"))
 	}
 
-	#[allow(unused)]
-	fn render_rectangle(&mut self, pos: Vec2f, size: Vec2f, color: Color) {
-		let mut shape = RectangleShape::new();
-		shape.set_fill_color(&color);
+	fn render_colored_texture(&mut self, pos: Vec2f, size: Vec2f, texture_id: TextureId, color: Option<Color>) {
+		let tilesize = self.tilesize;
 
-		render_shape(self.focus_position, &mut self.window, pos, size, shape, self.tilesize);
+		let texture = self.texture_state.get_texture(texture_id);
+		let texsize = texture.size();
+
+		let mut sprite = Sprite::with_texture(texture);
+		if let Some(color) = color {
+			sprite.set_color(&color);
+		}
+
+		let halfscreen = Vec2f::new(self.window.size().x as f32, self.window.size().y as f32) / 2.0;
+		let posf = pos * tilesize;
+		let left_top = (posf - self.focus_position * tilesize) + halfscreen;
+
+		sprite.set_position(vec2f_to_sfml(left_top));
+		let xscale = (size.x * tilesize) / (texsize.x as f32);
+		let yscale = (size.y * tilesize) / (texsize.y as f32);
+		sprite.set_scale(vec2f_to_sfml(Vec2f::new(xscale, yscale)));
+
+		self.window.draw(&sprite);
 	}
 
 	fn render_texture(&mut self, pos: Vec2f, size: Vec2f, texture_id: TextureId) {
-		let shape = RectangleShape::with_texture(self.texture_state.get_texture(texture_id));
-		render_shape(self.focus_position, &mut self.window, pos, size, shape, self.tilesize);
+		self.render_colored_texture(pos, size, texture_id, None);
 	}
-}
-
-fn render_shape(focus_position: Vec2f, window: &mut RenderWindow, pos: Vec2f, size: Vec2f, mut shape: RectangleShape, tilesize: f32) {
-	let halfscreen = Vec2f::new(window.size().x as f32, window.size().y as f32) / 2.0;
-	let posf = pos * tilesize;
-	let left_top = (posf - focus_position * tilesize) + halfscreen;
-
-	shape.set_position(vec2f_to_sfml(left_top));
-	shape.set_size(vec2f_to_sfml(size * Vec2f::with(tilesize)));
-
-	window.draw(&shape);
 }
