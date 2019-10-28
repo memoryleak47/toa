@@ -1,55 +1,31 @@
-mod hue;
 pub mod terrain;
 pub mod building;
 pub mod item;
 
-use std::collections::HashMap;
-
 use sfml::graphics::Texture;
-
-use toalib::team::{PlayerID, COLORS};
-
-// TextureId % (COLORS.len()+1) = hue (0 means no hue, i=1.. corresponds to PlayerID i-1)
-// TextureId / (COLORS.len()+1) = raw_img
-
-// the non-hued graphics are all loaded on startup in (TextureState::new)
-// the hued graphics are loaded lazily using lazy_load
 
 macro_rules! setup {
 	($($x:ident : $y:expr),*) => {
 
 		#[derive(Copy, Clone, Debug)]
 		#[repr(usize)]
-		pub enum RawTextureId {
+		pub enum TextureId {
 			$($x),*
 		}
 
 		impl TextureState {
 			pub fn new() -> TextureState {
 				let nope_texture = load_texture("nope.png").unwrap();
-				let mut wrappers = HashMap::new();
-				let mut i = 0;
-				$( {
-					i += 1;
-					wrappers.insert(TextureId((i-1) * (COLORS.len() + 1)), load_texture($y).unwrap_or(nope_texture.clone()));
-				}; );*
-				TextureState { wrappers }
+				let mut textures = Vec::new();
+				$( textures.push(load_texture($y).unwrap_or(nope_texture.clone())); );*
+				TextureState { textures }
 			}
 		}
 	};
 }
 
-#[derive(Debug)]
-pub struct HuedTextureId {
-	pub raw: RawTextureId,
-	pub player_id: PlayerID,
-}
-
-#[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
-pub struct TextureId(pub usize);
-
 pub struct TextureState {
-	wrappers: HashMap<TextureId, Texture>,
+	textures: Vec<Texture>,
 }
 
 fn load_texture(s: &str) -> Option<Texture> {
@@ -59,39 +35,13 @@ fn load_texture(s: &str) -> Option<Texture> {
 	Texture::from_file(&p)
 }
 
-impl From<HuedTextureId> for TextureId {
-	fn from(hued: HuedTextureId) -> TextureId {
-		TextureId(hued.raw as usize * (COLORS.len() + 1) + hued.player_id.0 + 1)
-	}
-}
-
-impl From<RawTextureId> for TextureId {
-	fn from(raw: RawTextureId) -> TextureId {
-		TextureId(raw as usize * (COLORS.len() + 1))
-	}
-}
-
 impl TextureState {
-	fn lazy_load(&mut self, tid: TextureId) {
-		if self.wrappers.get(&tid).is_some() { return; }
-
-		let tmp = (tid.0 / (COLORS.len()+1)) * (COLORS.len()+1);
-		let raw = self.wrappers.get(&TextureId(tmp)).unwrap();
-		let color_id = tid.0 % (COLORS.len()+1); 
-		let tex = hue::hue(raw, COLORS[color_id-1]);
-		self.wrappers.insert(tid, tex);
-	}
-
-	pub fn get_texture<T: Into<TextureId>>(&mut self, id: T) -> &Texture {
-		let tid = id.into();
-		self.lazy_load(tid);
-		self.wrappers.get(&tid).unwrap()
+	pub fn get_texture(&mut self, tid: TextureId) -> &Texture {
+		&self.textures[tid as usize]
 	}
 }
 
 setup!(
-	// non-hued:
-
 	GrassTerrain: "terrain/grass.png",
 	ForestTerrain: "terrain/forest.png",
 	StoneTerrain: "terrain/stone.png",
@@ -125,8 +75,6 @@ setup!(
 	Bag: "bag.png",
 	Cursor: "cursor.png",
 	CombatCursor: "combat_cursor.png",
-
-	// hued:
 
 	SpawnerBuilding: "building/spawner_template.png",
 	UnitCloth: "unit_cloth_template.png"
