@@ -1,8 +1,7 @@
 use crate::aim::{Aim, AimTrait};
 use crate::damage::Damage;
-use crate::vec::{Pos, Vec2i};
+use crate::vec::{Vec2i, Direction};
 use crate::world::World;
-use crate::vec::Direction;
 
 #[derive(Clone, Copy)]
 #[derive(Serialize, Deserialize)]
@@ -20,15 +19,11 @@ impl AimTrait for RangedAim {
 		}
 	}
 
-	fn exec(&self, owner_pos: Pos, w: &mut World) {
-		if let Some(pos) = owner_pos.map(|x| x + self.target) {
-			w.damage(pos, self.damage);
-		}
-	}
-
 	fn get_relative_tiles(&self) -> Vec<Vec2i> {
 		vec![self.target]
 	}
+
+	fn get_damage(&self) -> Damage { self.damage }
 }
 
 pub fn new_ranged_aim(range: u32, damage: Damage) -> Aim {

@@ -1,6 +1,6 @@
 use crate::aim::{Aim, AimTrait};
 use crate::damage::Damage;
-use crate::vec::{Pos, Vec2i};
+use crate::vec::Vec2i;
 use crate::world::World;
 use crate::vec::Direction;
 
@@ -16,17 +16,11 @@ impl AimTrait for MeeleeAim {
 		self.dir = d;
 	}
 
-	fn exec(&self, owner_pos: Pos, w: &mut World) {
-		let p = match owner_pos.map(|x| x + *self.dir) {
-			Some(x) => x,
-			None => return,
-		};
-		w.damage(p, self.damage);
-	}
-
 	fn get_relative_tiles(&self) -> Vec<Vec2i> {
 		vec![*self.dir]
 	}
+
+	fn get_damage(&self) -> Damage { self.damage }
 }
 
 pub fn new_meelee_aim(damage: Damage) -> Aim {

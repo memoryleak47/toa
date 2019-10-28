@@ -15,11 +15,12 @@ use self::lance::LanceAim;
 use crate::vec::{Pos, Vec2i};
 use crate::vec::Direction;
 use crate::world::World;
+use crate::damage::Damage;
 
 trait AimTrait {
 	fn apply_direction(&mut self, _d: Direction, _w: &World);
-	fn exec(&self, owner_pos: Pos, _w: &mut World);
 	fn get_relative_tiles(&self) -> Vec<Vec2i>;
+	fn get_damage(&self) -> Damage;
 }
 
 macro_rules! setup {
@@ -34,8 +35,16 @@ macro_rules! setup {
 
 		impl Aim {
 			pub fn apply_direction(&mut self, d: Direction, w: &World)	{ match self { $( Aim::$x(a) => a.apply_direction(d, w) ),* } }
-			pub fn exec(&self, owner_pos: Pos, w: &mut World)			{ match self { $( Aim::$x(a) => a.exec(owner_pos, w) ),* } }
 			pub fn get_relative_tiles(&self) -> Vec<Vec2i>				{ match self { $( Aim::$x(a) => a.get_relative_tiles() ),* } }
+			pub fn get_damage(&self) -> Damage							{ match self { $( Aim::$x(a) => a.get_damage() ),* } }
+
+			pub fn exec(&self, owner_pos: Pos, w: &mut World) {
+				for t in self.get_relative_tiles()
+						.into_iter()
+						.filter_map(|x| owner_pos.map(|p| p + x)) {
+					w.damage(t, self.get_damage());
+				}
+			}
 		}
 	};
 }
