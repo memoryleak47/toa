@@ -6,6 +6,8 @@ mod iron;
 mod iron_sword;
 mod wood_bow;
 mod settlement_kit;
+mod long_sword;
+mod lance;
 
 use std::slice;
 use std::mem;
@@ -23,6 +25,8 @@ use self::iron::Iron;
 use self::iron_sword::IronSword;
 use self::wood_bow::WoodBow;
 use self::settlement_kit::SettlementKit;
+use self::long_sword::LongSword;
+use self::lance::Lance;
 
 trait ItemTrait {
 	type Class: ItemClassTrait + Sized;
@@ -85,7 +89,7 @@ macro_rules! setup {
 	};
 }
 
-setup!(Food, Wood, WoodSword, Stone, Iron, IronSword, WoodBow, SettlementKit);
+setup!(Food, Wood, WoodSword, Stone, Iron, IronSword, WoodBow, SettlementKit, LongSword, Lance);
 
 #[derive(Serialize, Deserialize)]
 pub struct Inventory {

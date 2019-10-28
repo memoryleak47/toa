@@ -12,5 +12,7 @@ pub fn get_texture_id(class: ItemClass) -> TextureId {
 		ItemClass::IronSword => RawTextureId::IronSwordItem,
 		ItemClass::WoodBow => RawTextureId::WoodBowItem,
         ItemClass::SettlementKit => RawTextureId::IronItem,
+        ItemClass::LongSword => RawTextureId::LongSwordItem,
+        ItemClass::Lance => RawTextureId::LanceItem,
 	}.into()
 }

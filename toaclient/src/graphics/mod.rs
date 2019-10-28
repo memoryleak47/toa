@@ -119,6 +119,8 @@ setup!(
 	IronItem: "item/iron.png",
 	IronSwordItem: "item/ironsword.png",
 	WoodBowItem: "item/woodbow.png",
+	LongSwordItem: "item/longsword.png",
+	LanceItem: "item/lance.png",
 
 	Bag: "bag.png",
 	Cursor: "cursor.png",

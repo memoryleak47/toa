@@ -1,10 +1,16 @@
 mod meelee;
 mod ranged;
+mod long_sword;
+mod lance;
 
 pub use self::meelee::new_meelee_aim;
 pub use self::ranged::new_ranged_aim;
+pub use self::long_sword::new_long_sword_aim;
+pub use self::lance::new_lance_aim;
 use self::meelee::MeeleeAim;
 use self::ranged::RangedAim;
+use self::long_sword::LongSwordAim;
+use self::lance::LanceAim;
 
 use crate::vec::{Pos, Vec2i};
 use crate::vec::Direction;
@@ -34,4 +40,4 @@ macro_rules! setup {
 	};
 }
 
-setup!(MeeleeAim, RangedAim);
+setup!(MeeleeAim, RangedAim, LongSwordAim, LanceAim);
