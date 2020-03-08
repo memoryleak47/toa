@@ -14,7 +14,6 @@ impl App {
 
 			self.tick();
 			self.render();
-			self.render();
 
 			self.window.display();
 			self.window.clear(&Color::rgb(0, 0, 0));
