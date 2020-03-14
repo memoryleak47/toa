@@ -27,7 +27,7 @@ const SPAWN_DISTRIBUTION: [(Terrain, u32); 6] =
 ];
 
 impl Terrain {
-	pub fn get_stamina_cost(&self) -> u32 {
+	pub fn get_stamina_cost(self) -> u32 {
 		match self {
 			Terrain::GRASS => 20,
 			Terrain::FOREST => 30,
@@ -38,14 +38,14 @@ impl Terrain {
 		}
 	}
 
-	pub fn is_unrefined_workable(&self, _unit: &Unit) -> bool {
+	pub fn is_unrefined_workable(self, _unit: &Unit) -> bool {
 		match self {
 			Terrain::GRASS | Terrain::FOREST => true,
 			_ => false,
 		}
 	}
 
-	pub fn get_item_class(&self) -> ItemClass {
+	pub fn get_item_class(self) -> ItemClass {
 		match self {
 			Terrain::GRASS => ItemClass::Food,
 			Terrain::FOREST => ItemClass::Wood,
@@ -53,14 +53,14 @@ impl Terrain {
 		}
 	}
 
-	pub fn is_blocking(&self) -> bool {
+	pub fn is_blocking(self) -> bool {
 		match self {
 			Terrain::MOUNTAIN => true,
 			_ => false,
 		}
 	}
 
-	pub fn prevents_building(&self) -> bool {
+	pub fn prevents_building(self) -> bool {
 		match self {
 			Terrain::MOUNTAIN | Terrain::MARSH => true,
 			_ => false,

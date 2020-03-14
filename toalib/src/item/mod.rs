@@ -186,9 +186,6 @@ impl Inventory {
 
 impl Clone for Inventory {
 	fn clone(&self) -> Inventory {
-		let items = self.items.iter()
-			.map(|x| x.clone())
-			.collect();
-		Inventory { items }
+		Inventory { items: self.items.clone() }
 	}
 }

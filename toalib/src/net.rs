@@ -96,7 +96,7 @@ impl Listener {
 
 		match self.listener.accept() {
 			Ok((stream, _)) => Some(Stream { stream, nonblocking: false }),
-			Err(ref x) if x.kind() == ErrorKind::WouldBlock => return None,
+			Err(ref x) if x.kind() == ErrorKind::WouldBlock => None,
 			Err(x) => Err(x).unwrap(),
 		}
 	}

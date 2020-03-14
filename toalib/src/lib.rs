@@ -1,6 +1,5 @@
 #![deny(bare_trait_objects)]
 #![feature(nll)]
-#![feature(slice_patterns)]
 
 extern crate rand;
 

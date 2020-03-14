@@ -15,7 +15,7 @@ impl World {
 		let mut v = Vec::new();
 
 		// add Move
-		for d in [Direction::Left, Direction::Right, Direction::Up, Direction::Down].into_iter() {
+		for d in [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter() {
 			v.push(Command::UnitCommand { pos, command: UnitCommand::Move(*d) });
 		}
 

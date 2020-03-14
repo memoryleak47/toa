@@ -26,7 +26,7 @@ impl Display for PlayerID {
 }
 
 impl PlayerID {
-	pub fn get_color(&self) -> (u8, u8, u8) {
+	pub fn get_color(self) -> (u8, u8, u8) {
 		COLORS[self.0]
 	}
 }

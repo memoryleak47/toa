@@ -16,13 +16,13 @@ impl World {
 
 		self.exec(player_id, command);
 
-		return true;
+		true
 	}
 
 	fn exec(&mut self, player_id: PlayerID, command: &Command) {
-		match command {
-			&Command::NextTurn => self.exec_next_turn(player_id),
-			&Command::UnitCommand { pos, ref command } => self.exec_unit_command(pos, command),
+		match *command {
+			Command::NextTurn => self.exec_next_turn(player_id),
+			Command::UnitCommand { pos, ref command } => self.exec_unit_command(pos, command),
 		}
 	}
 
@@ -32,18 +32,18 @@ impl World {
 			u.stamina -= s as i32;
 		}
 			
-		match command {
-			&UnitCommand::Move(direction) => self.exec_move(pos, direction),
-			&UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim),
-			&UnitCommand::Build(class) => self.exec_build(pos, class),
-			&UnitCommand::Work => self.exec_work(pos),
-			&UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
-			&UnitCommand::DropItem(i, dir) => self.exec_drop_item(pos, i, dir),
-			&UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
-			&UnitCommand::BurnBuilding => self.exec_discard_building(pos),
-			&UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
-			&UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos),
-			&UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
+		match *command {
+			UnitCommand::Move(direction) => self.exec_move(pos, direction),
+			UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim),
+			UnitCommand::Build(class) => self.exec_build(pos, class),
+			UnitCommand::Work => self.exec_work(pos),
+			UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
+			UnitCommand::DropItem(i, dir) => self.exec_drop_item(pos, i, dir),
+			UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
+			UnitCommand::BurnBuilding => self.exec_discard_building(pos),
+			UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
+			UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos),
+			UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
 		}
 	}
 

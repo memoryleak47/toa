@@ -46,10 +46,7 @@ fn pos_to_index(p: Pos) -> usize {
 // TODO: fix hacky serialization
 impl<T: Clone + Serialize> Serialize for TileMap<T> {
 	fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-		let v: Vec<T> = (&self.0[..]).iter()
-			.cloned()
-			.collect();
-
+		let v: Vec<T> = self.0.to_vec();
 		v.serialize(serializer)
 	}
 }
