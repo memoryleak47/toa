@@ -23,7 +23,7 @@ fn term_fun(sender: Sender<TermCommand>) {
 	loop {
 		let mut s = String::new();
 		
-		stdout().write(b"enter command\n>> ").unwrap();
+		stdout().write_all(b"enter command\n>> ").unwrap();
 		stdout().flush().unwrap();
 
 		stdin().read_line(&mut s).unwrap();

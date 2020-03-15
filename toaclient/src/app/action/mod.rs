@@ -30,7 +30,7 @@ impl App {
 	pub fn execute_action(&mut self, action: Action) {
 		match action {
 			Action::NextUnit => {
-				for x in self.world.find_next_unit_tile(self.cursor, self.player_id) {
+				if let Some(x) = self.world.find_next_unit_tile(self.cursor, self.player_id) {
 					self.cursor = x;
 				}
 				self.unit_mode = None;

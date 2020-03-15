@@ -84,7 +84,7 @@ impl Iterator for PosIter {
 	type Item = Pos;
 
 	fn next(&mut self) -> Option<Pos> {
-		let ret = self.0.clone();
+		let ret = self.0;
 		self.0 = self.0.and_then(|x| x.next());
 		ret
 	}

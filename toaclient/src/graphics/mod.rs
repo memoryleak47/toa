@@ -32,7 +32,7 @@ macro_rules! setup {
 				$( {
 					i += 1;
 					wrappers.insert(TextureId((i-1) * (COLORS.len() + 1)), load_texture($y).unwrap_or(nope_texture.clone()));
-				}; );*
+				}; )*
 				TextureState { wrappers }
 			}
 		}
