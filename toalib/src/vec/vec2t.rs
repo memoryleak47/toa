@@ -183,6 +183,6 @@ impl<T: Debug> Debug for Vec2t<T> {
 
 impl Vec2f {
 	pub fn magnitude(self) -> f32 {
-		(self.x + self.y).sqrt()
+		(self.x * self.x + self.y * self.y).sqrt()
 	}
 }
