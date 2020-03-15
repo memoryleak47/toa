@@ -1,25 +1,14 @@
-use serde::{Serialize, Deserialize};
-use serde::ser::Serializer;
-use serde::de::{Deserializer};
-
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::vec::Pos;
 
 const C: usize = (MAP_SIZE_X as usize) * (MAP_SIZE_Y as usize);
 
-#[derive(Clone)]
-pub struct TileMap<T: Clone>([T; C]);
+#[derive(Clone, Serialize, Deserialize)]
+pub struct TileMap<T: Clone>(Vec<T>);
 
 impl<T: Clone> TileMap<T> {
 	pub fn new(t: T) -> TileMap<T> {
-		use std::{mem, ptr};
-
-        let mut tilemap: [T; C] = unsafe { mem::uninitialized() };
-
-        for tile in &mut tilemap[..] {
-            unsafe { ptr::write(tile, t.clone()); }
-		}
-
+        let tilemap: Vec<T> = std::iter::repeat(t).take(C).collect();
 		TileMap(tilemap)
 	}
 
@@ -41,31 +30,6 @@ impl<T: Clone> TileMap<T> {
 
 fn pos_to_index(p: Pos) -> usize {
 	((*p).x as usize) + ((*p).y as usize) * (MAP_SIZE_X as usize)
-}
-
-// TODO: fix hacky serialization
-impl<T: Clone + Serialize> Serialize for TileMap<T> {
-	fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-		let v: Vec<T> = self.0.to_vec();
-		v.serialize(serializer)
-	}
-}
-
-impl<'de, T: Clone + Deserialize<'de>> Deserialize<'de> for TileMap<T> {
-	fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-		<Vec<T>>::deserialize(deserializer)
-			.map(|v| {
-				use std::{mem, ptr};
-
-				let mut tilemap: [T; C] = unsafe { mem::uninitialized() };
-
-				for (i, tile) in tilemap.iter_mut().enumerate() {
-					unsafe { ptr::write(tile, v[i].clone()); }
-				}
-
-				TileMap(tilemap)
-			})
-    }
 }
 
 #[derive(Clone, Serialize, Deserialize)]
