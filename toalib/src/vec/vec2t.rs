@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign};
 use std::fmt::{Display, Debug, Error, Formatter};
 use std::hash::{Hash, Hasher};
 
@@ -27,111 +27,25 @@ impl Vec2i {
 	}
 }
 
-
 impl<T> Vec2t<T> {
 	pub const fn new(x: T, y: T) -> Vec2t<T> {
 		Vec2t { x, y }
 	}
 }
 
-impl<T: Copy> Vec2t<T> {
-	pub fn with(a: T) -> Vec2t<T> {
-		Vec2t {
-			x: a,
-			y: a,
-		}
+impl<T: Copy> From<T> for Vec2t<T> {
+	fn from(t: T) -> Vec2t<T> {
+		Vec2t::new(t, t)
 	}
 }
 
-impl<T> Add<Vec2t<T>> for Vec2t<T> where T: Add<Output=T> {
-	type Output = Vec2t<T>;
-
-	fn add(self, other: Vec2t<T>) -> Vec2t<T> {
-		Vec2t::new (
-			self.x + other.x,
-			self.y + other.y,
-		)
+impl<T> From<(T, T)> for Vec2t<T> {
+	fn from(t: (T, T)) -> Vec2t<T> {
+		Vec2t::new(t.0, t.1)
 	}
 }
 
-impl<T> Add<T> for Vec2t<T> where T: Add<Output=T> + Copy {
-	type Output = Vec2t<T>;
-
-	fn add(self, other: T) -> Vec2t<T> {
-		Vec2t::new (
-			self.x + other,
-			self.y + other,
-		)
-	}
-}
-
-impl<T> Sub<Vec2t<T>> for Vec2t<T> where T: Sub<Output=T> {
-	type Output = Vec2t<T>;
-
-	fn sub(self, other: Vec2t<T>) -> Vec2t<T> {
-		Vec2t::new (
-			self.x - other.x,
-			self.y - other.y,
-		)
-	}
-}
-
-impl<T> Sub<T> for Vec2t<T> where T: Sub<Output=T> + Copy {
-	type Output = Vec2t<T>;
-
-	fn sub(self, other: T) -> Vec2t<T> {
-		Vec2t::new (
-			self.x - other,
-			self.y - other,
-		)
-	}
-}
-
-impl<T> Mul<Vec2t<T>> for Vec2t<T> where T: Mul<Output=T> {
-	type Output = Vec2t<T>;
-
-	fn mul(self, other: Vec2t<T>) -> Vec2t<T> {
-		Vec2t::new (
-			self.x * other.x,
-			self.y * other.y,
-		)
-	}
-}
-
-impl<T> Mul<T> for Vec2t<T> where T: Mul<Output=T> + Copy {
-	type Output = Vec2t<T>;
-
-	fn mul(self, other: T) -> Vec2t<T> {
-		Vec2t::new (
-			self.x * other,
-			self.y * other,
-		)
-	}
-}
-
-impl<T> Div<Vec2t<T>> for Vec2t<T> where T: Div<Output=T> {
-	type Output = Vec2t<T>;
-
-	fn div(self, other: Vec2t<T>) -> Vec2t<T> {
-		Vec2t::new (
-			self.x / other.x,
-			self.y / other.y,
-		)
-	}
-}
-
-impl<T> Div<T> for Vec2t<T> where T: Div<Output=T> + Copy {
-	type Output = Vec2t<T>;
-
-	fn div(self, other: T) -> Vec2t<T> {
-		Vec2t::new (
-			self.x / other,
-			self.y / other,
-		)
-	}
-}
-
-impl<T> Hash for Vec2t<T> where T: Hash {
+impl<T: Hash> Hash for Vec2t<T> {
 	fn hash<H: Hasher>(&self, h: &mut H) {
 		self.x.hash(h);
 		self.y.hash(h);
@@ -184,5 +98,79 @@ impl<T: Debug> Debug for Vec2t<T> {
 impl Vec2f {
 	pub fn magnitude(self) -> f32 {
 		(self.x * self.x + self.y * self.y).sqrt()
+	}
+}
+
+// operator overloading
+
+impl<T, U: Into<Vec2t<T>>> Add<U> for Vec2t<T> where T: Add<Output=T> {
+	type Output = Vec2t<T>;
+
+	fn add(self, other: U) -> Vec2t<T> {
+		let other = other.into();
+		Vec2t::new (
+			self.x + other.x,
+			self.y + other.y,
+		)
+	}
+}
+
+impl<T: Copy, U: Into<Vec2t<T>>> AddAssign<U> for Vec2t<T> where T: Add<Output=T> {
+	fn add_assign(&mut self, other: U) {
+		*self = *self + other.into();
+	}
+}
+
+impl<T, U: Into<Vec2t<T>>> Sub<U> for Vec2t<T> where T: Sub<Output=T> {
+	type Output = Vec2t<T>;
+
+	fn sub(self, other: U) -> Vec2t<T> {
+		let other = other.into();
+		Vec2t::new (
+			self.x - other.x,
+			self.y - other.y,
+		)
+	}
+}
+
+impl<T: Copy, U: Into<Vec2t<T>>> SubAssign<U> for Vec2t<T> where T: Sub<Output=T> {
+	fn sub_assign(&mut self, other: U) {
+		*self = *self - other.into();
+	}
+}
+
+impl<T, U: Into<Vec2t<T>>> Mul<U> for Vec2t<T> where T: Mul<Output=T> {
+	type Output = Vec2t<T>;
+
+	fn mul(self, other: U) -> Vec2t<T> {
+		let other = other.into();
+		Vec2t::new (
+			self.x * other.x,
+			self.y * other.y,
+		)
+	}
+}
+
+impl<T: Copy, U: Into<Vec2t<T>>> MulAssign<U> for Vec2t<T> where T: Mul<Output=T> {
+	fn mul_assign(&mut self, other: U) {
+		*self = *self * other.into();
+	}
+}
+
+impl<T, U: Into<Vec2t<T>>> Div<U> for Vec2t<T> where T: Div<Output=T> {
+	type Output = Vec2t<T>;
+
+	fn div(self, other: U) -> Vec2t<T> {
+		let other = other.into();
+		Vec2t::new (
+			self.x / other.x,
+			self.y / other.y,
+		)
+	}
+}
+
+impl<T: Copy, U: Into<Vec2t<T>>> DivAssign<U> for Vec2t<T> where T: Div<Output=T> {
+	fn div_assign(&mut self, other: U) {
+		*self = *self / other.into();
 	}
 }
