@@ -27,7 +27,7 @@ impl AimTrait for RangedAim {
 }
 
 pub fn new_ranged_aim(range: u32, damage: Damage) -> Aim {
-	Aim::RangedAim(RangedAim { range, damage, target: Vec2i::with(0) })
+	Aim::RangedAim(RangedAim { range, damage, target: 0.into() })
 }
 
 fn magnitude(v: Vec2i) -> u32 {
