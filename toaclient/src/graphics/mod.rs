@@ -39,6 +39,14 @@ macro_rules! setup {
 	};
 }
 
+pub trait HasTexture {
+	fn get_texture_id(&self) -> TextureId;
+}
+
+impl HasTexture for TextureId {
+	fn get_texture_id(&self) -> TextureId { *self }
+}
+
 #[derive(Debug)]
 pub struct HuedTextureId {
 	pub raw: RawTextureId,

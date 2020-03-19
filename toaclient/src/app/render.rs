@@ -2,7 +2,7 @@ use sfml::graphics::{RenderTarget, Sprite, Color, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f, Vec2i};
 
-use crate::graphics::{terrain, building, item, RawTextureId, HuedTextureId, TextureId};
+use crate::graphics::{building, item, RawTextureId, HuedTextureId, TextureId, HasTexture};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -19,11 +19,11 @@ enum MarkerType {
 	Combat,
 }
 
-impl MarkerType {
-	fn get_raw_texture_id(&self) -> RawTextureId {
+impl HasTexture for MarkerType {
+	fn get_texture_id(&self) -> TextureId {
 		match self {
-			MarkerType::Normal => RawTextureId::Cursor,
-			MarkerType::Combat => RawTextureId::CombatCursor,
+			MarkerType::Normal => RawTextureId::Cursor.into(),
+			MarkerType::Combat => RawTextureId::CombatCursor.into(),
 		}
 	}
 }
@@ -41,9 +41,9 @@ impl App {
 	fn render_terrainmap(&mut self) {
 		for p in Pos::iter_all(){ 
 			let posf = p.to_f();
-			let size = Vec2f::with(1.);
-			let texture_id = terrain::get_texture_id(*self.world.terrainmap.get(p));
-			self.render_texture(posf, size, texture_id);
+			let size = (1.).into();
+			let t = *self.world.terrainmap.get(p);
+			self.render_texture(posf, size, &t);
 		}
 	}
 
@@ -53,7 +53,7 @@ impl App {
 				let posf = p.to_f();
 				let size = Vec2f::new(1., 0.5);
 				let texture_id = building::get_texture_id(building);
-				self.render_texture(posf, size, texture_id);
+				self.render_texture(posf, size, &texture_id);
 			}
 		}
 	}
@@ -66,8 +66,8 @@ impl App {
 					.is_some() {
 				let posf = p.to_f() + Vec2f::new(0., 0.5);
 				let size = Vec2f::new(0.25, 0.5);
-				let texture_id = RawTextureId::Bag.into();
-				self.render_texture(posf, size, texture_id);
+				let texture_id: TextureId = RawTextureId::Bag.into();
+				self.render_texture(posf, size, &texture_id);
 			}
 		}
 	}
@@ -76,20 +76,20 @@ impl App {
 		for p in Pos::iter_all() {
 			if let Some(ref u) = self.world.unitmap.get(p) {
 				let player_id = u.owner;
-				let posf = p.to_f() + Vec2f::with(0.25);
-				let size = Vec2f::new(0.5, 0.75);
-				let texture_id = RawTextureId::Unit.into();
+				let posf = p.to_f() + 0.25;
+				let size = (0.5, 0.75).into();
+				let texture_id: TextureId = RawTextureId::Unit.into();
 				let color = if u.stamina <= 0 { Some(Color::rgba(255, 255, 255, NO_STAMINA_ALPHA)) } else { None };
-				self.render_colored_texture(posf, size, texture_id, color);
+				self.render_colored_texture(posf, size, &texture_id, color);
 
-				let texture_id = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
-				self.render_colored_texture(posf, size, texture_id, color);
+				let texture_id: TextureId = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
+				self.render_colored_texture(posf, size, &texture_id, color);
 
 				if let Some(ref main_item) = self.world.unitmap.get(p).unwrap().main_item {
 					let pos = p.to_f() + Vec2f::new(0.5, 0.25);
 					let size = Vec2f::new(0.5, 0.75);
 					let texture_id = item::get_texture_id(main_item.get_class());
-					self.render_colored_texture(pos, size, texture_id, color);
+					self.render_colored_texture(pos, size, &texture_id, color);
 				}
 			}
 		}
@@ -118,9 +118,8 @@ impl App {
 
 	fn render_marker(&mut self, pos: Pos, marker_type: MarkerType) {
 		let posf = (*pos).map(|x| x as f32);
-		let size = Vec2f::with(1.);
-		let texture_id = marker_type.get_raw_texture_id().into();
-		self.render_texture(posf, size, texture_id);
+		let size: Vec2f = (1.).into();
+		self.render_texture(posf, size, &marker_type);
 	}
 
 	fn render_hud(&mut self) {
@@ -145,10 +144,10 @@ impl App {
 		format!("{}\n{}", default, v.join("\n"))
 	}
 
-	fn render_colored_texture(&mut self, pos: Vec2f, size: Vec2f, texture_id: TextureId, color: Option<Color>) {
+	fn render_colored_texture<H: HasTexture>(&mut self, pos: Vec2f, size: Vec2f, h: &H, color: Option<Color>) {
 		let tilesize = self.tilesize;
 
-		let texture = self.texture_state.get_texture(texture_id);
+		let texture = self.texture_state.get_texture(h.get_texture_id());
 		let texsize = texture.size();
 
 		let mut sprite = Sprite::with_texture(texture);
@@ -168,7 +167,7 @@ impl App {
 		self.window.draw(&sprite);
 	}
 
-	fn render_texture(&mut self, pos: Vec2f, size: Vec2f, texture_id: TextureId) {
-		self.render_colored_texture(pos, size, texture_id, None);
+	fn render_texture<H: HasTexture>(&mut self, pos: Vec2f, size: Vec2f, h: &H) {
+		self.render_colored_texture(pos, size, h, None);
 	}
 }
