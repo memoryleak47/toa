@@ -1,17 +1,11 @@
 use toalib::item::{Item, ItemClass};
 use toalib::vec::Vec2f;
 
-use crate::graphics::{RawTextureId, TextureId, HasTexture, GameObject};
+use crate::graphics::{RawTextureId, TextureId, GameObject};
 
-impl HasTexture for Item {
+impl GameObject for Item {
 	fn get_texture_id(&self) -> TextureId {
-		self.get_class().get_texture_id()
-	}
-}
-
-impl HasTexture for ItemClass {
-	fn get_texture_id(&self) -> TextureId {
-		match *self {
+		match self.get_class() {
 			ItemClass::Food => RawTextureId::FoodItem,
 			ItemClass::Wood => RawTextureId::WoodItem,
 			ItemClass::WoodSword => RawTextureId::WoodSwordItem,
@@ -24,9 +18,6 @@ impl HasTexture for ItemClass {
 			ItemClass::Lance => RawTextureId::LanceItem,
 		}.into()
 	}
-}
-
-impl GameObject for Item {
 	fn get_relative_pos(&self) -> Vec2f { (0.5, 0.25).into() }
 	fn get_size(&self) -> Vec2f { (0.5, 0.75).into() }
 }

@@ -1,9 +1,9 @@
 use toalib::world::terrainmap::Terrain;
 use toalib::vec::Vec2f;
 
-use crate::graphics::{RawTextureId, TextureId, HasTexture, GameObject};
+use crate::graphics::{RawTextureId, TextureId, GameObject};
 
-impl HasTexture for Terrain {
+impl GameObject for Terrain {
 	fn get_texture_id(&self) -> TextureId {
 		match self {
 			Terrain::GRASS => RawTextureId::GrassTerrain,
@@ -14,9 +14,6 @@ impl HasTexture for Terrain {
 			Terrain::MARSH => RawTextureId::MarshTerrain,
 		}.into()
 	}
-}
-
-impl GameObject for Terrain {
 	fn get_relative_pos(&self) -> Vec2f { <_>::from(0.) }
 	fn get_size(&self) -> Vec2f { <_>::from(1.) }
 }

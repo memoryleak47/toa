@@ -42,12 +42,9 @@ macro_rules! setup {
 	};
 }
 
-pub trait HasTexture {
+pub trait GameObject {
 	fn get_texture_id(&self) -> TextureId;
 	fn get_hue(&self) -> Option<Color> { None }
-}
-
-pub trait GameObject: HasTexture {
 	fn get_relative_pos(&self) -> Vec2f;	// position (has to be added to its position); in tile-coordinates
 	fn get_size(&self) -> Vec2f;			// in tile-coordinates
 }

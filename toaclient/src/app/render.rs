@@ -2,7 +2,7 @@ use sfml::graphics::{RenderTarget, Sprite, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f};
 
-use crate::graphics::{HasTexture, GameObject};
+use crate::graphics::GameObject;
 use crate::graphics::{bag::Bag, unit::Cloth};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
