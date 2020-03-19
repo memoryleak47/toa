@@ -4,7 +4,6 @@ mod tick;
 mod render;
 mod action;
 mod marker;
-mod menu;
 
 use sfml::graphics::{RenderWindow, Font};
 
@@ -18,21 +17,21 @@ use crate::unit_mode::UnitMode;
 use crate::input::Input;
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
-use crate::app::menu::MenuState;
+use crate::menu::MenuState;
 
 pub struct App {
-	player_id: PlayerID,
-	unit_mode: Option<UnitMode>, // None -> no unit focused
-	focus_position: Vec2f,
-	tilesize: f32, // zoom
-	cursor: Pos,
-	pending: Option<Action>,
-	menu_state: MenuState,
-	world: World,
-	window: RenderWindow,
-	input: Input,
-	texture_state: TextureState,
-	sound_state: SoundState,
-	stream: Stream,
-	font: Font,
+	pub player_id: PlayerID,
+	pub unit_mode: Option<UnitMode>, // None -> no unit focused
+	pub focus_position: Vec2f,
+	pub tilesize: f32, // zoom
+	pub cursor: Pos,
+	pub pending: Option<Action>,
+	pub menu_state: MenuState,
+	pub world: World,
+	pub window: RenderWindow,
+	pub input: Input,
+	pub texture_state: TextureState,
+	pub sound_state: SoundState,
+	pub stream: Stream,
+	pub font: Font,
 }

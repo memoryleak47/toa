@@ -11,7 +11,7 @@ use crate::graphics::TextureState;
 use crate::sound::SoundState;
 use crate::app::App;
 use crate::config::DEFAULT_TILESIZE;
-use crate::app::menu::MenuState;
+use crate::menu::MenuState;
 
 impl App {
 	pub fn connect(ip: &str) -> App {

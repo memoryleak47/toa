@@ -13,6 +13,7 @@ mod sound;
 mod input;
 mod unit_mode;
 mod app;
+mod menu;
 
 use self::app::App;
 
