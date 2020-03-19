@@ -1,9 +1,18 @@
-use sfml::graphics::{Color, RectangleShape, RenderTarget, Transformable, Shape, Text};
+use sfml::graphics::{RenderWindow, RenderTarget, Color, RectangleShape, Text, Shape, Transformable};
 
 use toalib::vec::Vec2f;
-use crate::graphics::TextureId;
+
 use crate::app::App;
+use crate::graphics::TextureId;
+use crate::menu::MenuCommand;
 use crate::vec_compat::*;
+
+pub struct Widget {
+	pub pos: Vec2f,
+	pub size: Vec2f,
+	pub draw_type: DrawType,
+	pub on_click: Option<MenuCommand>,
+}
 
 pub enum DrawType {
 	Color(Color),
@@ -11,31 +20,25 @@ pub enum DrawType {
 	Text(String),
 }
 
-pub struct DrawCommand {
-	pub pos: Vec2f,
-	pub size: Vec2f,
-	pub draw_type: DrawType,
-}
-
 impl App {
-	pub fn execute_draw_command(&mut self, c: DrawCommand) {
-		match c.draw_type {
+	pub fn draw_widget(&mut self, w: Widget) {
+		match w.draw_type {
 			DrawType::Color(color) => {
 				let mut s = RectangleShape::new();
 				s.set_fill_color(&color);
-				s.set_position(vec2f_to_sfml(c.pos));
-				s.set_size(vec2f_to_sfml(c.size));
+				s.set_position(vec2f_to_sfml(w.pos));
+				s.set_size(vec2f_to_sfml(w.size));
 				self.window.draw(&s);
 			},
 			DrawType::Texture(tid) => {
-				let mut s = RectangleShape::with_texture(self.texture_state.get_texture(tid));;
-				s.set_position(vec2f_to_sfml(c.pos));
-				s.set_size(vec2f_to_sfml(c.size));
+				let mut s = RectangleShape::with_texture(self.texture_state.get_texture(tid));
+				s.set_position(vec2f_to_sfml(w.pos));
+				s.set_size(vec2f_to_sfml(w.size));
 				self.window.draw(&s);
 			},
 			DrawType::Text(string) => {
 				let mut t = Text::new(&*string, &self.font, 15);
-				t.set_position(vec2f_to_sfml(c.pos));
+				t.set_position(vec2f_to_sfml(w.pos));
 				self.window.draw(&t);
 				// TODO make sure text stays in c.size-box
 			},
