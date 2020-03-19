@@ -1,8 +1,9 @@
 use sfml::graphics::{RenderTarget, Sprite, Color, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f, Vec2i};
+use toalib::world::Building;
 
-use crate::graphics::{building, RawTextureId, HuedTextureId, TextureId, HasTexture};
+use crate::graphics::{RawTextureId, HuedTextureId, TextureId, HasTexture};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -52,8 +53,8 @@ impl App {
 			if let Some(ref building) = self.world.buildingmap.get(p) {
 				let posf = p.to_f();
 				let size = Vec2f::new(1., 0.5);
-				let texture_id = building::get_texture_id(building);
-				self.render_texture(posf, size, &texture_id);
+				let building: Building = (*building).clone(); // TODO there is a better way!
+				self.render_texture(posf, size, &building);
 			}
 		}
 	}

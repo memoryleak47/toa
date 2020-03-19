@@ -17,7 +17,6 @@ use std::iter;
 use crate::vec::Pos;
 use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
 use crate::tilemap::{TileMap, OptTileMap};
-use crate::world::buildingmap::Building;
 use crate::item::{ItemClass, Inventory};
 use crate::damage::Damage;
 use crate::team::{PlayerPool, PlayerID};
