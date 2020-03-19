@@ -2,7 +2,7 @@ use sfml::graphics::{RenderTarget, Sprite, Color, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f, Vec2i};
 
-use crate::graphics::{building, item, RawTextureId, HuedTextureId, TextureId, HasTexture};
+use crate::graphics::{building, RawTextureId, HuedTextureId, TextureId, HasTexture};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
@@ -88,8 +88,8 @@ impl App {
 				if let Some(ref main_item) = self.world.unitmap.get(p).unwrap().main_item {
 					let pos = p.to_f() + Vec2f::new(0.5, 0.25);
 					let size = Vec2f::new(0.5, 0.75);
-					let texture_id = item::get_texture_id(main_item.get_class());
-					self.render_colored_texture(pos, size, &texture_id, color);
+					let class = main_item.get_class();
+					self.render_colored_texture(pos, size, &class, color); // TODO this has to work a better way
 				}
 			}
 		}
