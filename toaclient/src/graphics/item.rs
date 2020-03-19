@@ -27,6 +27,6 @@ impl HasTexture for ItemClass {
 }
 
 impl GameObject for Item {
-	fn get_relative_pos(&self) -> Vec2f { (0., 0.5).into() }
-	fn get_size(&self) -> Vec2f { (0.25, 0.5).into() }
+	fn get_relative_pos(&self) -> Vec2f { (0.5, 0.25).into() }
+	fn get_size(&self) -> Vec2f { (0.5, 0.75).into() }
 }

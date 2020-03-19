@@ -23,7 +23,7 @@ impl App {
 	}
 
 	fn render_terrainmap(&mut self) {
-		for p in Pos::iter_all(){ 
+		for p in Pos::iter_all() {
 			self.render_gameobject(p, &self.world.terrainmap.get(p).clone()); // TODO
 		}
 	}
@@ -64,7 +64,7 @@ impl App {
 	}
 
 	fn render_markers(&mut self) {
-		self.render_gameobject(self.cursor, &Marker::Normal); 
+		self.render_gameobject(self.cursor, &Marker::Normal);
 
 		let opt_tiles: Option<Vec<Vec2i>> = self.unit_mode.as_ref().and_then(|m| {
 			match m {
