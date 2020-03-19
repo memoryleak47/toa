@@ -3,6 +3,7 @@ mod run;
 mod tick;
 mod render;
 mod action;
+mod marker;
 
 use sfml::graphics::{RenderWindow, Font};
 

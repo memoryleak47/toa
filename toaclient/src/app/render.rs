@@ -1,33 +1,16 @@
-use sfml::graphics::{RenderTarget, Sprite, Color, Transformable, Text};
+use sfml::graphics::{RenderTarget, Sprite, Transformable, Text};
 
 use toalib::vec::{Pos, Vec2f, Vec2i};
 use toalib::world::Building;
 
-use crate::graphics::{RawTextureId, HuedTextureId, TextureId, HasTexture};
+use crate::graphics::GameObject;
+use crate::graphics::{bag::Bag, unit::{Unit, Cloth}};
 use crate::vec_compat::*;
 use crate::unit_mode::UnitMode;
 use crate::app::App;
+use crate::app::marker::Marker;
 
-static NO_STAMINA_ALPHA: u8 = 170;
-
-lazy_static! {
-	pub static ref CURSOR_COLOR: Color = Color::rgb(200, 150, 0);
-	pub static ref TARGET_CURSOR_COLOR: Color = Color::rgb(200, 20, 20);
-}
-
-enum MarkerType {
-	Normal,
-	Combat,
-}
-
-impl HasTexture for MarkerType {
-	fn get_texture_id(&self) -> TextureId {
-		match self {
-			MarkerType::Normal => RawTextureId::Cursor.into(),
-			MarkerType::Combat => RawTextureId::CombatCursor.into(),
-		}
-	}
-}
+// TODO fix useless clones
 
 impl App {
 	pub fn render(&mut self) {
@@ -41,20 +24,15 @@ impl App {
 
 	fn render_terrainmap(&mut self) {
 		for p in Pos::iter_all(){ 
-			let posf = p.to_f();
-			let size = (1.).into();
-			let t = *self.world.terrainmap.get(p);
-			self.render_texture(posf, size, &t);
+			self.render_gameobject(p, &self.world.terrainmap.get(p).clone()); // TODO
 		}
 	}
 
 	fn render_buildingmap(&mut self) {
 		for p in Pos::iter_all() {
 			if let Some(ref building) = self.world.buildingmap.get(p) {
-				let posf = p.to_f();
-				let size = Vec2f::new(1., 0.5);
 				let building: Building = (*building).clone(); // TODO there is a better way!
-				self.render_texture(posf, size, &building);
+				self.render_gameobject(p, &building);
 			}
 		}
 	}
@@ -65,39 +43,28 @@ impl App {
 					.iter()
 					.next()
 					.is_some() {
-				let posf = p.to_f() + Vec2f::new(0., 0.5);
-				let size = Vec2f::new(0.25, 0.5);
-				let texture_id: TextureId = RawTextureId::Bag.into();
-				self.render_texture(posf, size, &texture_id);
+				self.render_gameobject(p, &Bag);
 			}
 		}
 	}
 
 	fn render_unitmap(&mut self) {
 		for p in Pos::iter_all() {
-			if let Some(ref u) = self.world.unitmap.get(p) {
-				let player_id = u.owner;
-				let posf = p.to_f() + 0.25;
-				let size = (0.5, 0.75).into();
-				let texture_id: TextureId = RawTextureId::Unit.into();
-				let color = if u.stamina <= 0 { Some(Color::rgba(255, 255, 255, NO_STAMINA_ALPHA)) } else { None };
-				self.render_colored_texture(posf, size, &texture_id, color);
-
-				let texture_id: TextureId = HuedTextureId { raw: RawTextureId::UnitCloth, player_id }.into();
-				self.render_colored_texture(posf, size, &texture_id, color);
+			if let Some(u) = self.world.unitmap.get(p) {
+				let u: Unit = u.clone(); // TODO
+				self.render_gameobject(p, &u);
+				self.render_gameobject(p, &Cloth(u.owner));
 
 				if let Some(ref main_item) = self.world.unitmap.get(p).unwrap().main_item {
-					let pos = p.to_f() + Vec2f::new(0.5, 0.25);
-					let size = Vec2f::new(0.5, 0.75);
-					let class = main_item.get_class();
-					self.render_colored_texture(pos, size, &class, color); // TODO this has to work a better way
+					let main_item = main_item.clone(); // TODO
+					self.render_gameobject(p, &main_item);
 				}
 			}
 		}
 	}
 
 	fn render_markers(&mut self) {
-		self.render_marker(self.cursor, MarkerType::Normal); 
+		self.render_gameobject(self.cursor, &Marker::Normal); 
 
 		let opt_tiles: Option<Vec<Vec2i>> = self.unit_mode.as_ref().and_then(|m| {
 			match m {
@@ -111,16 +78,10 @@ impl App {
 		if let Some(tiles) = opt_tiles {
 			for rel in tiles.into_iter() {
 				if let Some(p) = cursor.map(|x| x + rel) {
-					self.render_marker(p, MarkerType::Combat);
+					self.render_gameobject(p, &Marker::Combat);
 				}
 			}
 		}
-	}
-
-	fn render_marker(&mut self, pos: Pos, marker_type: MarkerType) {
-		let posf = (*pos).map(|x| x as f32);
-		let size: Vec2f = (1.).into();
-		self.render_texture(posf, size, &marker_type);
 	}
 
 	fn render_hud(&mut self) {
@@ -145,14 +106,17 @@ impl App {
 		format!("{}\n{}", default, v.join("\n"))
 	}
 
-	fn render_colored_texture<H: HasTexture>(&mut self, pos: Vec2f, size: Vec2f, h: &H, color: Option<Color>) {
+	fn render_gameobject<GO: GameObject>(&mut self, p: Pos, go: &GO) {
+		let pos = p.to_f() + go.get_relative_pos();
+		let size = go.get_size();
+
 		let tilesize = self.tilesize;
 
-		let texture = self.texture_state.get_texture(h.get_texture_id());
+		let texture = self.texture_state.get_texture(go.get_texture_id());
 		let texsize = texture.size();
 
 		let mut sprite = Sprite::with_texture(texture);
-		if let Some(color) = color {
+		if let Some(color) = go.get_hue() {
 			sprite.set_color(&color);
 		}
 
@@ -166,9 +130,5 @@ impl App {
 		sprite.set_scale(vec2f_to_sfml(Vec2f::new(xscale, yscale)));
 
 		self.window.draw(&sprite);
-	}
-
-	fn render_texture<H: HasTexture>(&mut self, pos: Vec2f, size: Vec2f, h: &H) {
-		self.render_colored_texture(pos, size, h, None);
 	}
 }
