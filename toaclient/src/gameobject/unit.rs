@@ -4,7 +4,8 @@ use toalib::vec::Vec2f;
 use toalib::team::PlayerID;
 pub use toalib::world::Unit;
 
-use crate::graphics::{HuedTextureId, RawTextureId, TextureId, GameObject};
+use crate::graphics::{HuedTextureId, TextureId, RawTextureId};
+use crate::gameobject::GameObject;
 
 pub struct Cloth(pub PlayerID);
 

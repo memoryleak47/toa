@@ -1,7 +1,8 @@
 use toalib::world::terrainmap::Terrain;
 use toalib::vec::Vec2f;
 
-use crate::graphics::{RawTextureId, TextureId, GameObject};
+use crate::graphics::{RawTextureId, TextureId};
+use crate::gameobject::GameObject;
 
 impl GameObject for Terrain {
 	fn get_texture_id(&self) -> TextureId {

@@ -1,15 +1,9 @@
 mod hue;
-pub mod terrain;
-pub mod building;
-pub mod item;
-pub mod bag;
-pub mod unit;
 
 use std::collections::HashMap;
 
-use sfml::graphics::{Texture, Color};
+use sfml::graphics::Texture;
 
-use toalib::vec::Vec2f;
 use toalib::team::{PlayerID, COLORS};
 
 // TextureId % (COLORS.len()+1) = hue (0 means no hue, i=1.. corresponds to PlayerID i-1)
@@ -40,13 +34,6 @@ macro_rules! setup {
 			}
 		}
 	};
-}
-
-pub trait GameObject {
-	fn get_texture_id(&self) -> TextureId;
-	fn get_hue(&self) -> Option<Color> { None }
-	fn get_relative_pos(&self) -> Vec2f;	// position (has to be added to its position); in tile-coordinates
-	fn get_size(&self) -> Vec2f;			// in tile-coordinates
 }
 
 #[derive(Debug)]

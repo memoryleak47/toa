@@ -8,6 +8,7 @@ mod config;
 mod cli;
 mod vec_compat;
 mod graphics;
+mod gameobject;
 mod sound;
 mod input;
 mod unit_mode;

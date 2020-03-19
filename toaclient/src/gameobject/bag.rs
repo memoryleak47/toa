@@ -1,6 +1,7 @@
 use toalib::vec::Vec2f;
 
-use crate::graphics::{TextureId, RawTextureId, GameObject};
+use crate::graphics::{TextureId, RawTextureId};
+use crate::gameobject::GameObject;
 
 pub struct Bag;
 

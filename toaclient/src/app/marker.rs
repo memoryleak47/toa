@@ -1,6 +1,7 @@
 use toalib::vec::Vec2f;
 
-use crate::graphics::{RawTextureId, TextureId, GameObject};
+use crate::graphics::{TextureId, RawTextureId};
+use crate::gameobject::GameObject;
 
 // This could be normal structs
 pub enum Marker {

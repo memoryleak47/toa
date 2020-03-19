@@ -1,7 +1,8 @@
 use toalib::world::buildingmap::Building;
 use toalib::vec::Vec2f;
 
-use crate::graphics::{HuedTextureId, RawTextureId, TextureId, GameObject};
+use crate::graphics::{HuedTextureId, TextureId, RawTextureId};
+use crate::gameobject::GameObject;
 
 impl GameObject for Building {
 	fn get_texture_id(&self) -> TextureId {
