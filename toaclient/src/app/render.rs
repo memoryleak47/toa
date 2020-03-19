@@ -14,6 +14,7 @@ use crate::app::marker::Marker;
 macro_rules! draw {
 	($self:expr, $p:expr, $go:expr) => {
 		{
+			let halfscreen = $self.window_size() / 2.0;
 			let pos = $p.to_f() + $go.get_relative_pos();
 			let size = $go.get_size();
 
@@ -27,7 +28,6 @@ macro_rules! draw {
 				sprite.set_color(&color);
 			}
 
-			let halfscreen = Vec2f::new($self.window.size().x as f32, $self.window.size().y as f32) / 2.0;
 			let posf = pos * tilesize;
 			let left_top = (posf - $self.focus_position * tilesize) + halfscreen;
 
@@ -48,7 +48,7 @@ impl App {
 		self.render_itemmap();
 		self.render_unitmap();
 		self.render_markers();
-		self.render_hud();
+		self.render_menu();
 	}
 
 	fn render_terrainmap(&mut self) {
@@ -99,25 +99,7 @@ impl App {
 		}
 	}
 
-	fn render_hud(&mut self) {
-		let s = self.get_text();
-		let t = Text::new(&*s, &self.font, 15);
-		self.window.draw(&t);
-	}
-
-	fn get_text(&self) -> String {
-		let pos = self.cursor;
-		let terrain = self.world.terrainmap.get(pos);
-		let building = self.world.buildingmap.get(pos);
-		let unit = self.world.unitmap.get(pos).map(|x| x.get_info_string()).unwrap_or_else(|| "None".to_string());
-		let inventory = self.world.itemmap.get(pos);
-
-		let default = format!("Terrain: {:?}\nBuilding: {}\nUnit: {}\nItems: {}", terrain, building.map(|x| x.get_info_string()).unwrap_or("None".to_string()), unit, inventory.get_info_string());
-		let action_infos = self.get_action_infos();
-
-		let v: Vec<_> = action_infos.iter()
-				.map(|x| x.get_text(&self.world))
-				.collect();
-		format!("{}\n{}", default, v.join("\n"))
+	pub fn window_size(&self) -> Vec2f {
+		Vec2f::new(self.window.size().x as f32, self.window.size().y as f32)
 	}
 }

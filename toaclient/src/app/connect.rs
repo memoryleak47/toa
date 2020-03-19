@@ -11,6 +11,7 @@ use crate::graphics::TextureState;
 use crate::sound::SoundState;
 use crate::app::App;
 use crate::config::DEFAULT_TILESIZE;
+use crate::app::menu::MenuState;
 
 impl App {
 	pub fn connect(ip: &str) -> App {
@@ -28,6 +29,7 @@ impl App {
 			tilesize: DEFAULT_TILESIZE,
 			cursor: Pos::build(0, 0).unwrap(),
 			pending: None,
+			menu_state: MenuState::new(),
 			world,
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			input: Input::new(),

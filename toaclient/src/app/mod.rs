@@ -4,6 +4,7 @@ mod tick;
 mod render;
 mod action;
 mod marker;
+mod menu;
 
 use sfml::graphics::{RenderWindow, Font};
 
@@ -17,6 +18,7 @@ use crate::unit_mode::UnitMode;
 use crate::input::Input;
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
+use crate::app::menu::MenuState;
 
 pub struct App {
 	player_id: PlayerID,
@@ -25,6 +27,7 @@ pub struct App {
 	tilesize: f32, // zoom
 	cursor: Pos,
 	pending: Option<Action>,
+	menu_state: MenuState,
 	world: World,
 	window: RenderWindow,
 	input: Input,
