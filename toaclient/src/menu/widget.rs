@@ -4,14 +4,13 @@ use toalib::vec::Vec2f;
 
 use crate::app::App;
 use crate::graphics::TextureId;
-use crate::menu::MenuCommand;
 use crate::vec_compat::*;
 
 pub struct Widget {
 	pub pos: Vec2f,
 	pub size: Vec2f,
 	pub draw_type: DrawType,
-	pub on_click: Option<MenuCommand>,
+	pub on_click: Option<fn(&mut App)>,
 }
 
 pub enum DrawType {

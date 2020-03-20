@@ -1,9 +1,10 @@
 use sfml::graphics::Color;
 
 use toalib::world::Unit;
+use toalib::command::Command;
 
 use crate::app::App;
-use crate::menu::{Widget, MenuCommand};
+use crate::menu::Widget;
 
 impl App {
 	pub fn generate_widgets(&self) -> Vec<Widget> {
@@ -74,7 +75,7 @@ impl App {
 				pos: ws * 0.95,
 				size: ws * 0.03,
 				draw_type: Color::rgb(100, 100, 100).into(),
-				on_click: Some(MenuCommand::NextTurn),
+				on_click: Some(|a| a.send_command(Command::NextTurn)),
 			},
 		);
 

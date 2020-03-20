@@ -1,8 +1,6 @@
-mod menu_command;
 mod design;
 mod widget;
 
-pub use menu_command::*;
 pub use widget::*;
 
 use sfml::graphics::Color;

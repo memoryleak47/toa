@@ -4,7 +4,6 @@ use toalib::vec::{Vec2f, Direction};
 use toalib::command::{UnitCommand, Command};
 
 use crate::app::App;
-use crate::menu::MenuCommand;
 
 impl App {
 	pub fn handle_event(&mut self, e: Event) {
@@ -19,7 +18,7 @@ impl App {
 	fn handle_mouse_press(&mut self, p: Vec2f, b: Button) {
 		if let Some(w) = self.generate_widgets().iter().rfind(|w| w.collides(p)) {
 			if let Button::Left = b {
-				w.on_click.iter().for_each(|c| self.handle_menu_command(c) )
+				w.on_click.iter().for_each(|f| f(self) )
 			}
 		} else {
 			let halfscreen = self.window_size() / 2.;
@@ -34,12 +33,6 @@ impl App {
 					}
 				}
 			}
-		}
-	}
-
-	fn handle_menu_command(&mut self, c: &MenuCommand) {
-		match c {
-			MenuCommand::NextTurn => self.send_command(Command::NextTurn),
 		}
 	}
 }
