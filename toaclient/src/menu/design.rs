@@ -40,10 +40,25 @@ impl App {
 		let ws = self.window_size();
 		let mut widgets = Vec::new();
 
+
 		widgets.push(Widget {
 			pos: ws * (0.01),
 			size: ws * (0.25, 0.25),
-			draw_type: u.food.to_string().into(),
+			draw_type: format!("health: {}", u.health).into(),
+			on_click: None,
+		});
+
+		widgets.push(Widget {
+			pos: ws * (0.01, 0.03),
+			size: ws * (0.25, 0.25),
+			draw_type: format!("food: {}", u.food).into(),
+			on_click: None,
+		});
+
+		widgets.push(Widget {
+			pos: ws * (0.01, 0.05),
+			size: ws * (0.25, 0.25),
+			draw_type: format!("stamina: {}", u.stamina).into(),
 			on_click: None,
 		});
 
