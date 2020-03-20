@@ -1,7 +1,7 @@
 use sfml::graphics::Color;
 
 use toalib::world::Unit;
-use toalib::command::Command;
+use toalib::command::{UnitCommand, Command};
 
 use crate::app::App;
 use crate::menu::Widget;
@@ -39,27 +39,40 @@ impl App {
 	fn build_unit_pane(&self, u: &Unit) -> Vec<Widget> {
 		let ws = self.window_size();
 		let mut widgets = Vec::new();
-
+		let cursor = self.cursor;
 
 		widgets.push(Widget {
 			pos: ws * (0.01),
-			size: ws * (0.25, 0.25),
+			size: ws * (0.025, 0.025),
 			draw_type: format!("health: {}", u.health).into(),
 			on_click: None,
 		});
 
 		widgets.push(Widget {
 			pos: ws * (0.01, 0.03),
-			size: ws * (0.25, 0.25),
+			size: ws * (0.025, 0.025),
 			draw_type: format!("food: {}", u.food).into(),
 			on_click: None,
 		});
 
 		widgets.push(Widget {
 			pos: ws * (0.01, 0.05),
-			size: ws * (0.25, 0.25),
+			size: ws * (0.025, 0.025),
 			draw_type: format!("stamina: {}", u.stamina).into(),
 			on_click: None,
+		});
+		widgets.push(Widget {
+			pos: ws * (0.01, 0.08),
+			size: ws * 0.025,
+			draw_type: Color::rgb(30, 30, 30).into(),
+			on_click: Some(Box::new(move |a| a.send_command(Command::UnitCommand{ command: UnitCommand::Work, pos: cursor }, None))),
+		});
+
+		widgets.push(Widget {
+			pos: ws * (0.01, 0.11),
+			size: ws * 0.025,
+			draw_type: Color::rgb(30, 30, 30).into(),
+			on_click: Some(Box::new(move |a| a.send_command(Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor }, None))),
 		});
 
 		widgets
