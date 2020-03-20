@@ -10,7 +10,7 @@ pub struct Widget {
 	pub pos: Vec2f,
 	pub size: Vec2f,
 	pub draw_type: DrawType,
-	pub on_click: Option<fn(&mut App)>,
+	pub on_click: Option<Box<dyn Fn(&mut App)>>,
 }
 
 pub enum DrawType {

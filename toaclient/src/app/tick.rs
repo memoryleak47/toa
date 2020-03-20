@@ -34,8 +34,13 @@ impl App {
 		self.pending = None;
 	}
 
-	pub fn send_command(&mut self, c: Command) {
+	pub fn send_command(&mut self, c: Command, reaction: Option<Box<dyn Fn(&mut App)>>) {
+		if self.pending.is_some() {
+			return;
+		}
+
 		let p = ClientToServerPacket::Command(c);
 		self.stream.send(p);
+		self.pending = reaction;
 	}
 }

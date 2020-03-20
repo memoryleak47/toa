@@ -29,7 +29,10 @@ impl App {
 				if let Button::Right = b {
 					if let Some(d) = [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter()
 								.find(|&d| self.cursor.map(|x| x + **d) == Some(p)) {
-						self.send_command(Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor });
+						self.send_command(
+							Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor },
+							Some(Box::new(move |a| { a.cursor = p; } ))
+						);
 					}
 				}
 			}

@@ -75,7 +75,7 @@ impl App {
 				pos: ws - s,
 				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
-				on_click: Some(|a| a.send_command(Command::NextTurn)),
+				on_click: Some(Box::new(|a| { a.send_command(Command::NextTurn, None); } )),
 			},
 		);
 

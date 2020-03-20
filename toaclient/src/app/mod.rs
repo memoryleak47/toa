@@ -21,7 +21,7 @@ pub struct App {
 	pub focus_position: Vec2f, // the tile position in the center of the screen
 	pub tilesize: f32, // zoom
 	pub cursor: Pos,
-	pub pending: Option<fn(&mut App)>,
+	pub pending: Option<Box<dyn Fn(&mut App)>>,
 	pub menu_state: MenuState,
 	pub world: World,
 	pub window: RenderWindow,
