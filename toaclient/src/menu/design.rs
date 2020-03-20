@@ -8,7 +8,7 @@ impl App {
 		let ws = self.window_size();
 		vec![
 			Widget { // plane
-				pos: (0., 0.).into(),
+				pos: (0.).into(),
 				size: ws * (0.3, 1.),
 				draw_type: Color::rgb(100, 100, 100).into(),
 				on_click: None,

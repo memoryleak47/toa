@@ -1,3 +1,3 @@
-pub enum MenuCommand {}
-
-
+pub enum MenuCommand {
+	NextTurn,
+}

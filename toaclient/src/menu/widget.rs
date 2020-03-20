@@ -57,3 +57,12 @@ impl From<TextureId> for DrawType {
 impl From<String> for DrawType {
 	fn from(s: String) -> DrawType { DrawType::Text(s) }
 }
+
+impl Widget {
+	pub fn collides(&self, p: Vec2f) -> bool {
+		p.x >= self.pos.x &&
+		p.y >= self.pos.y &&
+		p.x <= self.pos.x + self.size.x &&
+		p.y <= self.pos.y + self.size.y
+	}
+}

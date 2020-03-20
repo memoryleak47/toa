@@ -4,6 +4,7 @@ mod tick;
 mod render;
 mod action;
 mod marker;
+mod event;
 
 use sfml::graphics::{RenderWindow, Font};
 

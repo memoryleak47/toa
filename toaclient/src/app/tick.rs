@@ -22,11 +22,6 @@ impl App {
 		}
 
 		self.input.tick(&self.window);
-
-		if let Some(c) = self.fetch_command() {
-			let p = ClientToServerPacket::Command(c);
-			self.stream.send(p);
-		}
 	}
 
 	fn command_accepted(&mut self) {
@@ -43,31 +38,8 @@ impl App {
 		self.pending = None;
 	}
 
-	fn fetch_command(&mut self) -> Option<Command> {
-		if self.pending.is_none() {
-			// in case the cursored unit died
-			if self.world.unitmap.get(self.cursor)
-					.filter(|x| x.owner == self.player_id)
-					.is_none() {
-				self.unit_mode = None;
-			}
-
-			let action_infos = self.get_action_infos();
-
-			for info in action_infos.into_iter() {
-				if info.is_triggered(&self.input) {
-					if let Some(c) = info.action.get_command() {
-						if self.world.is_valid_command(self.player_id, &c) {
-							self.pending = Some(info.action);
-							return Some(c);
-						}
-					} else {
-						self.execute_action(info.action);
-					}
-				}
-			}
-		}
-		None
+	pub fn send_command(&mut self, c: Command) {
+		let p = ClientToServerPacket::Command(c);
+		self.stream.send(p);
 	}
-
 }
