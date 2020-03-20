@@ -23,7 +23,7 @@ use crate::menu::MenuState;
 pub struct App {
 	pub player_id: PlayerID,
 	pub unit_mode: Option<UnitMode>, // None -> no unit focused
-	pub focus_position: Vec2f,
+	pub focus_position: Vec2f, // the tile position in the center of the screen
 	pub tilesize: f32, // zoom
 	pub cursor: Pos,
 	pub pending: Option<Action>,
