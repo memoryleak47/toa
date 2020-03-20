@@ -6,7 +6,6 @@ use toalib::net::Stream;
 use toalib::vec::{Pos, Vec2f};
 
 use crate::misc::resource;
-use crate::input::Input;
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
 use crate::app::App;
@@ -24,7 +23,6 @@ impl App {
 
 		let mut app = App {
 			player_id: my_id,
-			unit_mode: None,
 			focus_position: Vec2f::new(0., 0.),
 			tilesize: DEFAULT_TILESIZE,
 			cursor: Pos::build(0, 0).unwrap(),
@@ -32,7 +30,6 @@ impl App {
 			menu_state: MenuState::new(),
 			world,
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
-			input: Input::new(),
 			texture_state: TextureState::new(),
 			sound_state: SoundState::new().unwrap(),
 			stream,

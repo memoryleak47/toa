@@ -1,4 +1,4 @@
-use sfml::graphics::{RenderWindow, RenderTarget, Color, RectangleShape, Text, Shape, Transformable};
+use sfml::graphics::{RenderTarget, Color, RectangleShape, Text, Shape, Transformable};
 
 use toalib::vec::Vec2f;
 

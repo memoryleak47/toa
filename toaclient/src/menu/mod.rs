@@ -3,10 +3,6 @@ mod widget;
 
 pub use widget::*;
 
-use sfml::graphics::Color;
-
-use toalib::vec::Vec2f;
-
 use crate::app::App;
 
 pub enum MenuState {

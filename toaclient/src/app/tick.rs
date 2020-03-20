@@ -20,17 +20,13 @@ impl App {
 			Some(_) => panic!("got wrong packet while running!"),
 			None => {},
 		}
-
-		self.input.tick(&self.window);
 	}
 
 	fn command_accepted(&mut self) {
 		let mut pending = None;
 		mem::swap(&mut pending, &mut self.pending);
 
-		if let Some(x) = pending {
-			self.execute_action(x);
-		}
+		pending.iter().for_each(|x| x(self));
 	}
 
 	fn command_declined(&mut self) {

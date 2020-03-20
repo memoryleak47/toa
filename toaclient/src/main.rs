@@ -1,7 +1,5 @@
 extern crate toalib;
 extern crate sfml;
-#[macro_use]
-extern crate lazy_static;
 
 mod misc;
 mod config;
@@ -10,8 +8,6 @@ mod vec_compat;
 mod graphics;
 mod gameobject;
 mod sound;
-mod input;
-mod unit_mode;
 mod app;
 mod menu;
 

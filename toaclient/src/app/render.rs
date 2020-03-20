@@ -1,11 +1,10 @@
-use sfml::graphics::{RenderTarget, Sprite, Transformable, Text};
+use sfml::graphics::{RenderTarget, Sprite, Transformable};
 
 use toalib::vec::{Pos, Vec2f};
 
 use crate::gameobject::GameObject;
 use crate::gameobject::{bag::Bag, unit::Cloth};
 use crate::vec_compat::*;
-use crate::unit_mode::UnitMode;
 use crate::app::App;
 use crate::app::marker::Marker;
 
@@ -90,13 +89,7 @@ impl App {
 
 	fn render_markers(&mut self) {
 		draw!(self, self.cursor, &Marker::Normal);
-		if let Some(UnitMode::Attack { ref aim }) = self.unit_mode {
-			for rel in aim.get_relative_tiles() {
-				if let Some(p) = self.cursor.map(|x| x + rel) {
-					draw!(self, p, Marker::Combat);
-				}
-			}
-		}
+		// TODO render attack marker!
 	}
 
 	pub fn window_size(&self) -> Vec2f {

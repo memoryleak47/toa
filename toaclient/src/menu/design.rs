@@ -8,7 +8,6 @@ use crate::menu::Widget;
 
 impl App {
 	pub fn generate_widgets(&self) -> Vec<Widget> {
-		let ws = self.window_size();
 		let mut widgets = Vec::new();
 
 		widgets.extend(self.build_pane());
