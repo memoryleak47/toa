@@ -70,10 +70,11 @@ impl App {
 		let ws = self.window_size();
 		let mut widgets = Vec::new();
 
+		let s = (ws.x * 0.01).into();
 		widgets.push(
 			Widget {
-				pos: ws * 0.95,
-				size: ws * 0.03,
+				pos: ws - s,
+				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
 				on_click: Some(|a| a.send_command(Command::NextTurn)),
 			},
