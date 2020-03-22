@@ -75,9 +75,10 @@ impl World {
 					.filter(|x| x.owner == player)
 					.is_some()
 			},
-			UnitCommand::Attack(_aim) => {
+			UnitCommand::Attack(weapon_id, _) => {
 				self.unitmap.get(pos)
 					.filter(|x| x.owner == player)
+					.filter(|u| weapon_id.map(|i| u.inventory.has_index(i)).unwrap_or(true) )
 					.is_some()
 			},
 			UnitCommand::Build(class) => {
@@ -134,17 +135,6 @@ impl World {
 						.filter(|x| x.inventory.contains_all(recipe))
 						.is_some()
 				} else { false }
-			},
-			UnitCommand::ChangeMainItem(opt_index) => {
-				if let Some(i) = opt_index {
-					self.unitmap.get(pos)
-						.filter(|u| u.inventory.iter().len() > *i)
-						.is_some()
-				} else {
-					self.unitmap.get(pos)
-						.and_then(|x| x.main_item.as_ref())
-						.is_some()
-				}
 			},
 			UnitCommand::ExecItem(i) => {
 				self.unitmap.get(pos)

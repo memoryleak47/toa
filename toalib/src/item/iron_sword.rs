@@ -1,5 +1,4 @@
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 
 lazy_static! {
@@ -34,11 +33,9 @@ impl ItemTrait for IronSword {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::IronSword
 	}
-	fn damage(&mut self, damage: Damage) -> bool {
+	fn inflict_damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn aim(&self) -> Aim {
-		new_meelee_aim(Damage(20))
-	}
+	fn get_damage(&self) -> Damage { Damage(20) }
 }

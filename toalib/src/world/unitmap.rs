@@ -4,7 +4,6 @@ use std::mem::swap;
 use crate::vec::Pos;
 use crate::tilemap::OptTileMap;
 use crate::world::World;
-use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 use crate::item::{Inventory, Item, ItemClass};
 use crate::team::PlayerID;
@@ -23,7 +22,6 @@ pub struct Unit {
 	pub health: u32,
 	pub food: u32,
 	pub inventory: Inventory,
-	pub main_item: Option<Item>,
 }
 
 impl Unit {
@@ -34,25 +32,11 @@ impl Unit {
 			health: FULL_HEALTH,
 			food: FULL_FOOD,
 			inventory: Inventory::new(),
-			main_item: None,
 		}
 	}
 
-	pub fn get_info_string(&self) -> String {
-		format!("Unit( owner: {}, stamina: {}, health: {}, food: {}, main_item: {}, inventory: {})",
-			self.owner, self.stamina, self.health, self.food, self.main_item.as_ref().map(|x| x.get_class().get_name()).unwrap_or("None"), &self.inventory.get_info_string()
-		)
-	}
-
 	pub fn get_weight(&self) -> u32 {
-		self.inventory.get_weight() + self.main_item.as_ref().map(|x| x.get_class().get_weight()).unwrap_or(0)
-	}
-
-	pub fn aim(&self) -> Aim {
-		self.main_item
-			.as_ref()
-			.map(|x| x.aim())
-			.unwrap_or_else(|| new_meelee_aim(Damage(1)))
+		self.inventory.get_weight()
 	}
 
 	pub fn damage(&mut self, damage: Damage) -> bool { // returns whether the unit died
@@ -131,14 +115,9 @@ impl World {
 		let mut unit = None;
 		swap(&mut unit, self.unitmap.get_mut_raw(p));
 		if let Some(mut u) = unit {
-			let ground_inv = self.itemmap.get_mut(p).get_item_vec();
-			if let Some(i) = u.main_item {
-				ground_inv.push(i);
-			}
-			let v = u.inventory.get_item_vec();
-			while let Some(x) = v.pop() { 
-				ground_inv.push(x);
-			}
+			let inv: Vec<Item> = u.inventory.get_item_vec().clone();
+			self.itemmap.get_mut(p).get_item_vec()
+				.extend(inv);
 		}
 	}
 }

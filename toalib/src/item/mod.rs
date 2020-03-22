@@ -12,8 +12,9 @@ mod lance;
 use std::slice;
 use std::mem;
 
+
+use crate::vec::{Vec2i, Vec2f};
 use crate::vec::Pos;
-use crate::aim::Aim;
 use crate::world::World;
 use crate::damage::Damage;
 
@@ -33,9 +34,9 @@ trait ItemTrait {
 
 	fn get_class(&self) -> ItemClass;
 
-	// returns whether the item got destroyed
-	fn damage(&mut self, damage: Damage) -> bool;
-	fn aim(&self) -> Aim;
+	fn inflict_damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
+	fn get_damage(&self) -> Damage { Damage(1) }
+	fn aim(&self, v: Vec2f) -> Vec<Vec2i> { meelee_aim(v) }
 	fn is_execable(&self, _p: Pos, _w: &World) -> bool { false }
 	fn exec(&self, _p: Pos, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
 }
@@ -75,8 +76,9 @@ macro_rules! setup {
 
 		impl Item {
 			pub fn get_class(&self) -> ItemClass						{ match self { $( Item::$x(a) => a.get_class() ),* } }
-			pub fn damage(&mut self, damage: Damage) -> bool			{ match self { $( Item::$x(a) => a.damage(damage) ),* } }
-			pub fn aim(&self) -> Aim									{ match self { $( Item::$x(a) => a.aim() ),* } }
+			pub fn inflict_damage(&mut self, damage: Damage) -> bool	{ match self { $( Item::$x(a) => a.inflict_damage(damage) ),* } }
+			pub fn get_damage(&self) -> Damage							{ match self { $( Item::$x(a) => a.get_damage() ),* } }
+			pub fn aim(&self, v: Vec2f) -> Vec<Vec2i>					{ match self { $( Item::$x(a) => a.aim(v) ),* } }
 			pub fn is_execable(&self, p: Pos, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
 			pub fn exec(&self, p: Pos, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
 		}
@@ -93,7 +95,7 @@ macro_rules! setup {
 
 setup!(Food, Wood, WoodSword, Stone, Iron, IronSword, WoodBow, SettlementKit, LongSword, Lance);
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Inventory {
 	items: Vec<Item>,
 }
@@ -141,19 +143,12 @@ impl Inventory {
 		self.items.as_mut()
 	}
 
-	pub fn get_info_string(&self) -> String {
-		let mut s = String::new();
-		s.push('[');
-		let tmp: Vec<&'static str> = self.iter()
-			.map(|x| x.get_class().get_name())
-			.collect();
-		s.push_str(&(&tmp[..]).join(", "));
-		s.push(']');
-		s
-	}
-
 	pub fn get_item_vec(&mut self) -> &mut Vec<Item> {
 		&mut self.items
+	}
+
+	pub fn has_index(&self, i: usize) -> bool {
+		i < self.items.len()
 	}
 
 	pub fn reduce(&mut self, items: &[ItemClass]) {
@@ -179,15 +174,16 @@ impl Inventory {
 		mem::swap(&mut items, &mut self.items);
 		
 		for mut item in items.into_iter() {
-			if !item.damage(damage) {
+			if !item.inflict_damage(damage) {
 				self.items.push(item);
 			}
 		}
 	}
 }
 
-impl Clone for Inventory {
-	fn clone(&self) -> Inventory {
-		Inventory { items: self.items.clone() }
-	}
+pub fn meelee_aim(v: Vec2f) -> Vec<Vec2i> {
+	let v2 = v.to_i();
+	let vec = vec![v2, v2 + (0,1), v2 + (0,-1), v2 + (1,0), v2 + (1,0)];
+	vec![vec.into_iter().min_by_key(|&w| (w - v2).magnitude_sqr())
+		.unwrap()]
 }

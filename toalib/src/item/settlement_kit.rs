@@ -1,7 +1,6 @@
 use crate::vec::Pos;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
-use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 use crate::world::buildingmap::new_spawner;
 
@@ -35,10 +34,7 @@ impl ItemTrait for SettlementKit {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::SettlementKit
 	}
-	fn damage(&mut self, _: Damage) -> bool { true }
-	fn aim(&self) -> Aim {
-		new_meelee_aim(Damage(1))
-	}
+	fn inflict_damage(&mut self, _: Damage) -> bool { true }
 	fn is_execable(&self, p: Pos, w: &World) -> bool {
 		w.buildingmap.get(p).is_none() && !w.terrainmap.get(p).prevents_building()
 	}

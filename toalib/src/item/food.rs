@@ -1,7 +1,6 @@
 use crate::vec::Pos;
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
 use crate::world::World;
-use crate::aim::{Aim, new_meelee_aim};
 use crate::damage::Damage;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -30,10 +29,7 @@ impl ItemTrait for Food {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::Food
 	}
-	fn damage(&mut self, _: Damage) -> bool { true }
-	fn aim(&self) -> Aim {
-		new_meelee_aim(Damage(1))
-	}
+	fn inflict_damage(&mut self, _: Damage) -> bool { true }
 	fn is_execable(&self, _p: Pos, _w: &World) -> bool { true }
 	fn exec(&self, p: Pos, w: &mut World) {
 		w.unitmap.get_mut(p).unwrap()

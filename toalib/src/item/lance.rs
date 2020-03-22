@@ -1,5 +1,5 @@
 use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::aim::{Aim, new_lance_aim};
+use crate::vec::{Vec2i, Vec2f};
 use crate::damage::Damage;
 
 lazy_static! {
@@ -34,12 +34,15 @@ impl ItemTrait for Lance {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::Lance
 	}
-	fn damage(&mut self, damage: Damage) -> bool {
+	fn inflict_damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn aim(&self) -> Aim {
-		new_lance_aim(Damage(12))
+	fn get_damage(&self) -> Damage { Damage(12) }
+	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
+		// TODO
+		// new_lance_aim(Damage(12))
+		vec![]
 	}
 }
 

@@ -3,9 +3,8 @@ use std::mem;
 use crate::vec::Pos;
 use crate::item::ItemClass;
 use crate::command::{Command, UnitCommand};
-use crate::vec::Direction;
+use crate::vec::{Vec2f, Direction};
 use crate::world::World;
-use crate::aim::Aim;
 use crate::world::unitmap::Unit;
 use crate::world::buildingmap::BuildingClass;
 use crate::team::PlayerID;
@@ -34,7 +33,7 @@ impl World {
 			
 		match *command {
 			UnitCommand::Move(direction) => self.exec_move(pos, direction),
-			UnitCommand::Attack(ref aim) => self.exec_attack(pos, aim),
+			UnitCommand::Attack(weapon_id, v) => self.exec_attack(pos, weapon_id, v),
 			UnitCommand::Build(class) => self.exec_build(pos, class),
 			UnitCommand::Work => self.exec_work(pos),
 			UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
@@ -42,7 +41,6 @@ impl World {
 			UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 			UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
-			UnitCommand::ChangeMainItem(opt_index) => self.exec_change_main_item(opt_index, pos),
 			UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
 		}
 	}
@@ -55,8 +53,9 @@ impl World {
 		mem::swap(&mut tmp, self.unitmap.get_mut_raw(to));
 	}
 
-	fn exec_attack(&mut self, pos: Pos, aim: &Aim) {
-		aim.exec(pos, self);
+	fn exec_attack(&mut self, pos: Pos, weapon_id: Option<usize>, v: Vec2f) {
+		// TODO
+		//aim.exec(pos, self);
 	}
 
 	fn exec_next_turn(&mut self, player_id: PlayerID) {
@@ -135,21 +134,6 @@ impl World {
 		let unit = self.unitmap.get_mut(at).unwrap();
 		unit.inventory.reduce(ic.get_recipe().unwrap());
 		unit.inventory.push(ic.build());
-	}
-
-	fn exec_change_main_item(&mut self, opt_index: Option<usize>, at: Pos) {
-		let unit = self.unitmap.get_mut(at).unwrap();
-
-		let mut opt = None;
-		mem::swap(&mut opt, &mut unit.main_item);
-
-		if let Some(x) = opt {
-			unit.inventory.push(x);
-		}
-		if let Some(i) = opt_index {
-			let item = unit.inventory.remove(i);
-			unit.main_item = Some(item);
-		}
 	}
 
 	fn exec_exec_item(&mut self, i: usize, at: Pos) {

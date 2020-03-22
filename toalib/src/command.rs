@@ -1,14 +1,13 @@
 use crate::vec::Pos;
 use crate::item::ItemClass;
-use crate::vec::Direction;
+use crate::vec::{Vec2f, Direction};
 use crate::world::World;
-use crate::aim::Aim;
 use crate::world::buildingmap::BuildingClass;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum UnitCommand {
 	Move(Direction),
-	Attack(Aim),
+	Attack(Option<usize>, Vec2f), // relative attack vector
 	Build(BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work
@@ -16,7 +15,6 @@ pub enum UnitCommand {
 	TakeItem(usize),
 	BurnBuilding,
 	Craft(ItemClass),
-	ChangeMainItem(Option<usize>),
 	ExecItem(usize),
 }
 
@@ -36,7 +34,7 @@ impl UnitCommand {
 				let weight_summand = 2 * w.unitmap.get(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand
 			},
-			UnitCommand::Attack(_) => { 10 },
+			UnitCommand::Attack(..) => { 10 },
 			UnitCommand::Build(class) => {
 				class.get_build_property().unwrap().stamina_cost
 			},
@@ -53,7 +51,6 @@ impl UnitCommand {
 			},
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
-			UnitCommand::ChangeMainItem(_) => 0,
 			UnitCommand::ExecItem(_) => 0,
 		}
 	}
