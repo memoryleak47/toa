@@ -14,14 +14,14 @@ use toalib::net::Stream;
 
 use crate::graphics::TextureState;
 use crate::sound::SoundState;
-use crate::menu::MenuState;
+use crate::menu::{MenuState, MenuCommand};
 
 pub struct App {
 	pub player_id: PlayerID,
 	pub focus_position: Vec2f, // the tile position in the center of the screen
 	pub tilesize: f32, // zoom
 	pub cursor: Pos,
-	pub pending: Option<Box<dyn Fn(&mut App)>>,
+	pub pending: Vec<MenuCommand>,
 	pub menu_state: MenuState,
 	pub world: World,
 	pub window: RenderWindow,

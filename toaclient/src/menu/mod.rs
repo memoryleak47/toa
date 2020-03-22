@@ -1,16 +1,28 @@
 mod design;
 mod widget;
 
+use toalib::command::Command;
+use toalib::vec::Pos;
+
 pub use widget::*;
 
 use crate::app::App;
 
+#[derive(Clone)]
+pub enum MenuCommand {
+	StateChange(MenuState),
+	Command(Command),
+	Cursor(Pos),
+}
+
+#[derive(Clone)]
 pub enum ItemChoiceMode {
 	Attack,
 //	Drop,
 	//Take,
 }
 
+#[derive(Clone)]
 pub enum MenuState {
 	Normal,
 	ItemChoice(ItemChoiceMode),
@@ -29,5 +41,9 @@ impl App {
 		for w in self.generate_widgets() {
 			self.draw_widget(w);
 		}
+	}
+
+	pub fn apply_menu_commands(&mut self, cs: &Vec<MenuCommand>) {
+		// TODO
 	}
 }

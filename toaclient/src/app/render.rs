@@ -80,9 +80,6 @@ impl App {
 			if let Some(u) = self.world.unitmap.get(p) {
 				draw!(self, p, u);
 				draw!(self, p, &Cloth(u.owner));
-				if let Some(ref main_item) = u.main_item {
-					draw!(self, p, main_item);
-				}
 			}
 		}
 	}

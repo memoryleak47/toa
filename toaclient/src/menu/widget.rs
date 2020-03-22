@@ -5,12 +5,13 @@ use toalib::vec::Vec2f;
 use crate::app::App;
 use crate::graphics::TextureId;
 use crate::vec_compat::*;
+use crate::menu::MenuCommand;
 
 pub struct Widget {
 	pub pos: Vec2f,
 	pub size: Vec2f,
 	pub draw_type: DrawType,
-	pub on_click: Option<Box<dyn Fn(&mut App)>>,
+	pub on_click: Vec<MenuCommand>,
 }
 
 pub enum DrawType {

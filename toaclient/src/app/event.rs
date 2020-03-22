@@ -1,9 +1,10 @@
 use sfml::window::{mouse::Button, Event};
 
-use toalib::vec::{Vec2f, Direction};
+use toalib::vec::{Vec2f, Direction, Pos};
 use toalib::command::{UnitCommand, Command};
 
 use crate::app::App;
+use crate::menu::MenuCommand;
 
 impl App {
 	pub fn handle_event(&mut self, e: Event) {
@@ -16,9 +17,9 @@ impl App {
 	}
 
 	fn handle_mouse_press(&mut self, p: Vec2f, b: Button) {
-		if let Some(w) = self.generate_widgets().iter().rfind(|w| w.collides(p)) {
+		if let Some(w) = self.generate_widgets().iter_mut().rfind(|w| w.collides(p)) {
 			if let Button::Left = b {
-				w.on_click.iter().for_each(|f| f(self) )
+				self.apply_menu_commands(&w.on_click);
 			}
 		} else {
 			let halfscreen = self.window_size() / 2.;
@@ -29,10 +30,10 @@ impl App {
 				if let Button::Right = b {
 					if let Some(d) = [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter()
 								.find(|&d| self.cursor.map(|x| x + **d) == Some(p)) {
-						self.send_command(
-							Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor },
-							Some(Box::new(move |a| { a.cursor = p; } ))
-						);
+						self.apply_menu_commands(&vec![
+							MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor }),
+							MenuCommand::Cursor(p)
+						]);
 					}
 				}
 			}

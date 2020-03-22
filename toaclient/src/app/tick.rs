@@ -1,9 +1,9 @@
 use crate::app::App;
 
-use std::mem;
-
 use toalib::command::Command;
 use toalib::packet::{ClientToServerPacket, ServerToClientPacket};
+
+use crate::menu::MenuCommand;
 
 impl App {
 	pub fn tick(&mut self) {
@@ -23,19 +23,17 @@ impl App {
 	}
 
 	fn command_accepted(&mut self) {
-		let mut pending = None;
-		mem::swap(&mut pending, &mut self.pending);
-
-		pending.iter().for_each(|x| x(self));
+		self.apply_menu_commands(&self.pending.clone());
+		self.pending = vec![];
 	}
 
 	fn command_declined(&mut self) {
 		println!("Your command has been declined!\nMaybe some other player did a move which prevents your move?\nOtherwise this is a bug.");
-		self.pending = None;
+		self.pending = vec![];
 	}
 
-	pub fn send_command(&mut self, c: Command, reaction: Option<Box<dyn Fn(&mut App)>>) {
-		if self.pending.is_some() {
+	pub fn send_command(&mut self, c: Command, reaction: Vec<MenuCommand>) {
+		if !self.pending.is_empty() {
 			return;
 		}
 
