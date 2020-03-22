@@ -1,13 +1,31 @@
 use sfml::graphics::Color;
+use sfml::window::mouse::Button;
 
 use toalib::world::Unit;
 use toalib::command::{UnitCommand, Command};
 use toalib::item::{Item, Inventory};
+use toalib::vec::{Direction, Pos};
 
 use crate::app::App;
 use crate::menu::{Widget, MenuState, MenuCommand, ItemChoiceMode};
 
 impl App {
+	pub fn on_tile_click(&mut self, p: Pos, b: Button) {
+		if let Button::Left = b {
+			self.apply_menu_commands(vec![ MenuCommand::Cursor(p) ]);
+		}
+		if let Button::Right = b {
+			if let Some(d) = [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter()
+						.find(|&d| self.cursor.map(|x| x + **d) == Some(p)) {
+				self.apply_menu_commands(vec![
+					MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor }),
+					MenuCommand::Cursor(p)
+				]);
+			}
+		}
+
+	}
+
 	pub fn generate_widgets(&self) -> Vec<Widget> {
 		let mut widgets = Vec::new();
 
