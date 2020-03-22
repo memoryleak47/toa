@@ -19,6 +19,7 @@ impl ItemClassTrait for StoneClass {
 		Item::Stone(Stone)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { None }
+	fn stateless() -> bool { true }
 }
 
 impl ItemTrait for Stone {

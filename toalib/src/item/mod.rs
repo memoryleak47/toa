@@ -47,6 +47,7 @@ trait ItemClassTrait {
 	fn get_weight() -> u32;
 	fn build() -> Item;
 	fn get_recipe() -> Option<&'static [ItemClass]>;
+	fn stateless() -> bool;
 }
 
 macro_rules! setup {
@@ -85,6 +86,7 @@ macro_rules! setup {
 			pub fn get_weight(&self) -> u32								{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_weight() ),* } }
 			pub fn build(&self) -> Item									{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::build() ),* } }
 			pub fn get_recipe(&self) -> Option<&'static [ItemClass]> 	{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::get_recipe() ),* } }
+			pub fn stateless(&self) -> bool							 	{ match self { $( ItemClass::$x => <$x as ItemTrait>::Class::stateless() ),* } }
 		}
 	};
 }

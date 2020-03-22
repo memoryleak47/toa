@@ -19,6 +19,7 @@ impl ItemClassTrait for WoodClass {
 		Item::Wood(Wood)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { None }
+	fn stateless() -> bool { true }
 }
 
 impl ItemTrait for Wood {

@@ -25,6 +25,7 @@ impl ItemClassTrait for LanceClass {
 		Item::Lance(Lance { health: 100 })
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
+	fn stateless() -> bool { false }
 }
 
 impl ItemTrait for Lance {

@@ -19,6 +19,7 @@ impl ItemClassTrait for IronClass {
 		Item::Iron(Iron)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { None }
+	fn stateless() -> bool { true }
 }
 
 impl ItemTrait for Iron {

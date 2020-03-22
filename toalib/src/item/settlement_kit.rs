@@ -26,6 +26,7 @@ impl ItemClassTrait for SettlementKitClass {
 		Item::SettlementKit(SettlementKit)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
+	fn stateless() -> bool { false }
 }
 
 impl ItemTrait for SettlementKit {

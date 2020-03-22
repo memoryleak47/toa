@@ -21,6 +21,7 @@ impl ItemClassTrait for FoodClass {
 		Item::Food(Food)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { None }
+	fn stateless() -> bool { true }
 }
 
 impl ItemTrait for Food {

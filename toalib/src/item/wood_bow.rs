@@ -25,6 +25,7 @@ impl ItemClassTrait for WoodBowClass {
 		Item::WoodBow(WoodBow { health: 100 })
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
+	fn stateless() -> bool { false }
 }
 
 impl ItemTrait for WoodBow {
