@@ -29,7 +29,7 @@ impl ItemTrait for Food {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::Food
 	}
-	fn inflict_damage(&mut self, _: Damage) -> bool { true }
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn is_execable(&self, _p: Pos, _w: &World) -> bool { true }
 	fn exec(&self, p: Pos, w: &mut World) {
 		w.unitmap.get_mut(p).unwrap()

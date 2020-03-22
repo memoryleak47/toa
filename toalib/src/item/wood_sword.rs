@@ -33,7 +33,7 @@ impl ItemTrait for WoodSword {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::WoodSword
 	}
-	fn inflict_damage(&mut self, damage: Damage) -> bool {
+	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}

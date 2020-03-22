@@ -1,13 +1,14 @@
 use std::mem;
 
-use crate::vec::Pos;
-use crate::item::ItemClass;
+use crate::vec::{Pos, Vec2i};
+use crate::item::{ItemClass, melee_aim};
 use crate::command::{Command, UnitCommand};
 use crate::vec::{Vec2f, Direction};
 use crate::world::World;
 use crate::world::unitmap::Unit;
 use crate::world::buildingmap::BuildingClass;
 use crate::team::PlayerID;
+use crate::damage::Damage;
 
 impl World {
 	pub fn checked_exec(&mut self, player_id: PlayerID, command: &Command) -> bool {
@@ -54,8 +55,19 @@ impl World {
 	}
 
 	fn exec_attack(&mut self, pos: Pos, weapon_id: Option<usize>, v: Vec2f) {
-		// TODO
-		//aim.exec(pos, self);
+		let u = self.unitmap.get(pos).unwrap();
+		let (rel_tiles, dmg): (Vec<Vec2i>, Damage) = match weapon_id {
+			Some(i) => {
+				let item = u.inventory.get(i);
+				(item.aim(v), item.get_damage())
+			}
+			None => (melee_aim(v), Damage(1)),
+		};
+		for t in rel_tiles {
+			if let Some(t) = pos.map(|x| x + t) {
+				self.damage(t, dmg);
+			}
+		}
 	}
 
 	fn exec_next_turn(&mut self, player_id: PlayerID) {

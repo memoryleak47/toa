@@ -34,7 +34,7 @@ impl ItemTrait for SettlementKit {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::SettlementKit
 	}
-	fn inflict_damage(&mut self, _: Damage) -> bool { true }
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn is_execable(&self, p: Pos, w: &World) -> bool {
 		w.buildingmap.get(p).is_none() && !w.terrainmap.get(p).prevents_building()
 	}

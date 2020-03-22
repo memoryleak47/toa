@@ -27,6 +27,6 @@ impl ItemTrait for Wood {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::Wood
 	}
-	fn inflict_damage(&mut self, _: Damage) -> bool { true }
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn get_damage(&self) -> Damage { Damage(5) }
 }
