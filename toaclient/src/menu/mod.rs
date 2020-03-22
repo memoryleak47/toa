@@ -46,8 +46,8 @@ impl App {
 
 	pub fn apply_menu_commands(&mut self, mut cs: Vec<MenuCommand>) {
 		if !self.pending.is_empty() {
-			self.pending.extend_from_slice(&cs[..]);
-			return;
+			return; // while pending, inputs are ignored!
+			// this is a simple way to prevent a big class of bugs
 		}
 
 		while !cs.is_empty() {
