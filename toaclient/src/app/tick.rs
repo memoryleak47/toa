@@ -1,6 +1,7 @@
+use std::mem;
+
 use crate::app::App;
 
-use toalib::command::Command;
 use toalib::packet::ServerToClientPacket;
 
 impl App {
@@ -21,8 +22,9 @@ impl App {
 	}
 
 	fn command_accepted(&mut self) {
-		self.apply_menu_commands(&self.pending.clone());
-		self.pending = vec![];
+		let mut cs = vec![];
+		mem::swap(&mut self.pending, &mut cs);
+		self.apply_menu_commands(cs);
 	}
 
 	fn command_declined(&mut self) {

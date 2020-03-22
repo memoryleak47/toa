@@ -44,13 +44,12 @@ impl App {
 		}
 	}
 
-	pub fn apply_menu_commands(&mut self, cs: &Vec<MenuCommand>) {
+	pub fn apply_menu_commands(&mut self, mut cs: Vec<MenuCommand>) {
 		if !self.pending.is_empty() {
 			self.pending.extend_from_slice(&cs[..]);
 			return;
 		}
 
-		let mut cs: Vec<MenuCommand> = cs.clone();
 		while !cs.is_empty() {
 			match cs.remove(0) {
 				MenuCommand::Command(c) => {
