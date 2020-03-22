@@ -2,6 +2,7 @@ use sfml::graphics::Color;
 
 use toalib::world::Unit;
 use toalib::command::{UnitCommand, Command};
+use toalib::item::{Item, Inventory};
 
 use crate::app::App;
 use crate::menu::{Widget, MenuState, ItemChoiceMode};
@@ -12,6 +13,14 @@ impl App {
 
 		widgets.extend(self.build_pane());
 		widgets.extend(self.main_button());
+
+		match self.menu_state {
+			MenuState::Normal => {},
+			MenuState::ItemChoice(ItemChoiceMode::Attack) => {
+				widgets.extend(self.build_attack_mode());
+			},
+			MenuState::Attack => {}, // TODO
+		}
 
 		widgets
 	}
@@ -83,6 +92,16 @@ impl App {
 		});
 
 		widgets
+	}
+
+	fn build_attack_mode(&self) -> Vec<Widget> {
+		let mut inv = self.world.unitmap.get(self.cursor).unwrap().inventory.clone();
+		// TODO inv.push(Hand);
+		self.build_inventory(inv, Box::new(|a, _| { a.menu_state = MenuState::Attack; }))
+	}
+
+	fn build_inventory(&self, inv: Inventory, reaction: Box<dyn Fn(&mut App, Item)>) -> Vec<Widget> {
+		vec![] // TODO
 	}
 
 	fn main_button(&self) -> Vec<Widget> {
