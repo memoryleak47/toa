@@ -27,7 +27,7 @@ pub enum ItemChoiceMode {
 pub enum MenuState {
 	Normal,
 	ItemChoice(ItemChoiceMode),
-	Attack, // TODO this needs some item
+	Attack(Option<usize>),
 	//DropItem, // TODO this needs some item
 }
 
@@ -53,6 +53,11 @@ impl App {
 		while !cs.is_empty() {
 			match cs.remove(0) {
 				MenuCommand::Command(c) => {
+					if !self.world.is_valid_command(self.player_id, &c) {
+						println!("your command was invalid!");
+						return;
+					}
+
 					let p = ClientToServerPacket::Command(c);
 					self.stream.send(p);
 					self.pending = cs;

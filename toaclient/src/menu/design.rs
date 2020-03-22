@@ -19,7 +19,7 @@ impl App {
 			MenuState::ItemChoice(ItemChoiceMode::Attack) => {
 				widgets.extend(self.build_attack_mode());
 			},
-			MenuState::Attack => {}, // TODO
+			MenuState::Attack(_) => {}, // TODO
 		}
 
 		widgets
@@ -97,10 +97,10 @@ impl App {
 	fn build_attack_mode(&self) -> Vec<Widget> {
 		let inv = self.world.unitmap.get(self.cursor).unwrap().inventory.clone();
 		// TODO inv.push(Hand);
-		self.build_inventory(inv, |_| vec![MenuCommand::StateChange(MenuState::Attack)])
+		self.build_inventory(inv, |i| vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))])
 	}
 
-	fn build_inventory<F: Fn(&Item) -> Vec<MenuCommand>>(&self, mut inv: Inventory, reaction: F) -> Vec<Widget> {
+	fn build_inventory<F: Fn(usize) -> Vec<MenuCommand>>(&self, mut inv: Inventory, reaction: F) -> Vec<Widget> {
 		let mut widgets = vec![];
 		let ws = self.window_size();
 
@@ -120,7 +120,7 @@ impl App {
 					pos: ws * (0.3 + 0.03 * i as f32, 0.0),
 					size: ws * (0.025, 0.025),
 					draw_type: Color::rgb(200, 200, 200).into(),
-					on_click: reaction(item),
+					on_click: reaction(i),
 				},
 			);
 		}
