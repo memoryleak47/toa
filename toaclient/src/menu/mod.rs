@@ -2,6 +2,7 @@ mod design;
 mod widget;
 
 use toalib::command::Command;
+use toalib::packet::ClientToServerPacket;
 use toalib::vec::Pos;
 
 pub use widget::*;
@@ -44,6 +45,27 @@ impl App {
 	}
 
 	pub fn apply_menu_commands(&mut self, cs: &Vec<MenuCommand>) {
-		// TODO
+		if !self.pending.is_empty() {
+			self.pending.extend_from_slice(&cs[..]);
+			return;
+		}
+
+		let mut cs: Vec<MenuCommand> = cs.clone();
+		while !cs.is_empty() {
+			match cs.remove(0) {
+				MenuCommand::Command(c) => {
+					let p = ClientToServerPacket::Command(c);
+					self.stream.send(p);
+					self.pending = cs;
+					return;
+				},
+				MenuCommand::StateChange(s) => {
+					self.menu_state = s;
+				}
+				MenuCommand::Cursor(c) => {
+					self.cursor = c;
+				},
+			}
+		}
 	}
 }

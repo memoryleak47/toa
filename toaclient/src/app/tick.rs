@@ -1,9 +1,7 @@
 use crate::app::App;
 
 use toalib::command::Command;
-use toalib::packet::{ClientToServerPacket, ServerToClientPacket};
-
-use crate::menu::MenuCommand;
+use toalib::packet::ServerToClientPacket;
 
 impl App {
 	pub fn tick(&mut self) {
@@ -30,15 +28,5 @@ impl App {
 	fn command_declined(&mut self) {
 		println!("Your command has been declined!\nMaybe some other player did a move which prevents your move?\nOtherwise this is a bug.");
 		self.pending = vec![];
-	}
-
-	pub fn send_command(&mut self, c: Command, reaction: Vec<MenuCommand>) {
-		if !self.pending.is_empty() {
-			return;
-		}
-
-		let p = ClientToServerPacket::Command(c);
-		self.stream.send(p);
-		self.pending = reaction;
 	}
 }

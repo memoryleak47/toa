@@ -100,7 +100,7 @@ impl App {
 		self.build_inventory(inv, |_| vec![MenuCommand::StateChange(MenuState::Attack)])
 	}
 
-	fn build_inventory<F: Fn(&App) -> Vec<MenuCommand>>(&self, mut inv: Inventory, reaction: F) -> Vec<Widget> {
+	fn build_inventory<F: Fn(&Item) -> Vec<MenuCommand>>(&self, mut inv: Inventory, reaction: F) -> Vec<Widget> {
 		let mut widgets = vec![];
 		let ws = self.window_size();
 
@@ -114,14 +114,13 @@ impl App {
 		);
 
 		let v: Vec<Item> = (*inv.get_item_vec()).clone();
-		for (i, item) in v.into_iter().enumerate() {
-			let item: Item = item;
+		for (i, item) in v.iter().enumerate() {
 			widgets.push(
 				Widget {
 					pos: ws * (0.3 + 0.03 * i as f32, 0.0),
 					size: ws * (0.025, 0.025),
 					draw_type: Color::rgb(200, 200, 200).into(),
-					on_click: reaction(self),
+					on_click: reaction(item),
 				},
 			);
 		}
