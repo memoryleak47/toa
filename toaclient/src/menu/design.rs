@@ -4,7 +4,7 @@ use toalib::world::Unit;
 use toalib::command::{UnitCommand, Command};
 
 use crate::app::App;
-use crate::menu::Widget;
+use crate::menu::{Widget, MenuState, ItemChoiceMode};
 
 impl App {
 	pub fn generate_widgets(&self) -> Vec<Widget> {
@@ -73,6 +73,13 @@ impl App {
 			size: ws * 0.025,
 			draw_type: Color::rgb(30, 30, 30).into(),
 			on_click: Some(Box::new(move |a| a.send_command(Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor }, None))),
+		});
+
+		widgets.push(Widget {
+			pos: ws * (0.01, 0.14),
+			size: ws * 0.025,
+			draw_type: Color::rgb(100, 0, 0).into(),
+			on_click: Some(Box::new(move |a| { a.menu_state = MenuState::ItemChoice(ItemChoiceMode::Attack); }))
 		});
 
 		widgets
