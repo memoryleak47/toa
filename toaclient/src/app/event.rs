@@ -6,6 +6,10 @@ use crate::app::App;
 
 impl App {
 	pub fn handle_event(&mut self, e: Event) {
+		if sfml::window::Key::Q.is_pressed() {
+			self.window.close();
+		}
+
 		match e {
 			Event::Closed => self.window.close(),
 			Event::MouseButtonPressed { button: Button::Middle, x, y } => {
@@ -37,10 +41,14 @@ impl App {
 				self.apply_menu_commands(w.on_click.clone());
 			}
 		} else {
-			let halfscreen = self.window_size() / 2.;
-			if let Some(p) = ((p-halfscreen) / self.tilesize + self.focus_position).to_i().to_pos() {
+			if let Some(p) = self.window_to_tile_position(p).to_i().to_pos() {
 				self.apply_menu_commands(self.on_tile_click(p, b));
 			}
 		}
+	}
+
+	fn window_to_tile_position(&self, p: Vec2f) -> Vec2f {
+		let halfscreen = self.window_size() / 2.;
+		(p-halfscreen) / self.tilesize + self.focus_position
 	}
 }
