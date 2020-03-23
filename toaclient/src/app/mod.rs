@@ -29,4 +29,5 @@ pub struct App {
 	pub sound_state: SoundState,
 	pub stream: Stream,
 	pub font: Font,
+	pub window_grab: Option<Vec2f>,
 }

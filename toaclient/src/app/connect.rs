@@ -34,6 +34,7 @@ impl App {
 			sound_state: SoundState::new().unwrap(),
 			stream,
 			font: Font::from_file(&resource("font/Monospace.ttf")).unwrap(),
+			window_grab: None,
 		};
 
 		app.init();
