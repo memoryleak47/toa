@@ -10,20 +10,20 @@ use crate::app::App;
 use crate::menu::{Widget, MenuState, MenuCommand, ItemChoiceMode};
 
 impl App {
-	pub fn on_tile_click(&mut self, p: Pos, b: Button) {
+	pub fn on_tile_click(&self, p: Pos, b: Button) -> Vec<MenuCommand> {
 		if let Button::Left = b {
-			self.apply_menu_commands(vec![ MenuCommand::Cursor(p) ]);
+			return vec![MenuCommand::Cursor(p)];
 		}
 		if let Button::Right = b {
 			if let Some(d) = [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter()
 						.find(|&d| self.cursor.map(|x| x + **d) == Some(p)) {
-				self.apply_menu_commands(vec![
+				return vec![
 					MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Move(*d), pos: self.cursor }),
 					MenuCommand::Cursor(p)
-				]);
+				];
 			}
 		}
-
+		vec![]
 	}
 
 	pub fn generate_widgets(&self) -> Vec<Widget> {

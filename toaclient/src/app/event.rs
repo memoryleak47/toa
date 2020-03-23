@@ -38,8 +38,8 @@ impl App {
 			}
 		} else {
 			let halfscreen = self.window_size() / 2.;
-			if let Some(p) = ((p-halfscreen) / self.tilesize - self.focus_position).to_i().to_pos() {
-				self.on_tile_click(p, b);
+			if let Some(p) = ((p-halfscreen) / self.tilesize + self.focus_position).to_i().to_pos() {
+				self.apply_menu_commands(self.on_tile_click(p, b));
 			}
 		}
 	}
