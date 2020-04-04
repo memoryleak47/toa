@@ -1,12 +1,14 @@
 use sfml::graphics::{RenderTarget, Sprite, Transformable};
 
 use toalib::vec::{Pos, Vec2f};
+use toalib::item::melee_aim;
 
 use crate::gameobject::GameObject;
 use crate::gameobject::{bag::Bag, unit::Cloth};
 use crate::vec_compat::*;
 use crate::app::App;
 use crate::app::marker::Marker;
+use crate::menu::MenuState;
 
 
 // sadly, I can't use a normal method, due to borrowing issues
@@ -86,7 +88,18 @@ impl App {
 
 	fn render_markers(&mut self) {
 		draw!(self, self.cursor, &Marker::Normal);
-		// TODO render attack marker!
+		if let MenuState::Attack(weapon_id) = self.menu_state {
+			let v = self.get_world_mouse();
+			let u = self.world.unitmap.get(self.cursor).unwrap();
+			let rel_tiles = weapon_id.map(|i| u.inventory.get(i).aim(v))
+							.unwrap_or(melee_aim(v));
+			for t in rel_tiles {
+				if let Some(t) = self.cursor.map(|x| x + t) {
+					draw!(self, t, &Marker::Combat);
+				}
+			}
+
+		}
 	}
 
 	pub fn window_size(&self) -> Vec2f {

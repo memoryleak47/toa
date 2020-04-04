@@ -51,4 +51,9 @@ impl App {
 		let halfscreen = self.window_size() / 2.;
 		(p-halfscreen) / self.tilesize + self.focus_position
 	}
+
+	pub fn get_world_mouse(&self) -> Vec2f {
+		let m = self.window.mouse_position();
+		self.window_to_tile_position(Vec2f::new(m.x as f32, m.y as f32))
+	}
 }
