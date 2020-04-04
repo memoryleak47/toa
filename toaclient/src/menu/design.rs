@@ -35,7 +35,7 @@ impl App {
 		match self.menu_state {
 			MenuState::Normal => {},
 			MenuState::ItemChoice(ItemChoiceMode::Attack) => {
-				widgets.extend(self.build_attack_mode());
+				widgets.extend(self.build_attack_choice_mode());
 			},
 			MenuState::Attack(_) => {}, // TODO
 		}
@@ -112,16 +112,13 @@ impl App {
 		widgets
 	}
 
-	fn build_attack_mode(&self) -> Vec<Widget> {
-		let inv = self.world.unitmap.get(self.cursor).unwrap().inventory.clone();
-		// TODO inv.push(Hand);
-		self.build_inventory(inv, |i| vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))])
-	}
+	fn build_attack_choice_mode(&self) -> Vec<Widget> {
+		let inv = &self.world.unitmap.get(self.cursor).unwrap().inventory;
 
-	fn build_inventory<F: Fn(usize) -> Vec<MenuCommand>>(&self, mut inv: Inventory, reaction: F) -> Vec<Widget> {
 		let mut widgets = vec![];
 		let ws = self.window_size();
 
+		// pane
 		widgets.push(
 			Widget {
 				pos: ws * (0.3, 0.0),
@@ -131,14 +128,23 @@ impl App {
 			},
 		);
 
-		let v: Vec<Item> = (*inv.get_item_vec()).clone();
-		for (i, item) in v.iter().enumerate() {
+		// hand:
+		widgets.push(
+			Widget {
+				pos: ws * (0.3, 0.0),
+				size: ws * (0.025, 0.025),
+				draw_type: Color::rgb(200, 200, 200).into(),
+				on_click: vec![MenuCommand::StateChange(MenuState::Attack(None))],
+			},
+		);
+
+		for (i, item) in inv.iter().enumerate() {
 			widgets.push(
 				Widget {
-					pos: ws * (0.3 + 0.03 * i as f32, 0.0),
+					pos: ws * (0.3 + 0.03 * (i+1) as f32, 0.0),
 					size: ws * (0.025, 0.025),
 					draw_type: Color::rgb(200, 200, 200).into(),
-					on_click: reaction(i),
+					on_click: vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))],
 				},
 			);
 		}
