@@ -4,6 +4,8 @@ use crate::vec::{Vec2f, Direction};
 use crate::world::World;
 use crate::world::buildingmap::BuildingClass;
 
+// TODO by using usize for items I lose the advantages of the borrow checker!
+
 #[derive(Serialize, Deserialize, Clone)]
 pub enum UnitCommand {
 	Move(Direction),
