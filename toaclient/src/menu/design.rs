@@ -6,6 +6,8 @@ use toalib::command::{UnitCommand, Command};
 use toalib::item::{Item, Inventory};
 use toalib::vec::{Direction, Pos};
 
+use crate::gameobject::GameObject;
+use crate::graphics::{RawTextureId, TextureId};
 use crate::app::App;
 use crate::menu::{Widget, MenuState, MenuCommand, ItemChoiceMode};
 
@@ -133,7 +135,7 @@ impl App {
 			Widget {
 				pos: ws * (0.3, 0.0),
 				size: ws * (0.025, 0.025),
-				draw_type: Color::rgb(200, 200, 200).into(),
+				draw_type: TextureId::from(RawTextureId::Hand).into(),
 				on_click: vec![MenuCommand::StateChange(MenuState::Attack(None))],
 			},
 		);
@@ -143,7 +145,7 @@ impl App {
 				Widget {
 					pos: ws * (0.3 + 0.03 * (i+1) as f32, 0.0),
 					size: ws * (0.025, 0.025),
-					draw_type: Color::rgb(200, 200, 200).into(),
+					draw_type: item.get_texture_id().into(),
 					on_click: vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))],
 				},
 			);

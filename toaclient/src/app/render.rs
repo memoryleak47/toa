@@ -89,7 +89,7 @@ impl App {
 	fn render_markers(&mut self) {
 		draw!(self, self.cursor, &Marker::Normal);
 		if let MenuState::Attack(weapon_id) = self.menu_state {
-			let v = self.get_world_mouse();
+			let v = self.get_world_mouse() - self.cursor.to_f();
 			let u = self.world.unitmap.get(self.cursor).unwrap();
 			let rel_tiles = weapon_id.map(|i| u.inventory.get(i).aim(v))
 							.unwrap_or(melee_aim(v));

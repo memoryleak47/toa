@@ -109,6 +109,8 @@ setup!(
 	StoneWallBuilding: "building/stonewall.png",
 	StreetBuilding: "building/street.png",
 
+	Hand: "hand.png",
+
 	FoodItem: "item/food.png",
 	WoodItem: "item/wood.png",
 	WoodSwordItem: "item/woodsword.png",
