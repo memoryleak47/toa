@@ -28,11 +28,15 @@ impl App {
 				on_click: vec![],
 			});
 
+			let work_cmd = match matches!(b.get_class(), BuildingClass::Workshop) {
+				true => MenuCommand::StateChange(MenuState::Craft),
+				false => MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Work, pos: cursor })
+			};
 			widgets.push(Widget {
 				pos: ws * (offset + (0.01, 0.08)),
 				size: ws * 0.025,
 				draw_type: Color::rgb(30, 30, 30).into(),
-				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::Work, pos: cursor })],
+				on_click: vec![work_cmd],
 			});
 
 			widgets.push(Widget {
@@ -41,15 +45,6 @@ impl App {
 				draw_type: Color::rgb(100, 30, 30).into(),
 				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
 			});
-
-			if matches!(b.get_class(), BuildingClass::Workshop) {
-				widgets.push(Widget {
-					pos: ws * (offset + (0.07, 0.08)),
-					size: ws * 0.025,
-					draw_type: Color::rgb(50, 50, 0).into(),
-					on_click: vec![MenuCommand::StateChange(MenuState::Craft)],
-				});
-			}
 
 		} else {
 			widgets.push(Widget {
