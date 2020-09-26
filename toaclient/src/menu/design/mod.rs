@@ -9,7 +9,7 @@ use sfml::window::mouse::Button;
 use toalib::world::Unit;
 use toalib::command::{UnitCommand, Command};
 use toalib::item::{Item, Inventory};
-use toalib::vec::{Direction, Pos};
+use toalib::vec::{Direction, Pos, Vec2i};
 
 use crate::gameobject::GameObject;
 use crate::graphics::{RawTextureId, TextureId};
@@ -29,11 +29,21 @@ impl App {
 					]
 				},
 				MenuState::DropChooseDir(idx) => {
-					let cmd = UnitCommand::DropItem(idx, None); // TODO
-					vec![
-						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
-						MenuCommand::StateChange(MenuState::Normal),
-					]
+					let v = vec![Some(Direction::Left), Some(Direction::Right), Some(Direction::Up), Some(Direction::Down), None];
+					let mouse = if let Some(x) = self.get_world_mouse().to_i().to_pos() { x }
+					else { return vec![]; };
+
+					let local_pos = |opt_d: &Option<Direction>| -> Vec2i { opt_d.map(|d| *d).unwrap_or(Vec2i::new(0,0)) };
+					let cond = |opt_d: &Option<Direction>| Some(mouse) == self.cursor.map(|x| x + local_pos(opt_d));
+					if let Some(opt_dir) = v.into_iter().find(cond) {
+						let cmd = UnitCommand::DropItem(idx, opt_dir);
+						vec![
+							MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
+							MenuCommand::StateChange(MenuState::Normal),
+						]
+					} else {
+						vec![]
+					}
 				},
 				_ => vec![MenuCommand::Cursor(p)],
 			};
