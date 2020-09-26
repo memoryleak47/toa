@@ -103,7 +103,7 @@ impl Vec2f {
 
 impl<T> Vec2t<T> where T: Add<Output=T> + Mul<Output=T> + Copy {
 	pub fn magnitude_sqr(self) -> T {
-		self.x * self.x + self.y + self.y
+		self.x * self.x + self.y * self.y
 	}
 }
 

@@ -9,7 +9,7 @@ use crate::world::buildingmap::BuildingClass;
 #[derive(Serialize, Deserialize, Clone)]
 pub enum UnitCommand {
 	Move(Direction),
-	Attack(Option<usize>, Vec2f), // relative attack vector
+	Attack(Option<usize>, Vec2f), // relative mouse vector
 	Build(BuildingClass),
 	Work, // building-work
 	UnrefinedWork, // terrain-work

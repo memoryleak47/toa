@@ -36,7 +36,8 @@ trait ItemTrait {
 
 	fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
 	fn get_damage(&self) -> Damage { Damage(1) }
-	fn aim(&self, v: Vec2f) -> Vec<Vec2i> { melee_aim(v) }
+	// relative mouse position (returning vec![mouse.to_i()]) yields the tile pointed by the mouse
+	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> { melee_aim(mouse) }
 	fn is_execable(&self, _p: Pos, _w: &World) -> bool { false }
 	fn exec(&self, _p: Pos, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
 }
@@ -78,7 +79,8 @@ macro_rules! setup {
 			pub fn get_class(&self) -> ItemClass						{ match self { $( Item::$x(a) => a.get_class() ),* } }
 			pub fn damage(&mut self, damage: Damage) -> bool	{ match self { $( Item::$x(a) => a.damage(damage) ),* } }
 			pub fn get_damage(&self) -> Damage							{ match self { $( Item::$x(a) => a.get_damage() ),* } }
-			pub fn aim(&self, v: Vec2f) -> Vec<Vec2i>					{ match self { $( Item::$x(a) => a.aim(v) ),* } }
+			// relative mouse position (returning vec![mouse.to_i()]) yields the tile pointed by the mouse
+			pub fn aim(&self, mouse: Vec2f) -> Vec<Vec2i>					{ match self { $( Item::$x(a) => a.aim(mouse) ),* } }
 			pub fn is_execable(&self, p: Pos, w: &World) -> bool		{ match self { $( Item::$x(a) => a.is_execable(p, w) ),* } }
 			pub fn exec(&self, p: Pos, w: &mut World)					{ match self { $( Item::$x(a) => a.exec(p, w) ),* } }
 		}
@@ -185,9 +187,12 @@ impl Inventory {
 	}
 }
 
-pub fn melee_aim(v: Vec2f) -> Vec<Vec2i> {
-	let v2 = v.to_i();
-	let vec = vec![v2, v2 + (0,1), v2 + (0,-1), v2 + (1,0), v2 + (1,0)];
-	vec![vec.into_iter().min_by_key(|&w| (w - v2).magnitude_sqr())
-		.unwrap()]
+pub fn melee_aim(mouse: Vec2f) -> Vec<Vec2i> {
+	let vec = vec![(0,1), (0,-1), (1,0), (-1,0)];
+	let f = |&w: &Vec2i| ((w.to_f() - mouse).magnitude_sqr() * 1000.0) as i32;
+	let ret = vec![vec.into_iter()
+		.map(Vec2i::from)
+		.min_by_key(f)
+		.unwrap()];
+	ret
 }
