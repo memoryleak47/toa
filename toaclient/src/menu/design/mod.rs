@@ -1,7 +1,10 @@
+mod inv;
 mod item;
 mod unit;
 mod building;
 mod terrain;
+
+pub use inv::*;
 
 use sfml::graphics::Color;
 use sfml::window::mouse::Button;

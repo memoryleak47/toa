@@ -53,6 +53,8 @@ impl App {
 			on_click: vec![MenuCommand::StateChange(MenuState::ItemChoice(ItemChoiceMode::Attack)) ],
 		});
 
+		widgets.extend(self.build_inventory_pane((0.01, 0.14).into(), &u.inventory));
+
 		widgets
 	}
 }
