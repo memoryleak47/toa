@@ -20,47 +20,47 @@ impl App {
 		let cursor = self.cursor;
 
 		widgets.push(Widget {
-			pos: ws * (0.01),
+			pos: ws * (offset + (0.01)),
 			size: ws * (0.025, 0.025),
 			draw_type: format!("health: {}", u.health).into(),
 			on_click: vec![],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.01, 0.03),
+			pos: ws * (offset + (0.01, 0.03)),
 			size: ws * (0.025, 0.025),
 			draw_type: format!("food: {}", u.food).into(),
 			on_click: vec![],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.01, 0.05),
+			pos: ws * (offset + (0.01, 0.05)),
 			size: ws * (0.025, 0.025),
 			draw_type: format!("stamina: {}", u.stamina).into(),
 			on_click: vec![],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.01, 0.08),
+			pos: ws * (offset + (0.01, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::Attack(_)) { Color::rgb(200, 0, 0) } else { Color::rgb(100, 0, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.04, 0.08),
+			pos: ws * (offset + (0.04, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::ExecItem) { Color::rgb(0, 200, 0) } else { Color::rgb(0, 100, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.07, 0.08),
+			pos: ws * (offset + (0.07, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::DropChooseItem | MenuState::DropChooseDir(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::DropChooseItem)],
 		});
-		widgets.extend(self.build_unit_inv_pane(u, (0.01, 0.14).into()));
+		widgets.extend(self.build_unit_inv_pane(u, offset + (0.00, 0.11)));
 
 		widgets
 	}
@@ -102,7 +102,7 @@ impl App {
 			if let Some(dt) = extra_draw(i) {
 				widgets.push(
 					Widget {
-						pos: ws * (offset + (0.03 * i as f32, 0.0)),
+						pos: ws * (offset + (0.03 * i as f32 + 0.01, 0.0)),
 						size: ws * (0.025, 0.025),
 						draw_type: dt,
 						on_click: vec![],
@@ -111,7 +111,7 @@ impl App {
 
 			widgets.push(
 				Widget {
-					pos: ws * (offset + (0.03 * i as f32, 0.0)),
+					pos: ws * (offset + (0.03 * i as f32 + 0.01, 0.0)),
 					size: ws * (0.025, 0.025),
 					draw_type: item.get_texture_id().into(),
 					on_click: on_click(i),
