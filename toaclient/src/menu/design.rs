@@ -100,7 +100,7 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (0.01, 0.11),
 			size: ws * 0.025,
-			draw_type: Color::rgb(30, 30, 30).into(),
+			draw_type: Color::rgb(10, 10, 10).into(),
 			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor })],
 		});
 
