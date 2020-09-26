@@ -21,8 +21,8 @@ pub enum MenuState {
 	Normal,
 	ExecItem,
 	Attack(Option<usize>),
-	// DropChooseItem,
-	// DropChooseDir(usize),
+	DropChooseItem,
+	DropChooseDir(usize),
 }
 
 impl MenuState {

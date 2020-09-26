@@ -9,7 +9,7 @@ use toalib::vec::{Direction, Pos, Vec2f};
 use crate::gameobject::GameObject;
 use crate::graphics::{RawTextureId, TextureId};
 use crate::app::App;
-use crate::menu::{Widget, MenuState, MenuCommand};
+use crate::menu::{Widget, MenuState, MenuCommand, DrawType};
 
 
 impl App {
@@ -54,6 +54,12 @@ impl App {
 			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
 		});
 
+		widgets.push(Widget {
+			pos: ws * (0.07, 0.08),
+			size: ws * 0.025,
+			draw_type: if matches!(self.menu_state, MenuState::DropChooseItem | MenuState::DropChooseDir(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
+			on_click: vec![MenuCommand::StateChange(MenuState::DropChooseItem)],
+		});
 		widgets.extend(self.build_unit_inv_pane(u, (0.01, 0.14).into()));
 
 		widgets
@@ -63,10 +69,16 @@ impl App {
 		let ws = self.window_size();
 		let mut widgets = Vec::new();
 
-		let attack_marked = |i| {
-			if let MenuState::Attack(Some(j)) = self.menu_state {
-				i == j
-			} else { false }
+		let extra_draw = |i: usize| -> Option<DrawType> {
+			match self.menu_state {
+				MenuState::Attack(Some(j)) if i == j => {
+					Some(Color::rgba(255, 0, 0, 20).into())
+				},
+				MenuState::DropChooseDir(j) if i == j => {
+					Some(Color::rgba(00, 0, 255, 20).into())
+				}
+				_ => None,
+			}
 		};
 
 		let on_click = |i| match self.menu_state {
@@ -80,16 +92,19 @@ impl App {
 					MenuCommand::StateChange(MenuState::Normal),
 				]
 			},
+			MenuState::DropChooseItem => {
+				vec![MenuCommand::StateChange(MenuState::DropChooseDir(i))]
+			}
 			_ => Vec::new(),
 		};
 
 		for (i, item) in u.inventory.iter().enumerate() {
-			if attack_marked(i) {
+			if let Some(dt) = extra_draw(i) {
 				widgets.push(
 					Widget {
 						pos: ws * (offset + (0.03 * i as f32, 0.0)),
 						size: ws * (0.025, 0.025),
-						draw_type: Color::rgba(255, 0, 0, 20).into(),
+						draw_type: dt,
 						on_click: vec![],
 					});
 			}

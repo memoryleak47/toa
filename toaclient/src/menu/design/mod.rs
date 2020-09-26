@@ -28,6 +28,13 @@ impl App {
 						MenuCommand::StateChange(MenuState::Normal),
 					]
 				},
+				MenuState::DropChooseDir(idx) => {
+					let cmd = UnitCommand::DropItem(idx, None); // TODO
+					vec![
+						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
+						MenuCommand::StateChange(MenuState::Normal),
+					]
+				},
 				_ => vec![MenuCommand::Cursor(p)],
 			};
 		}
