@@ -24,6 +24,7 @@ pub enum MenuState {
 	DropChooseItem,
 	DropChooseDir(usize),
 	TakeItem,
+	Build,
 }
 
 impl MenuState {

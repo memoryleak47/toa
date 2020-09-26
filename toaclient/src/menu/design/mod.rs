@@ -78,7 +78,6 @@ impl App {
 		widgets.extend(self.build_unit_pane((0.0, 0.25).into()));
 		widgets.extend(self.build_building_pane((0.0, 0.5).into()));
 		widgets.extend(self.build_terrain_pane((0.0, 0.75).into()));
-
 		widgets.extend(self.main_button());
 
 		widgets

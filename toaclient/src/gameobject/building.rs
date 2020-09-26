@@ -1,4 +1,4 @@
-use toalib::world::buildingmap::Building;
+use toalib::world::buildingmap::{Building, BuildingClass};
 use toalib::vec::Vec2f;
 
 use crate::graphics::{HuedTextureId, TextureId, RawTextureId};
@@ -13,18 +13,31 @@ impl GameObject for Building {
 					player_id: spawner.get_player_id()
 				}.into()
 			},
-			Building::Farm(_) => RawTextureId::FarmBuilding.into(),
-			Building::Camp(_) => RawTextureId::CampBuilding.into(),
-			Building::Sawmill(_) => RawTextureId::SawmillBuilding.into(),
-			Building::StoneMine(_) => RawTextureId::StoneMineBuilding.into(),
-			Building::IronMine(_) => RawTextureId::IronMineBuilding.into(),
-			Building::Workshop(_) => RawTextureId::WorkshopBuilding.into(),
-			Building::Castle(_) => RawTextureId::CastleBuilding.into(),
-			Building::WoodWall(_) => RawTextureId::WoodWallBuilding.into(),
-			Building::StoneWall(_) => RawTextureId::StoneWallBuilding.into(),
-			Building::Street(_) => RawTextureId::StreetBuilding.into(),
+			_ => self.get_class().get_texture_id()
 		}
 	}
 	fn get_relative_pos(&self) -> Vec2f { (0.).into() }
 	fn get_size(&self) -> Vec2f { (1., 0.5).into() }
+}
+
+pub trait BuildingClassGetTextureId {
+	fn get_texture_id(&self) -> TextureId;
+}
+
+impl BuildingClassGetTextureId for BuildingClass {
+	fn get_texture_id(&self) -> TextureId {
+		match *self {
+			BuildingClass::Spawner => RawTextureId::SpawnerBuilding.into(),
+			BuildingClass::Farm => RawTextureId::FarmBuilding.into(),
+			BuildingClass::Camp => RawTextureId::CampBuilding.into(),
+			BuildingClass::Sawmill => RawTextureId::SawmillBuilding.into(),
+			BuildingClass::StoneMine => RawTextureId::StoneMineBuilding.into(),
+			BuildingClass::IronMine => RawTextureId::IronMineBuilding.into(),
+			BuildingClass::Workshop => RawTextureId::WorkshopBuilding.into(),
+			BuildingClass::Castle => RawTextureId::CastleBuilding.into(),
+			BuildingClass::WoodWall => RawTextureId::WoodWallBuilding.into(),
+			BuildingClass::StoneWall => RawTextureId::StoneWallBuilding.into(),
+			BuildingClass::Street => RawTextureId::StreetBuilding.into(),
+		}
+	}
 }
