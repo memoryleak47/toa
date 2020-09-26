@@ -32,6 +32,13 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (offset + (0.01, 0.08)),
 			size: ws * 0.025,
+			draw_type: Color::rgb(30, 30, 30).into(),
+			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::Work, pos: cursor })],
+		});
+
+		widgets.push(Widget {
+			pos: ws * (offset + (0.04, 0.08)),
+			size: ws * 0.025,
 			draw_type: Color::rgb(100, 30, 30).into(),
 			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
 		});

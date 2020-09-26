@@ -39,22 +39,16 @@ impl App {
 			draw_type: format!("stamina: {}", u.stamina).into(),
 			on_click: vec![],
 		});
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.08),
-			size: ws * 0.025,
-			draw_type: Color::rgb(30, 30, 30).into(),
-			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::Work, pos: cursor })],
-		});
 
 		widgets.push(Widget {
-			pos: ws * (0.04, 0.08),
+			pos: ws * (0.01, 0.08),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::Attack(_)) { Color::rgb(200, 0, 0) } else { Color::rgb(100, 0, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.07, 0.08),
+			pos: ws * (0.04, 0.08),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::ExecItem) { Color::rgb(0, 200, 0) } else { Color::rgb(0, 100, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
