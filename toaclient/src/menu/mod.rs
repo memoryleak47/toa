@@ -19,6 +19,7 @@ pub enum MenuCommand {
 #[derive(Clone)]
 pub enum MenuState {
 	Normal,
+	ExecItem,
 	Attack(Option<usize>),
 	// DropChooseItem,
 	// DropChooseDir(usize),

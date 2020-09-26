@@ -47,10 +47,17 @@ impl App {
 		});
 
 		widgets.push(Widget {
-			pos: ws * (0.01, 0.11),
+			pos: ws * (0.04, 0.08),
 			size: ws * 0.025,
 			draw_type: Color::rgb(100, 0, 0).into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
+		});
+
+		widgets.push(Widget {
+			pos: ws * (0.07, 0.08),
+			size: ws * 0.025,
+			draw_type: Color::rgb(0, 40, 0).into(),
+			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
 		});
 
 		widgets.extend(self.build_unit_inv_pane(u, (0.01, 0.14).into()));
@@ -71,6 +78,13 @@ impl App {
 		let on_click = |i| match self.menu_state {
 			MenuState::Attack(_) => {
 				vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))]
+			},
+			MenuState::ExecItem => {
+				let cmd = UnitCommand::ExecItem(i);
+				vec![
+					MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
+					MenuCommand::StateChange(MenuState::Normal),
+				]
 			},
 			_ => Vec::new(),
 		};
