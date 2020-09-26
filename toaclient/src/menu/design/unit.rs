@@ -53,7 +53,48 @@ impl App {
 			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
 		});
 
-		widgets.extend(self.build_inventory_pane((0.01, 0.14).into(), &u.inventory));
+		widgets.extend(self.build_unit_inv_pane(u, (0.01, 0.14).into()));
+
+		widgets
+	}
+
+	fn build_unit_inv_pane(&self, u: &Unit, offset: Vec2f) -> Vec<Widget> {
+		let ws = self.window_size();
+		let mut widgets = Vec::new();
+
+		let attack_marked = |i| {
+			if let MenuState::Attack(Some(j)) = self.menu_state {
+				i == j
+			} else { false }
+		};
+
+		let on_click = |i| match self.menu_state {
+			MenuState::Attack(_) => {
+				vec![MenuCommand::StateChange(MenuState::Attack(Some(i)))]
+			},
+			_ => Vec::new(),
+		};
+
+		for (i, item) in u.inventory.iter().enumerate() {
+			if attack_marked(i) {
+				widgets.push(
+					Widget {
+						pos: ws * (offset + (0.03 * i as f32, 0.0)),
+						size: ws * (0.025, 0.025),
+						draw_type: Color::rgba(255, 0, 0, 20).into(),
+						on_click: vec![],
+					});
+			}
+
+			widgets.push(
+				Widget {
+					pos: ws * (offset + (0.03 * i as f32, 0.0)),
+					size: ws * (0.025, 0.025),
+					draw_type: item.get_texture_id().into(),
+					on_click: on_click(i),
+				},
+			);
+		}
 
 		widgets
 	}
