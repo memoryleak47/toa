@@ -1,3 +1,8 @@
+mod item;
+mod unit;
+mod building;
+mod terrain;
+
 use sfml::graphics::Color;
 use sfml::window::mouse::Button;
 
@@ -58,58 +63,10 @@ impl App {
 			},
 		);
 
-		if let Some(u) = self.world.unitmap.get(self.cursor) {
-			widgets.extend(self.build_unit_pane(u));
-		}
-
-		widgets
-	}
-
-	fn build_unit_pane(&self, u: &Unit) -> Vec<Widget> {
-		let ws = self.window_size();
-		let mut widgets = Vec::new();
-		let cursor = self.cursor;
-
-		widgets.push(Widget {
-			pos: ws * (0.01),
-			size: ws * (0.025, 0.025),
-			draw_type: format!("health: {}", u.health).into(),
-			on_click: vec![],
-		});
-
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.03),
-			size: ws * (0.025, 0.025),
-			draw_type: format!("food: {}", u.food).into(),
-			on_click: vec![],
-		});
-
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.05),
-			size: ws * (0.025, 0.025),
-			draw_type: format!("stamina: {}", u.stamina).into(),
-			on_click: vec![],
-		});
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.08),
-			size: ws * 0.025,
-			draw_type: Color::rgb(30, 30, 30).into(),
-			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::Work, pos: cursor })],
-		});
-
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.11),
-			size: ws * 0.025,
-			draw_type: Color::rgb(10, 10, 10).into(),
-			on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor })],
-		});
-
-		widgets.push(Widget {
-			pos: ws * (0.01, 0.14),
-			size: ws * 0.025,
-			draw_type: Color::rgb(100, 0, 0).into(),
-			on_click: vec![MenuCommand::StateChange(MenuState::ItemChoice(ItemChoiceMode::Attack)) ],
-		});
+		widgets.extend(self.build_item_pane((0.0, 0.0).into()));
+		widgets.extend(self.build_unit_pane((0.0, 0.25).into()));
+		widgets.extend(self.build_building_pane((0.0, 0.5).into()));
+		widgets.extend(self.build_terrain_pane((0.0, 0.75).into()));
 
 		widgets
 	}

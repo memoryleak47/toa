@@ -38,6 +38,17 @@ impl Terrain {
 		}
 	}
 
+	pub fn str(self) -> &'static str {
+		match self {
+			Terrain::GRASS => "Grass",
+			Terrain::FOREST => "Forest",
+			Terrain::STONE => "Stone",
+			Terrain::IRON => "Iron",
+			Terrain::MOUNTAIN => "Mountain",
+			Terrain::MARSH => "Marsh",
+		}
+	}
+
 	pub fn is_unrefined_workable(self, _unit: &Unit) -> bool {
 		match self {
 			Terrain::GRASS | Terrain::FOREST => true,
