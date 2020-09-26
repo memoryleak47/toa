@@ -19,7 +19,17 @@ use crate::menu::{Widget, MenuState, MenuCommand};
 impl App {
 	pub fn on_tile_click(&self, p: Pos, b: Button) -> Vec<MenuCommand> {
 		if let Button::Left = b {
-			return vec![MenuCommand::Cursor(p)];
+			return match self.menu_state {
+				MenuState::Attack(idx) => {
+					let rel_mouse = self.get_world_mouse() - self.cursor.to_f();
+					let cmd = UnitCommand::Attack(idx, rel_mouse);
+					vec![
+						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
+						MenuCommand::StateChange(MenuState::Normal),
+					]
+				},
+				_ => vec![MenuCommand::Cursor(p)],
+			};
 		}
 		if let Button::Right = b {
 			if let Some(d) = [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter()

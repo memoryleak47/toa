@@ -17,13 +17,6 @@ pub enum MenuCommand {
 }
 
 #[derive(Clone)]
-pub enum ItemChoiceMode {
-	Attack,
-//	Drop,
-	//Take,
-}
-
-#[derive(Clone)]
 pub enum MenuState {
 	Normal,
 	Attack(Option<usize>),

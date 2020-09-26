@@ -9,7 +9,7 @@ use toalib::vec::{Direction, Pos, Vec2f};
 use crate::gameobject::GameObject;
 use crate::graphics::{RawTextureId, TextureId};
 use crate::app::App;
-use crate::menu::{Widget, MenuState, MenuCommand, ItemChoiceMode};
+use crate::menu::{Widget, MenuState, MenuCommand};
 
 
 impl App {
