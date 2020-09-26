@@ -26,9 +26,9 @@ pub enum ItemChoiceMode {
 #[derive(Clone)]
 pub enum MenuState {
 	Normal,
-	ItemChoice(ItemChoiceMode),
 	Attack(Option<usize>),
-	//DropItem, // TODO this needs some item
+	// DropChooseItem,
+	// DropChooseDir(usize),
 }
 
 impl MenuState {

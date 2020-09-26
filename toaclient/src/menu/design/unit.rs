@@ -50,7 +50,7 @@ impl App {
 			pos: ws * (0.01, 0.11),
 			size: ws * 0.025,
 			draw_type: Color::rgb(100, 0, 0).into(),
-			on_click: vec![MenuCommand::StateChange(MenuState::ItemChoice(ItemChoiceMode::Attack)) ],
+			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
 		});
 
 		widgets.extend(self.build_inventory_pane((0.01, 0.14).into(), &u.inventory));
