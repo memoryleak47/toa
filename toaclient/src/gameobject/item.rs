@@ -5,8 +5,18 @@ use crate::graphics::{TextureId, RawTextureId};
 use crate::gameobject::GameObject;
 
 impl GameObject for Item {
+	fn get_texture_id(&self) -> TextureId { self.get_class().get_texture_id() }
+	fn get_relative_pos(&self) -> Vec2f { (0.5, 0.25).into() }
+	fn get_size(&self) -> Vec2f { (0.5, 0.75).into() }
+}
+
+pub trait ItemClassGetTextureId {
+	fn get_texture_id(&self) -> TextureId;
+}
+
+impl ItemClassGetTextureId for ItemClass {
 	fn get_texture_id(&self) -> TextureId {
-		match self.get_class() {
+		match self {
 			ItemClass::Food => RawTextureId::FoodItem,
 			ItemClass::Wood => RawTextureId::WoodItem,
 			ItemClass::WoodSword => RawTextureId::WoodSwordItem,
@@ -19,6 +29,4 @@ impl GameObject for Item {
 			ItemClass::Lance => RawTextureId::LanceItem,
 		}.into()
 	}
-	fn get_relative_pos(&self) -> Vec2f { (0.5, 0.25).into() }
-	fn get_size(&self) -> Vec2f { (0.5, 0.75).into() }
 }

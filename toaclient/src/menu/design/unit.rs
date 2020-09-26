@@ -60,6 +60,7 @@ impl App {
 			draw_type: if matches!(self.menu_state, MenuState::DropChooseItem | MenuState::DropChooseDir(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::DropChooseItem)],
 		});
+
 		widgets.extend(self.build_unit_inv_pane(u, offset + (0.00, 0.11)));
 
 		widgets

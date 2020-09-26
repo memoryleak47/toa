@@ -3,14 +3,13 @@ use sfml::window::mouse::Button;
 
 use toalib::world::{Unit, BUILDABLE_BUILDING_CLASSES, BuildingClass};
 use toalib::command::{UnitCommand, Command};
-use toalib::item::{Item, Inventory};
+use toalib::item::{Item, Inventory, CRAFTABLE_ITEM_CLASSES, ItemClass};
 use toalib::vec::{Direction, Pos, Vec2f};
 
-use crate::gameobject::{GameObject, building::BuildingClassGetTextureId};
+use crate::gameobject::{GameObject, item::ItemClassGetTextureId, building::BuildingClassGetTextureId};
 use crate::graphics::{RawTextureId, TextureId};
 use crate::app::App;
 use crate::menu::{Widget, MenuState, MenuCommand};
-
 
 impl App {
 	pub(super) fn build_building_pane(&self, offset: Vec2f) -> Vec<Widget> {
@@ -42,6 +41,16 @@ impl App {
 				draw_type: Color::rgb(100, 30, 30).into(),
 				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
 			});
+
+			if matches!(b.get_class(), BuildingClass::Workshop) {
+				widgets.push(Widget {
+					pos: ws * (offset + (0.07, 0.08)),
+					size: ws * 0.025,
+					draw_type: Color::rgb(50, 50, 0).into(),
+					on_click: vec![MenuCommand::StateChange(MenuState::Craft)],
+				});
+			}
+
 		} else {
 			widgets.push(Widget {
 				pos: ws * (offset + (0.01, 0.08)),
@@ -54,6 +63,7 @@ impl App {
 		let offset = offset + (0.0, 0.11);
 		match self.menu_state {
 			MenuState::Build => widgets.extend(self.build_build_pane(offset)),
+			MenuState::Craft => widgets.extend(self.build_craft_pane(offset)),
 			_ => {},
 		}
 
@@ -74,6 +84,32 @@ impl App {
 		};
 
 		for (i, &c) in BUILDABLE_BUILDING_CLASSES.iter().enumerate() {
+			widgets.push(
+				Widget {
+					pos: ws * (offset + (0.03 * i as f32 + 0.01, 0.0)),
+					size: ws * (0.025, 0.025),
+					draw_type: c.get_texture_id().into(),
+					on_click: on_click(c),
+				},
+			);
+		}
+
+		widgets
+	}
+
+	fn build_craft_pane(&self, offset: Vec2f) -> Vec<Widget> {
+		let mut widgets = Vec::new();
+		let ws = self.window_size();
+
+		let on_click = |c: ItemClass| {
+			let cmd = UnitCommand::Craft(c);
+			vec![
+				MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
+				MenuCommand::StateChange(MenuState::Normal),
+			]
+		};
+
+		for (i, &c) in CRAFTABLE_ITEM_CLASSES.iter().enumerate() {
 			widgets.push(
 				Widget {
 					pos: ws * (offset + (0.03 * i as f32 + 0.01, 0.0)),
