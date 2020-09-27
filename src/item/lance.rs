@@ -1,6 +1,4 @@
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::vec::{Vec2i, Vec2f};
-use crate::damage::Damage;
+use crate::*;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Iron];
@@ -40,9 +38,9 @@ impl ItemTrait for Lance {
 	}
 	fn get_damage(&self) -> Damage { Damage(12) }
 	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
-		// TODO
-		// new_lance_aim(Damage(12))
-		vec![]
+		let mut tiles = melee_aim(v);
+		tiles.push(tiles[0] * 2);
+		tiles
 	}
 }
 

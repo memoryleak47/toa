@@ -1,35 +1,38 @@
 mod food;
+pub use food::*;
+
 mod wood;
+pub use wood::*;
+
 mod wood_sword;
+pub use wood_sword::*;
+
 mod stone;
+pub use stone::*;
+
 mod iron;
+pub use iron::*;
+
 mod iron_sword;
+pub use iron_sword::*;
+
 mod wood_bow;
+pub use wood_bow::*;
+
 mod settlement_kit;
+pub use settlement_kit::*;
+
 mod long_sword;
+pub use long_sword::*;
+
 mod lance;
+pub use lance::*;
 
 use std::slice;
-use std::mem;
 
+use crate::*;
 
-use crate::vec::{Vec2i, Vec2f};
-use crate::vec::Pos;
-use crate::world::World;
-use crate::damage::Damage;
-
-use self::food::Food;
-use self::wood::Wood;
-use self::wood_sword::WoodSword;
-use self::stone::Stone;
-use self::iron::Iron;
-use self::iron_sword::IronSword;
-use self::wood_bow::WoodBow;
-use self::settlement_kit::SettlementKit;
-use self::long_sword::LongSword;
-use self::lance::Lance;
-
-trait ItemTrait {
+pub trait ItemTrait {
 	type Class: ItemClassTrait + Sized;
 
 	fn get_class(&self) -> ItemClass;
@@ -42,7 +45,7 @@ trait ItemTrait {
 	fn exec(&self, _p: Pos, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
 }
 
-trait ItemClassTrait {
+pub trait ItemClassTrait {
 	type Instance: ItemTrait + Sized;
 
 	fn get_name() -> &'static str;
