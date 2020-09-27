@@ -1,8 +1,4 @@
-use crate::vec::Pos;
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::world::World;
-use crate::damage::Damage;
-use crate::world::buildingmap::new_spawner;
+use crate::*;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 8] = [ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Stone, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood];

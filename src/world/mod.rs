@@ -1,25 +1,22 @@
-pub mod command_check;
-pub mod command_exec;
-pub mod terrainmap;
-pub mod buildingmap;
-pub mod unitmap;
-pub mod itemmap;
+use crate::*;
 
-pub use self::command_check::*;
-pub use self::command_exec::*;
-pub use self::terrainmap::*;
-pub use self::buildingmap::*;
-pub use self::unitmap::*;
-pub use self::itemmap::*;
+mod command_check;
+pub use command_check::*;
 
-use std::iter;
+mod command_exec;
+pub use command_exec::*;
 
-use crate::vec::Pos;
-use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
-use crate::tilemap::{TileMap, OptTileMap};
-use crate::item::{ItemClass, Inventory};
-use crate::damage::Damage;
-use crate::team::{PlayerPool, PlayerID};
+mod terrainmap;
+pub use terrainmap::*;
+
+mod buildingmap;
+pub use buildingmap::*;
+
+mod unitmap;
+pub use unitmap::*;
+
+mod itemmap;
+pub use itemmap::*;
 
 const REQUIRED_FOOD: u32 = 10;
 lazy_static! {

@@ -1,5 +1,4 @@
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::damage::Damage;
+use crate::*;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 2] = [ItemClass::Iron, ItemClass::Iron];

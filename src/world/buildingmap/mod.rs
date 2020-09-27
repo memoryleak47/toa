@@ -1,39 +1,41 @@
-mod spawner;
-mod farm;
-mod camp;
-mod sawmill;
-mod stone_mine;
-mod iron_mine;
-mod workshop;
-mod castle;
-mod wood_wall;
-mod stone_wall;
-mod street;
-
 use std::any::Any;
 
-use crate::vec::Pos;
-use crate::world::World;
-use crate::world::terrainmap::Terrain;
-use crate::damage::Damage;
-use crate::item::ItemClass;
-use crate::team::PlayerID;
+use crate::*;
 
-pub use self::spawner::Spawner;
-use self::farm::Farm;
-use self::camp::Camp;
-use self::sawmill::Sawmill;
-use self::stone_mine::StoneMine;
-use self::iron_mine::IronMine;
-use self::workshop::Workshop;
-use self::castle::Castle;
-use self::wood_wall::WoodWall;
-use self::stone_wall::StoneWall;
-use self::street::Street;
+mod spawner;
+pub use spawner::*;
 
-pub use self::spawner::new_spawner;
+mod farm;
+pub use farm::*;
 
-trait BuildingTrait {
+mod camp;
+pub use camp::*;
+
+mod sawmill;
+pub use sawmill::*;
+
+mod stone_mine;
+pub use stone_mine::*;
+
+mod iron_mine;
+pub use iron_mine::*;
+
+mod workshop;
+pub use workshop::*;
+
+mod castle;
+pub use castle::*;
+
+mod wood_wall;
+pub use wood_wall::*;
+
+mod stone_wall;
+pub use stone_wall::*;
+
+mod street;
+pub use street::*;
+
+pub trait BuildingTrait {
 	type Class: BuildingClassTrait + Sized;
 
 	fn as_any_mut(&mut self) -> &mut dyn Any;
@@ -50,7 +52,7 @@ trait BuildingTrait {
 	fn is_blocking_against(&self, _pid: PlayerID) -> bool { false }
 }
 
-trait BuildingClassTrait {
+pub trait BuildingClassTrait {
 	type Instance: BuildingTrait + Sized;
 
 	fn get_build_property() -> Option<&'static BuildProperty>;

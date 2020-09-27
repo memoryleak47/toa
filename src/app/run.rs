@@ -1,6 +1,4 @@
-use crate::app::App;
-
-use sfml::graphics::{RenderTarget, Color};
+use crate::*;
 
 impl App {
 	pub fn run(&mut self) {

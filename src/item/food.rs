@@ -1,7 +1,4 @@
-use crate::vec::Pos;
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::world::World;
-use crate::damage::Damage;
+use crate::*;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]

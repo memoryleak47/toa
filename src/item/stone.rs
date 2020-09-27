@@ -1,5 +1,4 @@
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::damage::Damage;
+use crate::*;
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 #[derive(Serialize, Deserialize)]

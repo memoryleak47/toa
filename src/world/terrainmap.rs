@@ -1,9 +1,6 @@
 use rand::{RngCore, thread_rng};
 
-use crate::vec::Pos;
-use crate::tilemap::TileMap;
-use crate::world::unitmap::Unit;
-use crate::item::ItemClass;
+use crate::*;
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 #[derive(Serialize, Deserialize)]

@@ -1,8 +1,6 @@
 use serde::{Serialize, de::DeserializeOwned};
 
-use crate::world::World;
-use crate::command::Command;
-use crate::team::PlayerID;
+use crate::*;
 
 // An Init-Packet is sent to end the lobby phase, and start the game,
 // A Command-Packet is sent to inform, that a command has been accepted

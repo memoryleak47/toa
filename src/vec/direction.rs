@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::vec::Vec2i;
+use crate::*;
 
 static UP: Vec2i = Vec2i::new(0, -1);
 static LEFT: Vec2i = Vec2i::new(-1, 0);

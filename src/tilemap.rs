@@ -1,5 +1,4 @@
-use crate::config::{MAP_SIZE_X, MAP_SIZE_Y};
-use crate::vec::Pos;
+use crate::*;
 
 const C: usize = (MAP_SIZE_X as usize) * (MAP_SIZE_Y as usize);
 
@@ -8,7 +7,7 @@ pub struct TileMap<T: Clone>(Vec<T>);
 
 impl<T: Clone> TileMap<T> {
 	pub fn new(t: T) -> TileMap<T> {
-        let tilemap: Vec<T> = std::iter::repeat(t).take(C).collect();
+        let tilemap: Vec<T> = iter::repeat(t).take(C).collect();
 		TileMap(tilemap)
 	}
 

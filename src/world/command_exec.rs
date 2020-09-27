@@ -1,14 +1,4 @@
-use std::mem;
-
-use crate::vec::{Pos, Vec2i};
-use crate::item::{ItemClass, melee_aim};
-use crate::command::{Command, UnitCommand};
-use crate::vec::{Vec2f, Direction};
-use crate::world::World;
-use crate::world::unitmap::Unit;
-use crate::world::buildingmap::BuildingClass;
-use crate::team::PlayerID;
-use crate::damage::Damage;
+use crate::*;
 
 impl World {
 	pub fn checked_exec(&mut self, player_id: PlayerID, command: &Command) -> bool {

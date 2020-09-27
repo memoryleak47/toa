@@ -1,9 +1,4 @@
-use crate::world::World;
-use crate::world::buildingmap::{Building, BUILDABLE_BUILDING_CLASSES};
-use crate::command::{Command, UnitCommand};
-
-use crate::vec::*;
-use crate::team::PlayerID;
+use crate::*;
 
 impl World {
 	pub fn get_unitless_commands(&self, _player: PlayerID) -> Vec<Command> {

@@ -1,12 +1,6 @@
 use std::cmp::min;
-use std::mem::swap;
 
-use crate::vec::Pos;
-use crate::tilemap::OptTileMap;
-use crate::world::World;
-use crate::damage::Damage;
-use crate::item::{Inventory, Item, ItemClass};
-use crate::team::PlayerID;
+use crate::*;
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
@@ -113,7 +107,7 @@ impl World {
 
 	pub fn kill_unit(&mut self, p: Pos) {
 		let mut unit = None;
-		swap(&mut unit, self.unitmap.get_mut_raw(p));
+		mem::swap(&mut unit, self.unitmap.get_mut_raw(p));
 		if let Some(mut u) = unit {
 			let inv: Vec<Item> = u.inventory.get_item_vec().clone();
 			self.itemmap.get_mut(p).get_item_vec()

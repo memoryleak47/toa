@@ -1,8 +1,4 @@
-use crate::vec::Pos;
-use crate::item::ItemClass;
-use crate::vec::{Vec2f, Direction};
-use crate::world::World;
-use crate::world::buildingmap::BuildingClass;
+use crate::*;
 
 // TODO by using usize for items I lose the advantages of the borrow checker!
 

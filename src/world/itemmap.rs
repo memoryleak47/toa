@@ -1,6 +1,4 @@
-use crate::vec::Pos;
-use crate::world::World;
-use crate::damage::Damage;
+use crate::*;
 
 const GROUND_DAMAGE: Damage = Damage(5);
 
