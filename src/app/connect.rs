@@ -15,7 +15,7 @@ impl App {
 			tilesize: DEFAULT_TILESIZE,
 			cursor: Pos::build(0, 0).unwrap(),
 			pending: vec![],
-			menu_state: MenuState::new(),
+			menu_state: MenuState::Normal,
 			world,
 			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			texture_state: TextureState::new(),

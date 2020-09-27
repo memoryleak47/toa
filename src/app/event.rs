@@ -6,6 +6,10 @@ impl App {
 			self.window.close();
 		}
 
+		if sfml::window::Key::Escape.is_pressed() {
+			self.menu_state = MenuState::Normal;
+		}
+
 		match e {
 			Event::Closed => self.window.close(),
 			Event::MouseButtonPressed { button: Button::Middle, x, y } => {
