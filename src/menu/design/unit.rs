@@ -87,7 +87,11 @@ impl App {
 			}
 			MenuState::DropChooseDir(ref current_indices) => {
 				let mut current_indices = current_indices.clone();
-				current_indices.insert(i);
+				if current_indices.contains(&i) {
+					current_indices.remove(&i);
+				} else {
+					current_indices.insert(i);
+				}
 				vec![MenuCommand::StateChange(MenuState::DropChooseDir(current_indices))]
 			}
 			_ => Vec::new(),
