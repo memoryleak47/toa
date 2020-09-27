@@ -62,7 +62,7 @@ impl App {
 				MenuState::Attack(Some(j)) if i == j => {
 					Some(Color::rgba(255, 0, 0, 20).into())
 				},
-				MenuState::DropChooseDir(j) if i == j => {
+				MenuState::DropChooseDir(ref indices) if indices.contains(&i) => {
 					Some(Color::rgba(00, 0, 255, 20).into())
 				}
 				_ => None,
@@ -81,7 +81,12 @@ impl App {
 				]
 			},
 			MenuState::DropChooseItem => {
-				vec![MenuCommand::StateChange(MenuState::DropChooseDir(i))]
+				vec![MenuCommand::StateChange(MenuState::DropChooseDir(vec![i]))]
+			}
+			MenuState::DropChooseDir(ref current_indices) => {
+				let mut current_indices = current_indices.clone();
+				current_indices.push(i);
+				vec![MenuCommand::StateChange(MenuState::DropChooseDir(current_indices))]
 			}
 			_ => Vec::new(),
 		};

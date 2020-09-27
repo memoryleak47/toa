@@ -16,7 +16,7 @@ impl App {
 						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor })
 					]
 				},
-				MenuState::DropChooseDir(idx) => {
+				MenuState::DropChooseDir(ref indices) => {
 					let v = vec![Some(Direction::Left), Some(Direction::Right), Some(Direction::Up), Some(Direction::Down), None];
 					let mouse = if let Some(x) = self.get_world_mouse().to_i().to_pos() { x }
 					else { return vec![]; };
@@ -24,11 +24,15 @@ impl App {
 					let local_pos = |opt_d: &Option<Direction>| -> Vec2i { opt_d.map(|d| *d).unwrap_or(Vec2i::new(0,0)) };
 					let cond = |opt_d: &Option<Direction>| Some(mouse) == self.cursor.map(|x| x + local_pos(opt_d));
 					if let Some(opt_dir) = v.into_iter().find(cond) {
-						let cmd = UnitCommand::DropItem(idx, opt_dir);
-						vec![
-							MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
-							MenuCommand::StateChange(MenuState::Normal),
-						]
+						let cmd = |idx| Command::UnitCommand { command: UnitCommand::DropItem(idx, opt_dir), pos: self.cursor };
+
+						let mut indices = indices.clone();
+						indices.sort();
+						indices.into_iter().rev()
+							.map(|idx| MenuCommand::Command(cmd(idx)))
+							.chain(
+								iter::once( MenuCommand::StateChange(MenuState::Normal))
+							).collect()
 					} else {
 						vec![]
 					}
