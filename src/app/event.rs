@@ -2,19 +2,6 @@ use crate::*;
 
 impl App {
 	pub fn handle_event(&mut self, e: Event) {
-		if sfml::window::Key::Q.is_pressed() {
-			self.window.close();
-		}
-
-		if sfml::window::Key::Escape.is_pressed() {
-			self.menu_state = MenuState::Normal;
-		}
-
-		if sfml::window::Key::Return.is_pressed() {
-			self.apply_menu_commands(self.main_button_cmds());
-		}
-
-
 		match e {
 			Event::Closed => self.window.close(),
 			Event::MouseButtonPressed { button: Button::Middle, x, y } => {
@@ -36,6 +23,9 @@ impl App {
 			},
 			Event::MouseButtonReleased { button: b, x, y } => self.handle_mouse_press((x as f32, y as f32).into(), b),
 			Event::MouseWheelScrolled { delta, .. } => { self.tilesize += delta; }
+			Event::KeyPressed { code: Key::Q, .. } => self.window.close(),
+			Event::KeyPressed { code: Key::Escape, .. } => self.menu_state = MenuState::Normal,
+			Event::KeyPressed { code: Key::Return, .. } => self.apply_menu_commands(self.main_button_cmds()),
 			_ => {},
 		}
 	}
