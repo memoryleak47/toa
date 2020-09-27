@@ -80,6 +80,7 @@ impl App {
 		let mut widgets = Vec::new();
 
 		let s = (ws.x * 0.01).into();
+
 		widgets.push(
 			Widget {
 				pos: ws - s,

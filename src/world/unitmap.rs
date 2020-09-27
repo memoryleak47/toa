@@ -91,11 +91,11 @@ impl World {
 		}
 	}
 
-	pub fn find_next_unit_tile(&self, start: Pos, player: PlayerID) -> Option<Pos> {
+	pub fn find_next_usable_unit_tile(&self, start: Pos, player: PlayerID) -> Option<Pos> {
 		let mut i = start.next_repeat();
 		while i != start {
 			if let Some(unit) = self.unitmap.get(i) {
-				if unit.owner == player {
+				if unit.owner == player && unit.stamina > 0 {
 					return Some(i);
 				}
 			}

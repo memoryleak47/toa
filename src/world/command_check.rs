@@ -138,6 +138,7 @@ impl World {
 					.filter(|x| x.is_execable(pos, self))
 					.is_some()
 			},
+			UnitCommand::Idle => true,
 		}
 	}
 

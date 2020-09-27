@@ -14,6 +14,7 @@ pub enum UnitCommand {
 	BurnBuilding,
 	Craft(ItemClass),
 	ExecItem(usize),
+	Idle, // consumes all your stamina
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -50,6 +51,7 @@ impl UnitCommand {
 			UnitCommand::BurnBuilding => 10,
 			UnitCommand::Craft(_) => 10,
 			UnitCommand::ExecItem(_) => 0,
+			UnitCommand::Idle => 0,
 		}
 	}
 }

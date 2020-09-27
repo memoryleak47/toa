@@ -33,6 +33,7 @@ impl World {
 			UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 			UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
 			UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
+			UnitCommand::Idle => self.exec_idle(pos),
 		}
 	}
 
@@ -144,5 +145,9 @@ impl World {
 			.inventory
 			.remove(i);
 		item.exec(at, self);
+	}
+
+	fn exec_idle(&mut self, at: Pos) {
+		self.unitmap.get_mut(at).unwrap().stamina = 0;
 	}
 }

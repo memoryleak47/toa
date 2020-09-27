@@ -48,6 +48,13 @@ impl App {
 			on_click: vec![MenuCommand::StateChange(MenuState::DropChooseItem)],
 		});
 
+		widgets.push(Widget {
+			pos: ws * (offset + (0.10, 0.08)),
+			size: ws * 0.025,
+			draw_type: Color::rgb(130, 130, 130).into(),
+			on_click: vec![MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Idle, pos: self.cursor })],
+		});
+
 		widgets.extend(self.build_unit_inv_pane(u, offset + (0.00, 0.11)));
 
 		widgets
