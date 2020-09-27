@@ -1,6 +1,4 @@
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::vec::{Vec2i, Vec2f};
-use crate::damage::Damage;
+use crate::*;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 2] = [ItemClass::Wood, ItemClass::Wood];
@@ -40,8 +38,8 @@ impl ItemTrait for WoodBow {
 	}
 	fn get_damage(&self) -> Damage { Damage(3) }
 	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
-		// TODO
-		//new_ranged_aim(3, Damage(3))
-		vec![]
+		iter::once(v.to_i())
+			.filter(|p| p.magnitude_sqr() <= 4)
+			.collect()
 	}
 }

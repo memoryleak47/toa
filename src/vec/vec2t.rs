@@ -16,8 +16,12 @@ pub type Vec2i = Vec2t<i32>;
 #[allow(dead_code)]
 impl Vec2f {
 	pub fn to_i(self) -> Vec2i {
-		self.map(|x| x as i32)
+		self.map(round)
 	}
+}
+
+fn round(f: f32) -> i32 {
+	f.floor() as i32
 }
 
 #[allow(dead_code)]

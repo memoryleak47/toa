@@ -70,6 +70,8 @@ pub use sfml::{
 	system::{Vector2f, Vector2u}
 };
 
+pub use std::{iter, mem};
+
 #[cfg(feature = "client")]
 fn main() {
 	match cli::get_arg().as_str() {
