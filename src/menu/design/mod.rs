@@ -61,7 +61,7 @@ impl App {
 			Widget {
 				pos: (0.).into(),
 				size: ws * (0.3, 1.),
-				draw_type: Color::rgb(100, 100, 100).into(),
+				draw_type: self.pane_color().into(),
 				on_click: vec![],
 			},
 		);
@@ -90,5 +90,15 @@ impl App {
 		);
 
 		widgets
+	}
+
+	fn pane_color(&self) -> Color {
+		if let Some(unit) = self.world.unitmap.get(self.cursor) {
+			let red_add = (unit.food < 20) as u8 * 70;
+			if unit.stamina <= 0 { Color::rgb(70 + red_add, 70, 70) }
+			else { Color::rgb(100 + red_add, 100, 100) }
+		} else {
+			Color::rgb(100, 100, 100)
+		}
 	}
 }
