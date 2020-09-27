@@ -10,6 +10,11 @@ impl App {
 			self.menu_state = MenuState::Normal;
 		}
 
+		if sfml::window::Key::Return.is_pressed() {
+			self.apply_menu_commands(self.main_button_cmds());
+		}
+
+
 		match e {
 			Event::Closed => self.window.close(),
 			Event::MouseButtonPressed { button: Button::Middle, x, y } => {

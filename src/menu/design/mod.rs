@@ -75,28 +75,29 @@ impl App {
 		widgets
 	}
 
+	pub fn main_button_cmds(&self) -> Vec<MenuCommand> {
+		if let Some(p) = self.world.find_next_usable_unit_tile(self.cursor, self.player_id) {
+			vec![MenuCommand::Cursor(p)]
+		} else {
+			if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(false) {
+				vec![MenuCommand::Command(Command::NextTurn)]
+			} else {
+				vec![]
+			}
+		}
+	}
+
 	fn main_button(&self) -> Vec<Widget> {
 		let ws = self.window_size();
 		let mut widgets = Vec::new();
 
 		let s = (ws.x * 0.01).into();
-		let cmds =
-			if let Some(p) = self.world.find_next_usable_unit_tile(self.cursor, self.player_id) {
-				vec![MenuCommand::Cursor(p)]
-			} else {
-				if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(false) {
-					vec![MenuCommand::Command(Command::NextTurn)]
-				} else {
-					vec![]
-				}
-			};
-
 		widgets.push(
 			Widget {
 				pos: ws - s,
 				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
-				on_click: cmds,
+				on_click: self.main_button_cmds(),
 			},
 		);
 
