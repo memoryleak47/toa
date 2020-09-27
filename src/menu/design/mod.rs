@@ -80,21 +80,35 @@ impl App {
 		let mut widgets = Vec::new();
 
 		let s = (ws.x * 0.01).into();
+		let cmds =
+			if let Some(p) = self.world.find_next_usable_unit_tile(self.cursor, self.player_id) {
+				vec![MenuCommand::Cursor(p)]
+			} else {
+				if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(false) {
+					vec![MenuCommand::Command(Command::NextTurn)]
+				} else {
+					vec![]
+				}
+			};
 
 		widgets.push(
 			Widget {
 				pos: ws - s,
 				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
-				on_click: vec![MenuCommand::Command(Command::NextTurn)],
+				on_click: cmds,
 			},
 		);
 
 		widgets
 	}
 
+	fn selected_unit(&self) -> Option<&'_ Unit> {
+		self.world.unitmap.get(self.cursor)
+	}
+
 	fn pane_color(&self) -> Color {
-		if let Some(unit) = self.world.unitmap.get(self.cursor) {
+		if let Some(unit) = self.selected_unit() {
 			let red_add = (unit.food < 20) as u8 * 70;
 			if unit.stamina <= 0 { Color::rgb(70 + red_add, 70, 70) }
 			else { Color::rgb(100 + red_add, 100, 100) }
