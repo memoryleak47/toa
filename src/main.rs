@@ -72,9 +72,13 @@ pub use sfml::{
 
 #[cfg(feature = "client")]
 fn main() {
-	let ip = cli::get_ip();
-	let mut app = App::connect(&ip);
-	app.run();
+	match cli::get_arg().as_str() {
+		"server" => server::run(),
+		ip => {
+			let mut app = App::connect(&ip);
+			app.run();
+		}
+	};
 }
 
 #[cfg(not(feature = "client"))]
