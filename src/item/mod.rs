@@ -189,7 +189,8 @@ impl Inventory {
 
 pub fn melee_aim(mouse: Vec2f) -> Vec<Vec2i> {
 	let vec = vec![(0,1), (0,-1), (1,0), (-1,0)];
-	let f = |&w: &Vec2i| ((w.to_f() - mouse).magnitude_sqr() * 1000.0) as i32;
+	let tile_center = |v: Vec2i| v.to_f() + 0.5;
+	let f = |&w: &Vec2i| ((tile_center(w) - mouse).magnitude_sqr() * 1000.0) as i32;
 	let ret = vec![vec.into_iter()
 		.map(Vec2i::from)
 		.min_by_key(f)
