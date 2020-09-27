@@ -13,8 +13,7 @@ impl App {
 					let rel_mouse = self.get_world_mouse() - self.cursor.to_f();
 					let cmd = UnitCommand::Attack(idx, rel_mouse);
 					vec![
-						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor }),
-						MenuCommand::StateChange(MenuState::Normal),
+						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor })
 					]
 				},
 				MenuState::DropChooseDir(idx) => {
