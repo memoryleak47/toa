@@ -1,5 +1,4 @@
-use crate::item::{Item, ItemClass, ItemTrait, ItemClassTrait};
-use crate::damage::Damage;
+use crate::*;
 
 lazy_static! {
 	static ref RECIPE: [ItemClass; 3] = [ItemClass::Iron, ItemClass::Iron, ItemClass::Iron];
@@ -38,4 +37,13 @@ impl ItemTrait for LongSword {
 		self.health == 0
 	}
 	fn get_damage(&self) -> Damage { Damage(15) }
+	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
+		let t = melee_aim(v)[0];
+		let orth = if t.x.abs() > t.y.abs() { Vec2i::new(0, 1) } else { Vec2i::new(1, 0) };
+
+		iter::once(t)
+			.chain(iter::once(t - orth))
+			.chain(iter::once(t + orth))
+			.collect()
+	}
 }
