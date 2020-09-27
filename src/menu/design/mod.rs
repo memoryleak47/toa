@@ -26,7 +26,7 @@ impl App {
 					if let Some(opt_dir) = v.into_iter().find(cond) {
 						let cmd = |idx| Command::UnitCommand { command: UnitCommand::DropItem(idx, opt_dir), pos: self.cursor };
 
-						let mut indices = indices.clone();
+						let mut indices: Vec<_> = indices.iter().copied().collect();
 						indices.sort();
 						indices.into_iter().rev()
 							.map(|idx| MenuCommand::Command(cmd(idx)))

@@ -71,6 +71,7 @@ pub use sfml::{
 };
 
 pub use std::{iter, mem};
+pub use std::collections::{HashSet, HashMap};
 
 #[cfg(feature = "client")]
 fn main() {

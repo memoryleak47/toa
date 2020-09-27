@@ -81,11 +81,13 @@ impl App {
 				]
 			},
 			MenuState::DropChooseItem => {
-				vec![MenuCommand::StateChange(MenuState::DropChooseDir(vec![i]))]
+				let mut hs = HashSet::new();
+				hs.insert(i);
+				vec![MenuCommand::StateChange(MenuState::DropChooseDir(hs))]
 			}
 			MenuState::DropChooseDir(ref current_indices) => {
 				let mut current_indices = current_indices.clone();
-				current_indices.push(i);
+				current_indices.insert(i);
 				vec![MenuCommand::StateChange(MenuState::DropChooseDir(current_indices))]
 			}
 			_ => Vec::new(),
