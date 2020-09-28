@@ -23,9 +23,7 @@ impl App {
 			},
 			Event::MouseButtonReleased { button: b, x, y } => self.handle_mouse_press((x as f32, y as f32).into(), b),
 			Event::MouseWheelScrolled { delta, .. } => { self.tilesize += delta; }
-			Event::KeyPressed { code: Key::Q, .. } => self.window.close(),
-			Event::KeyPressed { code: Key::Escape, .. } => self.menu_state = MenuState::Normal,
-			Event::KeyPressed { code: Key::Return, .. } => self.apply_menu_commands(self.main_button_cmds()),
+			Event::KeyPressed { code, .. } => self.handle_hotkey(code),
 			_ => {},
 		}
 	}

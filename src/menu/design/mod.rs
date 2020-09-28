@@ -2,6 +2,7 @@ mod item;
 mod unit;
 mod building;
 mod terrain;
+mod hotkey;
 
 use crate::*;
 

@@ -55,6 +55,7 @@ impl App {
 				}
 				MenuCommand::Cursor(c) => {
 					self.cursor = c;
+					self.menu_state = MenuState::Normal;
 				},
 			}
 		}
