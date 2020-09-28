@@ -18,7 +18,7 @@ impl App {
 			_ => {
 				for w in self.generate_widgets() { // TODO this is not nice for performance!
 					if w.hotkey == Some(k) {
-						self.apply_menu_commands(w.on_click.clone());
+						self.apply_menu_commands(w.on_click);
 					}
 				}
 			},
