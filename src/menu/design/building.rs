@@ -17,15 +17,11 @@ impl App {
 				on_click: vec![],
 			});
 
-			let work_cmd = match matches!(b.get_class(), BuildingClass::Workshop) {
-				true => MenuCommand::StateChange(MenuState::Craft),
-				false => MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Work, pos: cursor })
-			};
 			widgets.push(Widget {
 				pos: ws * (offset + (0.01, 0.08)),
 				size: ws * 0.025,
 				draw_type: Color::rgb(30, 30, 30).into(),
-				on_click: vec![work_cmd],
+				on_click: self.work_commands(),
 			});
 
 			widgets.push(Widget {
@@ -106,5 +102,13 @@ impl App {
 
 		widgets
 	}
-}
 
+	pub fn work_commands(&self) -> Vec<MenuCommand> {
+		if let Some(b) = self.world.buildingmap.get(self.cursor) {
+			vec![match matches!(b.get_class(), BuildingClass::Workshop) {
+				true => MenuCommand::StateChange(MenuState::Craft),
+				false => MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Work, pos: self.cursor })
+			}]
+		} else { vec![] }
+	}
+}

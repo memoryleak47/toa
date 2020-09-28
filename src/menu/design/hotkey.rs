@@ -16,6 +16,8 @@ impl App {
 			Key::Left => self.apply_menu_commands(self.cursor_move_command(Direction::Left)),
 			Key::Down => self.apply_menu_commands(self.cursor_move_command(Direction::Down)),
 			Key::Right => self.apply_menu_commands(self.cursor_move_command(Direction::Right)),
+
+			Key::E => self.apply_menu_commands(self.work_commands()),
 			_ => {},
 		}
 	}
