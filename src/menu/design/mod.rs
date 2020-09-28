@@ -18,7 +18,7 @@ impl App {
 						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor })
 					]
 				},
-				MenuState::DropChooseDir(ref indices) => {
+				MenuState::DropItem(ref indices) => {
 					let v = vec![Some(Direction::Left), Some(Direction::Right), Some(Direction::Up), Some(Direction::Down), None];
 					let mouse = if let Some(x) = self.get_world_mouse().to_i().to_pos() { x }
 					else { return vec![]; };

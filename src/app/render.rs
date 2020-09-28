@@ -92,7 +92,7 @@ impl App {
 					}
 				}
 			}
-			MenuState::DropChooseDir(_) => {
+			MenuState::DropItem(_) => {
 				draw!(self, self.cursor, &Marker::ItemDrop);
 				for d in Direction::iter() {
 					if let Some(c) = self.cursor.map(|p| p + *d) {

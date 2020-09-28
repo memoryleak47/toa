@@ -49,8 +49,8 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (offset + (0.07, 0.08)),
 			size: ws * 0.025,
-			draw_type: if matches!(self.menu_state, MenuState::DropChooseDir(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
-			on_click: vec![MenuCommand::StateChange(MenuState::DropChooseDir(HashSet::new()))],
+			draw_type: if matches!(self.menu_state, MenuState::DropItem(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
+			on_click: vec![MenuCommand::StateChange(MenuState::DropItem(HashSet::new()))],
 			hotkey: Some(DROP_ITEM_HOTKEY)
 		});
 
@@ -76,7 +76,7 @@ impl App {
 				MenuState::Attack(Some(j)) if i == j => {
 					Some(Color::rgba(255, 0, 0, 20).into())
 				},
-				MenuState::DropChooseDir(ref indices) if indices.contains(&i) => {
+				MenuState::DropItem(ref indices) if indices.contains(&i) => {
 					Some(Color::rgba(00, 0, 255, 20).into())
 				}
 				_ => None,
@@ -94,14 +94,14 @@ impl App {
 					MenuCommand::StateChange(MenuState::Normal),
 				]
 			},
-			MenuState::DropChooseDir(ref current_indices) => {
+			MenuState::DropItem(ref current_indices) => {
 				let mut current_indices = current_indices.clone();
 				if current_indices.contains(&i) {
 					current_indices.remove(&i);
 				} else {
 					current_indices.insert(i);
 				}
-				vec![MenuCommand::StateChange(MenuState::DropChooseDir(current_indices))]
+				vec![MenuCommand::StateChange(MenuState::DropItem(current_indices))]
 			}
 			_ => Vec::new(),
 		};

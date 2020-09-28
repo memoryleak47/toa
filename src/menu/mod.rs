@@ -18,7 +18,7 @@ pub enum MenuState {
 	Normal,
 	ExecItem,
 	Attack(Option<usize>),
-	DropChooseDir(HashSet<usize>),
+	DropItem(HashSet<usize>),
 	TakeItem,
 	Build,
 	Craft,
