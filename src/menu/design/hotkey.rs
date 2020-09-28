@@ -5,7 +5,6 @@ impl App {
 		match k {
 			Key::Q => self.window.close(),
 			Key::Escape => self.menu_state = MenuState::Normal,
-			Key::Return => self.apply_menu_commands(self.main_button_cmds()),
 
 			Key::W => self.apply_menu_commands(self.move_command(Direction::Up)),
 			Key::A => self.apply_menu_commands(self.move_command(Direction::Left)),
@@ -16,9 +15,13 @@ impl App {
 			Key::Left => self.apply_menu_commands(self.cursor_move_command(Direction::Left)),
 			Key::Down => self.apply_menu_commands(self.cursor_move_command(Direction::Down)),
 			Key::Right => self.apply_menu_commands(self.cursor_move_command(Direction::Right)),
-
-			Key::E => self.apply_menu_commands(self.work_commands()),
-			_ => {},
+			_ => {
+				for w in self.generate_widgets() { // TODO this is not nice for performance!
+					if w.hotkey == Some(k) {
+						self.apply_menu_commands(w.on_click.clone());
+					}
+				}
+			},
 		}
 	}
 
@@ -40,5 +43,21 @@ impl App {
 			vec![]
 		}
 	}
+
 }
 
+pub fn numeric_hotkey(n: usize) -> Option<Key> {
+	match n {
+		0 => Some(Key::Num0),
+		1 => Some(Key::Num1),
+		2 => Some(Key::Num2),
+		3 => Some(Key::Num3),
+		4 => Some(Key::Num4),
+		5 => Some(Key::Num5),
+		6 => Some(Key::Num6),
+		7 => Some(Key::Num7),
+		8 => Some(Key::Num8),
+		9 => Some(Key::Num9),
+		_ => None,
+	}
+}

@@ -15,6 +15,7 @@ impl App {
 				size: ws * (0.025, 0.025),
 				draw_type: b.get_info_string().into(),
 				on_click: vec![],
+				hotkey: None,
 			});
 
 			widgets.push(Widget {
@@ -22,6 +23,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(30, 30, 30).into(),
 				on_click: self.work_commands(),
+				hotkey: Some(Key::E),
 			});
 
 			widgets.push(Widget {
@@ -29,6 +31,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(100, 30, 30).into(),
 				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
+				hotkey: Some(Key::X),
 			});
 
 		} else {
@@ -37,6 +40,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(70, 50, 0).into(),
 				on_click: vec![MenuCommand::StateChange(MenuState::Build)],
+				hotkey: Some(Key::B),
 			});
 		}
 
@@ -70,6 +74,7 @@ impl App {
 					size: ws * (0.025, 0.025),
 					draw_type: c.get_texture_id().into(),
 					on_click: on_click(c),
+					hotkey: numeric_hotkey(i+1),
 				},
 			);
 		}
@@ -96,6 +101,7 @@ impl App {
 					size: ws * (0.025, 0.025),
 					draw_type: c.get_texture_id().into(),
 					on_click: on_click(c),
+					hotkey: None,
 				},
 			);
 		}

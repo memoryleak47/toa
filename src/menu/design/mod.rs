@@ -3,6 +3,7 @@ mod unit;
 mod building;
 mod terrain;
 mod hotkey;
+pub use hotkey::*;
 
 use crate::*;
 
@@ -64,6 +65,7 @@ impl App {
 				size: ws * (0.3, 1.),
 				draw_type: self.pane_color().into(),
 				on_click: vec![],
+				hotkey: None,
 			},
 		);
 
@@ -99,6 +101,7 @@ impl App {
 				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
 				on_click: self.main_button_cmds(),
+				hotkey: Some(Key::Return),
 			},
 		);
 

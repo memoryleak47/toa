@@ -1,4 +1,5 @@
 mod design;
+pub use design::*;
 
 mod widget;
 pub use widget::*;

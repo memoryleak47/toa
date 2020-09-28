@@ -12,6 +12,7 @@ impl App {
 			size: ws * (0.025, 0.025),
 			draw_type: format!("terrain: {}", t.str()).into(),
 			on_click: vec![],
+			hotkey: None,
 		});
 
 		let cmd = Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor };
@@ -22,6 +23,7 @@ impl App {
 			size: ws * 0.025,
 			draw_type: Color::rgb(10, 10, 10).into(),
 			on_click: vec![MenuCommand::Command(cmd)],
+			hotkey: Some(Key::Y),
 		});
 
 		widgets

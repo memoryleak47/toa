@@ -5,6 +5,7 @@ pub struct Widget {
 	pub size: Vec2f,
 	pub draw_type: DrawType,
 	pub on_click: Vec<MenuCommand>,
+	pub hotkey: Option<Key>,
 }
 
 pub enum DrawType {
