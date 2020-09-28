@@ -37,6 +37,12 @@ impl Unit {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
+
+	// returns the heaviest item
+	pub fn equipped_item(&self) -> Option<&'_ Item> {
+		self.inventory.iter()
+			.max_by_key(|item| item.get_class().get_weight())
+	}
 }
 
 pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> OptTileMap<Unit> {
