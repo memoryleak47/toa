@@ -48,7 +48,6 @@ impl App {
 
 pub fn numeric_hotkey(n: usize) -> Option<Key> {
 	match n {
-		0 => Some(Key::Num0),
 		1 => Some(Key::Num1),
 		2 => Some(Key::Num2),
 		3 => Some(Key::Num3),
@@ -58,6 +57,7 @@ pub fn numeric_hotkey(n: usize) -> Option<Key> {
 		7 => Some(Key::Num7),
 		8 => Some(Key::Num8),
 		9 => Some(Key::Num9),
+		10 => Some(Key::Num0),
 		_ => None,
 	}
 }
