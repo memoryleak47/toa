@@ -26,4 +26,11 @@ impl Deref for Direction {
 	}
 }
 
-
+impl Direction {
+	pub fn iter() -> impl Iterator<Item=Direction> {
+		iter::once(Direction::Up)
+			.chain(iter::once(Direction::Left))
+			.chain( iter::once(Direction::Down))
+			.chain( iter::once(Direction::Right))
+	}
+}

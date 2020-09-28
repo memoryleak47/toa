@@ -4,6 +4,7 @@ use crate::*;
 pub enum Marker {
 	Normal,
 	Combat,
+	ItemDrop,
 }
 
 impl GameObject for Marker {
@@ -11,6 +12,7 @@ impl GameObject for Marker {
 		match self {
 			Marker::Normal => RawTextureId::Cursor.into(),
 			Marker::Combat => RawTextureId::CombatCursor.into(),
+			Marker::ItemDrop => RawTextureId::ItemDropCursor.into(),
 		}
 	}
 	fn get_relative_pos(&self) -> Vec2f { <_>::from(0.) }

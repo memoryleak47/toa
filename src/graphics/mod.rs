@@ -118,8 +118,9 @@ setup!(
 	LanceItem: "item/lance.png",
 
 	Bag: "bag.png",
-	Cursor: "cursor.png",
-	CombatCursor: "combat_cursor.png",
+	Cursor: "cursors/cursor.png",
+	CombatCursor: "cursors/combat_cursor.png",
+	ItemDropCursor: "cursors/item_drop_cursor.png",
 
 	// hued:
 

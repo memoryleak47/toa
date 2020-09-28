@@ -80,17 +80,27 @@ impl App {
 
 	fn render_markers(&mut self) {
 		draw!(self, self.cursor, &Marker::Normal);
-		if let MenuState::Attack(weapon_id) = self.menu_state {
-			let v = self.get_world_mouse() - self.cursor.to_f();
-			let u = self.world.unitmap.get(self.cursor).unwrap();
-			let rel_tiles = weapon_id.map(|i| u.inventory.get(i).aim(v))
-							.unwrap_or(melee_aim(v));
-			for t in rel_tiles {
-				if let Some(t) = self.cursor.map(|x| x + t) {
-					draw!(self, t, &Marker::Combat);
+		match self.menu_state {
+			MenuState::Attack(weapon_id) => {
+				let v = self.get_world_mouse() - self.cursor.to_f();
+				let u = self.world.unitmap.get(self.cursor).unwrap();
+				let rel_tiles = weapon_id.map(|i| u.inventory.get(i).aim(v))
+					.unwrap_or(melee_aim(v));
+				for t in rel_tiles {
+					if let Some(t) = self.cursor.map(|x| x + t) {
+						draw!(self, t, &Marker::Combat);
+					}
 				}
 			}
-
+			MenuState::DropChooseDir(_) => {
+				draw!(self, self.cursor, &Marker::ItemDrop);
+				for d in Direction::iter() {
+					if let Some(c) = self.cursor.map(|p| p + *d) {
+						draw!(self, c, &Marker::ItemDrop);
+					}
+				}
+			}
+			_ => ()
 		}
 	}
 
