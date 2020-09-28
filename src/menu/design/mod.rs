@@ -101,7 +101,7 @@ impl App {
 				size: s,
 				draw_type: Color::rgb(100, 100, 100).into(),
 				on_click: self.main_button_cmds(),
-				hotkey: Some(Key::Return),
+				hotkey: Some(MAIN_HOTKEY),
 			},
 		);
 

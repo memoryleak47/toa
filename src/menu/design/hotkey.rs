@@ -1,6 +1,19 @@
 use crate::*;
 
+// button hotkeys
+pub const WORK_HOTKEY: Key = Key::E;
+pub const TAKE_ITEM_HOTKEY: Key = Key::T;
+pub const DROP_ITEM_HOTKEY: Key = Key::Z;
+pub const IDLE_HOTKEY: Key = Key::I;
+pub const ATTACK_HOTKEY: Key = Key::F;
+pub const UNREFINED_WORK_HOTKEY: Key = Key::Y;
+pub const BURN_BUILDING_HOTKEY: Key = Key::X;
+pub const EXEC_ITEM_HOTKEY: Key = Key::V;
+pub const BUILD_HOTKEY: Key = Key::B;
+pub const MAIN_HOTKEY: Key = Key::Return;
+
 impl App {
+	// general hotkeys
 	pub fn handle_hotkey(&mut self, k: Key) {
 		match k {
 			Key::Q => self.window.close(),

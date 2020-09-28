@@ -10,7 +10,7 @@ impl App {
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::TakeItem) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::TakeItem) ],
-			hotkey: Some(Key::T),
+			hotkey: Some(TAKE_ITEM_HOTKEY),
 		});
 
 		let on_click = |i| {

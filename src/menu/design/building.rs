@@ -23,7 +23,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(30, 30, 30).into(),
 				on_click: self.work_commands(),
-				hotkey: Some(Key::E),
+				hotkey: Some(WORK_HOTKEY),
 			});
 
 			widgets.push(Widget {
@@ -31,7 +31,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(100, 30, 30).into(),
 				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
-				hotkey: Some(Key::X),
+				hotkey: Some(BURN_BUILDING_HOTKEY),
 			});
 
 		} else {
@@ -40,7 +40,7 @@ impl App {
 				size: ws * 0.025,
 				draw_type: Color::rgb(70, 50, 0).into(),
 				on_click: vec![MenuCommand::StateChange(MenuState::Build)],
-				hotkey: Some(Key::B),
+				hotkey: Some(BUILD_HOTKEY),
 			});
 		}
 

@@ -23,7 +23,7 @@ impl App {
 			size: ws * 0.025,
 			draw_type: Color::rgb(10, 10, 10).into(),
 			on_click: vec![MenuCommand::Command(cmd)],
-			hotkey: Some(Key::Y),
+			hotkey: Some(UNREFINED_WORK_HOTKEY),
 		});
 
 		widgets
