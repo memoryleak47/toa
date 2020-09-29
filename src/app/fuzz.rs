@@ -14,14 +14,14 @@ impl App {
 			return;
 		}
 
-		static KEYS: &[Key] = &[Key::A, Key::W, Key::S, Key::D, Key::Q, Key::E, Key::R, Key::X, Key::F, Key::B, Key::I];
+		static KEYS: &[Key] = &[Key::A, Key::W, Key::S, Key::D, Key::Q, Key::E, Key::R, Key::X, Key::F, Key::B, Key::I, Key::G, Key::Space];
 		for &key in KEYS {
 			if rand::random::<u8>() < 8 {
 				self.handle_hotkey(key);
 			}
 		}
 		if rand::random::<u8>() < 40 {
-			self.handle_hotkey(Key::Return);
+			self.handle_hotkey(MAIN_HOTKEY);
 		}
 		for w in self.generate_widgets() {
 			if rand::random::<u8>() < 8 {

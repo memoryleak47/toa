@@ -3,14 +3,14 @@ use crate::*;
 // button hotkeys
 pub const WORK_HOTKEY: Key = Key::R;
 pub const TAKE_ITEM_HOTKEY: Key = Key::T;
-pub const DROP_ITEM_HOTKEY: Key = Key::Z;
+pub const DROP_ITEM_HOTKEY: Key = Key::G;
 pub const IDLE_HOTKEY: Key = Key::V;
 pub const ATTACK_HOTKEY: Key = Key::F;
 pub const UNREFINED_WORK_HOTKEY: Key = Key::E;
 pub const BURN_BUILDING_HOTKEY: Key = Key::X;
 pub const EXEC_ITEM_HOTKEY: Key = Key::Q;
 pub const BUILD_HOTKEY: Key = Key::B;
-pub const MAIN_HOTKEY: Key = Key::Return;
+pub const MAIN_HOTKEY: Key = Key::Space;
 
 impl App {
 	// general hotkeys
