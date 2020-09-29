@@ -18,7 +18,7 @@ impl App {
 						MenuCommand::Command(Command::UnitCommand { command: cmd, pos: self.cursor })
 					]
 				},
-				MenuState::DropItem(ref indices) => {
+				MenuState::DropItem(_) => {
 					let v = vec![Some(Direction::Left), Some(Direction::Right), Some(Direction::Up), Some(Direction::Down), None];
 					let mouse = if let Some(x) = self.get_world_mouse().to_i().to_pos() { x }
 					else { return vec![]; };
@@ -26,15 +26,7 @@ impl App {
 					let local_pos = |opt_d: &Option<Direction>| -> Vec2i { opt_d.map(|d| *d).unwrap_or(Vec2i::new(0,0)) };
 					let cond = |opt_d: &Option<Direction>| Some(mouse) == self.cursor.map(|x| x + local_pos(opt_d));
 					if let Some(opt_dir) = v.into_iter().find(cond) {
-						let cmd = |idx| Command::UnitCommand { command: UnitCommand::DropItem(idx, opt_dir), pos: self.cursor };
-
-						let mut indices: Vec<_> = indices.iter().copied().collect();
-						indices.sort();
-						indices.into_iter().rev()
-							.map(|idx| MenuCommand::Command(cmd(idx)))
-							.chain(
-								iter::once( MenuCommand::StateChange(MenuState::Normal))
-							).collect()
+						self.drop_commands(opt_dir)
 					} else {
 						vec![]
 					}
@@ -52,6 +44,20 @@ impl App {
 			}
 		}
 		vec![]
+	}
+
+	pub fn drop_commands(&self, opt_dir: Option<Direction>) -> Vec<MenuCommand> {
+		let indices = if let MenuState::DropItem(indices) = &self.menu_state { indices } else { return Vec::new(); };
+
+		let cmd = |idx| Command::UnitCommand { command: UnitCommand::DropItem(idx, opt_dir), pos: self.cursor };
+
+		let mut indices: Vec<_> = indices.iter().copied().collect();
+		indices.sort();
+		indices.into_iter().rev()
+			.map(|idx| MenuCommand::Command(cmd(idx)))
+			.chain(
+				iter::once( MenuCommand::StateChange(MenuState::Normal))
+			).collect()
 	}
 
 	pub fn generate_widgets(&self) -> Vec<Widget> {

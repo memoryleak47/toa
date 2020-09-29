@@ -4,7 +4,7 @@ use crate::*;
 pub const WORK_HOTKEY: Key = Key::R;
 pub const TAKE_ITEM_HOTKEY: Key = Key::T;
 pub const DROP_ITEM_HOTKEY: Key = Key::Z;
-pub const IDLE_HOTKEY: Key = Key::I;
+pub const IDLE_HOTKEY: Key = Key::V;
 pub const ATTACK_HOTKEY: Key = Key::F;
 pub const UNREFINED_WORK_HOTKEY: Key = Key::E;
 pub const BURN_BUILDING_HOTKEY: Key = Key::X;
@@ -28,6 +28,12 @@ impl App {
 			Key::Left => self.apply_menu_commands(self.cursor_move_command(Direction::Left)),
 			Key::Down => self.apply_menu_commands(self.cursor_move_command(Direction::Down)),
 			Key::Right => self.apply_menu_commands(self.cursor_move_command(Direction::Right)),
+
+			Key::I => self.apply_menu_commands(self.drop_commands(Some(Direction::Up))),
+			Key::J => self.apply_menu_commands(self.drop_commands(Some(Direction::Left))),
+			Key::K => self.apply_menu_commands(self.drop_commands(Some(Direction::Down))),
+			Key::L => self.apply_menu_commands(self.drop_commands(Some(Direction::Right))),
+
 			_ => {
 				for w in self.generate_widgets() { // TODO this is not nice for performance!
 					if w.hotkey == Some(k) {
@@ -56,7 +62,6 @@ impl App {
 			vec![]
 		}
 	}
-
 }
 
 pub fn numeric_hotkey(n: usize) -> Option<Key> {
