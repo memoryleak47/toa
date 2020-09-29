@@ -27,5 +27,5 @@ impl ItemTrait for Iron {
 		ItemClass::Iron
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn get_damage(&self) -> Damage { Damage(5) }
+	fn get_damage(&self) -> Damage { Damage(3) }
 }

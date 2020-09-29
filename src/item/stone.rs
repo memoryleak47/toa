@@ -27,5 +27,5 @@ impl ItemTrait for Stone {
 		ItemClass::Stone
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn get_damage(&self) -> Damage { Damage(4) }
+	fn get_damage(&self) -> Damage { Damage(3) }
 }
