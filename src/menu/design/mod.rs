@@ -83,7 +83,10 @@ impl App {
 			vec![MenuCommand::Cursor(p)]
 		} else {
 			if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(false) {
-				vec![MenuCommand::Command(Command::NextTurn)]
+				vec![
+					MenuCommand::StateChange(MenuState::Normal),
+					MenuCommand::Command(Command::NextTurn)
+				]
 			} else {
 				vec![]
 			}
