@@ -38,7 +38,7 @@ impl App {
 			widgets.push(Widget {
 				pos: ws * (offset + (0.01, 0.08)),
 				size: ws * 0.025,
-				draw_type: Color::rgb(70, 50, 0).into(),
+				draw_type: if matches!(self.menu_state, MenuState::Build) { Color::rgb(140, 100, 0) } else { Color::rgb(70, 50, 0) }.into(),
 				on_click: vec![MenuCommand::StateChange(MenuState::Build)],
 				hotkey: Some(BUILD_HOTKEY),
 			});
@@ -101,7 +101,7 @@ impl App {
 					size: ws * (0.025, 0.025),
 					draw_type: c.get_texture_id().into(),
 					on_click: on_click(c),
-					hotkey: None,
+					hotkey: numeric_hotkey(i+1),
 				},
 			);
 		}
