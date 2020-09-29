@@ -147,13 +147,14 @@ impl App {
 
 	fn pane_color(&self) -> Color {
 		let base_color = (|| {
-			if !self.world.active_player_ids.contains(&self.player_id) { return Color::rgb(50, 50, 50); }
+			if !self.world.active_player_ids.contains(&self.player_id) { return Color::rgb(30, 30, 30); }
+
 			if let Some(unit) = self.selected_unit() {
-				if unit.stamina <= 0 { Color::rgb(70, 70, 70)}
-				else { Color::rgb(100, 100, 100) }
-			} else {
-				Color::rgb(100, 100, 100)
+				if unit.stamina <= 0 {
+					return Color::rgb(70, 70, 70);
+				}
 			}
+			Color::rgb(100, 100, 100)
 		})();
 
 		if let Some(unit) = self.selected_unit() {
