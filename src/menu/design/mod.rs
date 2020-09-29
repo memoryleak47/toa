@@ -69,11 +69,35 @@ impl App {
 			},
 		);
 
-		widgets.extend(self.build_item_pane((0.0, 0.0).into()));
+		widgets.extend(self.build_active_player_pane((0.0, 0.0).into()));
+		widgets.extend(self.build_item_pane((0.0, 0.10).into()));
 		widgets.extend(self.build_unit_pane((0.0, 0.25).into()));
 		widgets.extend(self.build_building_pane((0.0, 0.5).into()));
 		widgets.extend(self.build_terrain_pane((0.0, 0.75).into()));
 		widgets.extend(self.main_button());
+
+		widgets
+	}
+
+	fn build_active_player_pane(&self, offset: Vec2f) -> Vec<Widget> {
+		let ws = self.window_size();
+		let mut widgets = Vec::new();
+
+		let cond = self.world.active_player_ids.contains(&self.player_id);
+		let text = match cond {
+			true => "Your turn",
+			false => "Enemies turn"
+		};
+
+		widgets.push(
+			Widget {
+				pos: ws * offset,
+				size: ws * (0.025, 0.025),
+				draw_type: text.to_string().into(),
+				on_click: vec![],
+				hotkey: None,
+			},
+		);
 
 		widgets
 	}
