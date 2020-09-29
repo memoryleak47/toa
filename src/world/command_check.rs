@@ -1,169 +1,101 @@
 use crate::*;
 
 impl World {
-	pub fn get_unitless_commands(&self, _player: PlayerID) -> Vec<Command> {
-		vec![Command::NextTurn]
-	}
-
-	#[allow(dead_code)]
-	fn get_unchecked_commands_by_unit(&self, _player: PlayerID, pos: Pos) -> Vec<Command> {
-		let mut v = Vec::new();
-
-		// add Move
-		for d in [Direction::Left, Direction::Right, Direction::Up, Direction::Down].iter() {
-			v.push(Command::UnitCommand { pos, command: UnitCommand::Move(*d) });
-		}
-
-		// add Attack
-		// <this is still missing>
-
-		// add Build
-		for c in &BUILDABLE_BUILDING_CLASSES[..] {
-			v.push(Command::UnitCommand { pos, command: UnitCommand::Build(*c) });
-		}
-
-		// add Work
-		v.push(Command::UnitCommand { pos, command: UnitCommand::Work});
-
-		v
-	}
-
-	#[allow(dead_code)]
-	pub fn get_commands_by_unit(&self, player: PlayerID, pos: Pos) -> Vec<Command> {
-		self.get_unchecked_commands_by_unit(player, pos).into_iter()
-			.filter(|x| self.is_valid_command(player, x))
-			.collect()
-	}
-
-	#[allow(dead_code)]
-	pub fn get_commands(&self, player: PlayerID) -> Vec<Command> {
-		let mut v = Vec::new();
-		for p in Pos::iter_all() {
-			if self.unitmap.get(p)
-					.filter(|x| x.owner == player)
-					.is_some() {
-				v.extend(self.get_commands_by_unit(player, p));
-			}
-		}
-
-		v.extend(self.get_unitless_commands(player));
-
-		v
-	}
-
-	fn is_valid_unit_command(&self, player: PlayerID, pos: Pos, command: &UnitCommand) -> bool {
-		self.unitmap.get(pos)
-		.filter(|x| x.owner == player)
-		.filter(|x| x.stamina > 0)
-		.is_some()
-		&&
+	fn is_valid_unit_command(&self, player: PlayerID, pos: Pos, command: &UnitCommand) -> Result<(), String> {
+		let unit = self.unitmap.get(pos).ok_or_else(|| "No unit selected.".to_owned())
+		.and_then(|x| if x.owner == player { Ok(x) } else { Err("The selected unit is not your unit.".to_owned()) })
+		.and_then(|x| if x.stamina > 0 { Ok(x) } else { Err("No Stamina.".to_owned()) })?;
 		match command {
 			UnitCommand::Move(direction) => {
-				let to = match pos.map(|x| x + **direction) {
-					Some(x) => x,
-					None => return false,
-				};
+				let to = pos.map(|x| x + **direction).ok_or_else(|| "Cannot move out of map.".to_owned())?;
 
-				self.unitmap.get(to).is_none()
-				&& self.allowed_to_go_to(pos, to)
-				&& self.unitmap.get(pos)
-					.filter(|x| x.owner == player)
-					.is_some()
+				if self.unitmap.get(to).is_some() { Err("Cannot move to occupied tile.".to_owned())? };
+				self.allowed_to_go_to(pos, to)?;
+				Ok(())
 			},
 			UnitCommand::Attack(weapon_id, _) => {
-				self.unitmap.get(pos)
-					.filter(|x| x.owner == player)
-					.filter(|u| weapon_id.map(|i| u.inventory.has_index(i)).unwrap_or(true) )
-					.is_some()
+				if !weapon_id.map(|i| unit.inventory.has_index(i)).unwrap_or(true) { Err("Item index out of range while attacking.".to_owned())? };
+				Ok(())
 			},
 			UnitCommand::Build(class) => {
-				let prop = match class.get_build_property() {
-					Some(x) => x,
-					None => return false,
-				};
-				let req_terrain = prop.required_terrain;
-				self.buildingmap.get(pos).is_none()
-				&&
-				!self.terrainmap.get(pos).prevents_building()
-				&&
-				self.unitmap.get(pos)
-					.filter(|x| x.owner == player)
-					.filter(|x| x.inventory.contains_all(prop.item_cost))
-					.is_some()
-				&&
-				(req_terrain.is_none() || req_terrain.as_ref() == Some(self.terrainmap.get(pos)))
+				let prop = class.get_build_property().ok_or_else(|| format!("The building {} cannot be build.", class.get_name()))?;
+				let req_terrain_opt = prop.required_terrain;
+				if self.buildingmap.get(pos).is_some() { Err("Cannot build where a building already exists.".to_owned())?; }
+				let terrain = self.terrainmap.get(pos);
+				if terrain.prevents_building() { Err(format!("You cannot build on {}.", terrain.str()))?; }
+				if !unit.inventory.contains_all(prop.item_cost) { Err(format!("You cannot build {}, as you don't have the full recipe.", class.get_name()))?; }
+				if let Some(req_terrain) = req_terrain_opt {
+					if req_terrain != *terrain { Err(format!("Building {} can only be built on {}.", class.get_name(), req_terrain.str()))?; }
+				}
+				Ok(())
 			},
 			UnitCommand::Work => {
-				self.buildingmap.get(pos)
-					.filter(|b| b.is_workable(self, pos))
-					.is_some()
+				let b = self.buildingmap.get(pos).ok_or_else(|| "Here is no building to work on.".to_owned())?;
+				if !b.is_workable(self, pos) { Err(format!("You cannot work on {}", b.get_class().get_name()))?; }
+				Ok(())
 			},
 			UnitCommand::UnrefinedWork => {
-				self.unitmap.get(pos)
-					.filter(|u| self.terrainmap.get(pos)
-						.is_unrefined_workable(u)
-					).is_some()
+				let terrain = self.terrainmap.get(pos);
+				if !terrain.is_unrefined_workable(unit) { Err(format!("You cannot work on {} (without the right building).", terrain.str()))?; }
+				Ok(())
 			}
 			UnitCommand::DropItem(i, opt_dir) => {
-				self.unitmap.get(pos)
-					.filter(|u| u.inventory.iter().len() > *i)
-					.is_some()
-				&& opt_dir.map(|dir| {
+				if !(unit.inventory.iter().len() > *i) { Err("DropItem index out of range.".to_owned())?; }
+				if !opt_dir.map(|dir| {
 					pos.map(|x| x + *dir).is_some()
-				}).unwrap_or(true)
+				}).unwrap_or(true) { Err("Cannot drop item out of map.".to_owned())?; }
+				Ok(())
 			},
 			UnitCommand::TakeItem(i) => {
-				self.itemmap.get(pos)
+				if !(self.itemmap.get(pos)
 					.iter()
-					.len() > *i
+					.len() > *i) { Err("TakeItem index out of range".to_owned())?; }
+				Ok(())
 			},
 			UnitCommand::BurnBuilding => {
-				self.buildingmap.get(pos)
-					.filter(|x| x.is_burnable(self, pos))
-					.is_some()
+				let b = self.buildingmap.get(pos).ok_or_else(|| "Here is no building to burn.".to_owned())?;
+				if !b.is_burnable(self, pos) { Err(format!("The building {} cannot be burned", b.get_class().get_name()))?; }
+				Ok(())
 			},
 			UnitCommand::Craft(class) => {
-				let recipe = match class.get_recipe() { Some(x) => x, None => return false };
+				let recipe = class.get_recipe().ok_or_else(|| format!("Cannot craft {}.", class.get_name()) )?;
 				if let Some(Building::Workshop(_)) = self.buildingmap.get(pos) {
-					self.unitmap.get(pos)
-						.filter(|x| x.owner == player)
-						.filter(|x| x.inventory.contains_all(recipe))
-						.is_some()
-				} else { false }
+						if !unit.inventory.contains_all(recipe) { Err(format!("You cannot craft {}, as you don't have the full recipe.", class.get_name()))?; }
+				} else { Err("You can only craft on a Workshop.".to_owned())? }
+				Ok(())
 			},
 			UnitCommand::ExecItem(i) => {
-				self.unitmap.get(pos)
-					.map(|u| u.inventory.iter())
-					.and_then(|mut inv| inv.nth(*i))
-					.filter(|x| x.is_execable(pos, self))
-					.is_some()
+				if let Some(item) = unit.inventory.iter().nth(*i) {
+					if !item.is_execable(pos, self) { Err(format!("Item {} is not executable here", item.get_class().get_name()))? }
+				} else { Err("ExecItem index out of range".to_owned())? }
+				Ok(())
 			},
-			UnitCommand::Idle => true,
+			UnitCommand::Idle => Ok(()),
 		}
 	}
 
-	pub fn is_valid_command(&self, player: PlayerID, command: &Command) -> bool {
-		if !self.active_player_ids.contains(&player) { return false; }
+	pub fn is_valid_command(&self, player: PlayerID, command: &Command) -> Result<(), String> {
+		if !self.active_player_ids.contains(&player) { Err("It is not your turn.".to_owned())?; }
 
 		match command {
-			Command::NextTurn => true,
+			Command::NextTurn => Ok(()),
 			Command::UnitCommand { ref command, pos } => self.is_valid_unit_command(player, *pos, command),
 		}
 	}
 
-	fn allowed_to_go_to(&self, from: Pos, to: Pos) -> bool {
+	fn allowed_to_go_to(&self, from: Pos, to: Pos) -> Result<(), String> {
 		let player_id = self.unitmap.get(from).unwrap().owner;
 
 		if self.terrainmap.get(to).is_blocking() {
-			return false;
+			Err("The terrain is blocking.".to_string())?;
 		}
 
 		if self.buildingmap.get(to)
 				.map(|b| b.is_blocking_against(player_id))
 				.unwrap_or(false) {
-			return false;
+			Err("A building is blocking.".to_string())?;
 		}
 
-		true
+		Ok(())
 	}
 }

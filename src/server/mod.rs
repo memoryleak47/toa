@@ -58,7 +58,7 @@ pub fn run() {
 				ClientToServerPacket::Command(c) => c,
 			};
 
-			if w.checked_exec(id, &command) {
+			if w.checked_exec(id, &command).is_ok() {
 				user_pool.broadcast(|_| {
 					ServerToClientPacket::Command {
 						command: command.clone(),

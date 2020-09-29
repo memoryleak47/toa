@@ -1,12 +1,12 @@
 use crate::*;
 
 impl World {
-	pub fn checked_exec(&mut self, player_id: PlayerID, command: &Command) -> bool {
-		if !self.is_valid_command(player_id, command) { return false; }
+	pub fn checked_exec(&mut self, player_id: PlayerID, command: &Command) -> Result<(), String> {
+		self.is_valid_command(player_id, command)?;
 
 		self.exec(player_id, command);
 
-		true
+		Ok(())
 	}
 
 	fn exec(&mut self, player_id: PlayerID, command: &Command) {

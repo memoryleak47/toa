@@ -6,7 +6,7 @@ impl App {
 
 		match self.stream.receive_nonblocking() {
 			Some(ServerToClientPacket::Command { author_id, command }) => {
-				assert!(self.world.checked_exec(author_id, &command));
+				self.world.checked_exec(author_id, &command).unwrap();
 				if author_id == self.player_id {
 					self.command_accepted();
 				}

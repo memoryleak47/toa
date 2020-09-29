@@ -40,8 +40,8 @@ impl App {
 		while !cs.is_empty() {
 			match cs.remove(0) {
 				MenuCommand::Command(c) => {
-					if !self.world.is_valid_command(self.player_id, &c) {
-						println!("your command was invalid!");
+					if let Err(s) = self.world.is_valid_command(self.player_id, &c) {
+						println!("Invalid Cmd: {}", s);
 						break;
 					}
 
