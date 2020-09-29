@@ -15,8 +15,7 @@ impl App {
 			Some(_) => panic!("got wrong packet while running!"),
 			None => {},
 		}
-		// TODO un-comment to enable fuzzing:
-		// self.fuzz();
+		#[cfg(feature = "fuzz")] self.fuzz();
 	}
 
 	fn command_accepted(&mut self) {

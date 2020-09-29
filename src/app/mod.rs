@@ -3,10 +3,10 @@ mod run;
 mod tick;
 mod render;
 mod event;
+#[cfg(feature = "fuzz")] mod fuzz;
 
 mod marker;
 pub use marker::Marker;
-
 
 use crate::*;
 

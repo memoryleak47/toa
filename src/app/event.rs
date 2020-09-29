@@ -13,8 +13,7 @@ impl App {
 					self.focus_position += (self.window_grab.unwrap() - v) / self.tilesize;
 					self.window_grab = Some(v);
 				}
-			},
-			Event::MouseButtonReleased { button: Button::Middle, x, y } => {
+			}, Event::MouseButtonReleased { button: Button::Middle, x, y } => {
 				if self.window_grab.is_some() {
 					let v = Vec2f::new(x as f32, y as f32);
 					self.focus_position += (self.window_grab.unwrap() - v) / self.tilesize;
@@ -48,27 +47,5 @@ impl App {
 	pub fn get_world_mouse(&self) -> Vec2f {
 		let m = self.window.mouse_position();
 		self.window_to_tile_position(Vec2f::new(m.x as f32, m.y as f32))
-	}
-
-	#[allow(unused)]
-	pub fn fuzz(&mut self) {
-		static KEYS: &[Key] = &[Key::A, Key::W, Key::S, Key::D, Key::Q, Key::E, Key::R, Key::X, Key::F, Key::B, Key::I];
-		for &key in KEYS {
-			if rand::random::<u8>() < 8 {
-				self.handle_hotkey(key);
-			}
-		}
-		for w in self.generate_widgets() {
-			if rand::random::<u8>() < 8 {
-				self.apply_menu_commands(w.on_click);
-			}
-		}
-		for p in Pos::iter_all() {
-			let d = (*p - *self.cursor).magnitude_sqr();
-			let v = if d < 2 { 50 } else { 8 };
-			if rand::random::<u8>() < v {
-				self.on_tile_click(p, Button::Left);
-			}
-		}
 	}
 }
