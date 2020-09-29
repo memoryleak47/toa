@@ -16,7 +16,7 @@ impl ItemClass {
 			ItemClass::Iron => RawTextureId::IronItem,
 			ItemClass::IronSword => RawTextureId::IronSwordItem,
 			ItemClass::WoodBow => RawTextureId::WoodBowItem,
-			ItemClass::SettlementKit => RawTextureId::IronItem,
+			ItemClass::SettlementKit => RawTextureId::SettlementKitItem,
 			ItemClass::LongSword => RawTextureId::LongSwordItem,
 			ItemClass::Lance => RawTextureId::LanceItem,
 		}.into()
