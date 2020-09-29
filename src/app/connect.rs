@@ -23,6 +23,7 @@ impl App {
 			stream,
 			font: Font::from_file(&resource("font/Monospace.ttf")).unwrap(),
 			window_grab: None,
+			msg: String::new(),
 		};
 
 		app.init();

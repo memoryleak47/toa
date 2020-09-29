@@ -81,6 +81,7 @@ impl App {
 		widgets.extend(self.build_building_pane((0.0, 0.5).into()));
 		widgets.extend(self.build_terrain_pane((0.0, 0.75).into()));
 		widgets.extend(self.main_button());
+		widgets.push(self.msg_label());
 
 		widgets
 	}
@@ -163,5 +164,17 @@ impl App {
 			}
 		}
 		base_color
+	}
+
+	fn msg_label(&self) -> Widget {
+		let ws = self.window_size();
+		let s: Vec2f = (ws.x * 0.013).into();
+		Widget {
+			pos: Vec2f::new(0.0, ws.y - s.y),
+			size: s,
+			draw_type: self.msg.clone().into(),
+			on_click: vec![],
+			hotkey: None,
+		}
 	}
 }

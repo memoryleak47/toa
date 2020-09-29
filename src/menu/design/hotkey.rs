@@ -17,7 +17,7 @@ impl App {
 	pub fn handle_hotkey(&mut self, k: Key) {
 		match k {
 			Key::BackSpace | Key::Delete => self.window.close(),
-			Key::Escape => self.menu_state = MenuState::Normal,
+			Key::Escape => self.reset_menu(),
 
 			Key::W => self.apply_menu_commands(self.move_command(Direction::Up)),
 			Key::A => self.apply_menu_commands(self.move_command(Direction::Left)),

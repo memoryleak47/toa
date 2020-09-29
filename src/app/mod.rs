@@ -24,4 +24,5 @@ pub struct App {
 	pub stream: Stream,
 	pub font: Font,
 	pub window_grab: Option<Vec2f>,
+	pub msg: String,
 }
