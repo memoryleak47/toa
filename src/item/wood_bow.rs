@@ -39,7 +39,7 @@ impl ItemTrait for WoodBow {
 	fn get_damage(&self) -> Damage { Damage(3) }
 	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
 		iter::once(v.to_i())
-			.filter(|p| p.magnitude_sqr() <= 4)
+			.filter(|p| p.magnitude_sqr() <= 3*3)
 			.collect()
 	}
 }
