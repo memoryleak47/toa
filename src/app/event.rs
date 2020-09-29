@@ -49,4 +49,26 @@ impl App {
 		let m = self.window.mouse_position();
 		self.window_to_tile_position(Vec2f::new(m.x as f32, m.y as f32))
 	}
+
+	#[allow(unused)]
+	pub fn fuzz(&mut self) {
+		static KEYS: &[Key] = &[Key::A, Key::W, Key::S, Key::D, Key::Q, Key::E, Key::R, Key::X, Key::F, Key::B, Key::I];
+		for &key in KEYS {
+			if rand::random::<u8>() < 8 {
+				self.handle_hotkey(key);
+			}
+		}
+		for w in self.generate_widgets() {
+			if rand::random::<u8>() < 8 {
+				self.apply_menu_commands(w.on_click);
+			}
+		}
+		for p in Pos::iter_all() {
+			let d = (*p - *self.cursor).magnitude_sqr();
+			let v = if d < 2 { 50 } else { 8 };
+			if rand::random::<u8>() < v {
+				self.on_tile_click(p, Button::Left);
+			}
+		}
+	}
 }
