@@ -42,13 +42,13 @@ impl App {
 				MenuCommand::Command(c) => {
 					if !self.world.is_valid_command(self.player_id, &c) {
 						println!("your command was invalid!");
-						return;
+						break;
 					}
 
 					let p = ClientToServerPacket::Command(c);
 					self.stream.send(p);
 					self.pending = cs;
-					return;
+					break;
 				},
 				MenuCommand::StateChange(s) => {
 					self.menu_state = s;
@@ -58,6 +58,14 @@ impl App {
 					self.menu_state = MenuState::Normal;
 				},
 			}
+		}
+		self.reset_menu_if_unselected();
+	}
+
+	// maybe there is a better way of doing this
+	fn reset_menu_if_unselected(&mut self) {
+		if self.world.unitmap.get(self.cursor).is_none() {
+			self.menu_state = MenuState::Normal;
 		}
 	}
 }
