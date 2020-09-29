@@ -19,13 +19,15 @@ impl App {
 	}
 
 	fn command_accepted(&mut self) {
-		let mut cs = vec![];
+		let mut cs = None;
 		mem::swap(&mut self.pending, &mut cs);
-		self.apply_menu_commands(cs);
+		if let Some(x) = cs {
+			self.apply_menu_commands(x);
+		}
 	}
 
 	fn command_declined(&mut self) {
 		println!("Your command has been declined!\nMaybe some other player did a move which prevents your move?\nOtherwise this is a bug.");
-		self.pending = vec![];
+		self.pending = None;
 	}
 }

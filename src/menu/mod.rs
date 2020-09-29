@@ -37,7 +37,7 @@ impl App {
 	}
 
 	pub fn apply_menu_commands(&mut self, mut cs: Vec<MenuCommand>) {
-		if !self.pending.is_empty() {
+		if self.pending.is_some() {
 			return; // while pending, inputs are ignored!
 			// this is a simple way to prevent a big class of bugs
 		}
@@ -52,7 +52,7 @@ impl App {
 
 					let p = ClientToServerPacket::Command(c);
 					self.stream.send(p);
-					self.pending = cs;
+					self.pending = Some(cs);
 					break;
 				},
 				MenuCommand::StateChange(s) => {
