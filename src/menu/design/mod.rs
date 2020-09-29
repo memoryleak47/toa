@@ -82,7 +82,7 @@ impl App {
 		if let Some(p) = self.world.find_next_usable_unit_tile(self.cursor, self.player_id) {
 			vec![MenuCommand::Cursor(p)]
 		} else {
-			if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(false) {
+			if self.selected_unit().map(|u| u.stamina <= 0).unwrap_or(true) {
 				vec![
 					MenuCommand::StateChange(MenuState::Normal),
 					MenuCommand::Command(Command::NextTurn)
