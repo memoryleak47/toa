@@ -18,7 +18,7 @@ impl App {
 			menu_state: MenuState::Normal,
 			world,
 			animationmap: OptTileMap::new(),
-			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::DEFAULT, &Default::default()),
+			window: RenderWindow::new(VideoMode::fullscreen_modes()[0], "Toa client", Style::FULLSCREEN | Style::CLOSE, &Default::default()),
 			texture_state: TextureState::new(),
 			sound_state: SoundState::new().unwrap(),
 			stream,
