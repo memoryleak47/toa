@@ -39,12 +39,7 @@ impl App {
 			}
 			Command::UnitCommand { command: UnitCommand::Attack(a, b), pos } => {
 				let unit = self.world.unitmap.get(*pos).unwrap();
-				// TODO extract this into some function
-				let rel_tiles = if let Some(i) = a {
-					unit.inventory.iter().nth(*i).unwrap().aim(*b)
-				} else {
-					melee_aim(*b)
-				};
+				let rel_tiles = a.map(|i| unit.inventory.get(i)).aim(*b);
 				for t in rel_tiles {
 					let p = if let Some(x) = pos.map(|p| p + t) { x } else { continue; };
 					self.animationmap.set(p, Some(Animation::new(AnimationKind::Damage)));

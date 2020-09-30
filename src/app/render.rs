@@ -85,8 +85,7 @@ impl App {
 			MenuState::Attack(weapon_id) => {
 				let v = self.get_world_mouse() - self.cursor.to_f();
 				let u = self.world.unitmap.get(self.cursor).unwrap();
-				let rel_tiles = weapon_id.map(|i| u.inventory.get(i).aim(v))
-					.unwrap_or(melee_aim(v));
+				let rel_tiles = weapon_id.map(|i| u.inventory.get(i)).aim(v);
 				for t in rel_tiles {
 					if let Some(t) = self.cursor.map(|x| x + t) {
 						draw!(self, t, &Marker::Combat);

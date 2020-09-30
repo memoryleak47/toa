@@ -200,3 +200,24 @@ pub fn melee_aim(mouse: Vec2f) -> Vec<Vec2i> {
 		.unwrap()];
 	ret
 }
+
+pub trait HasWeapon {
+	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i>;
+	fn get_damage(&self) -> Damage;
+}
+
+impl<'a> HasWeapon for Option<&'a Item> {
+	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> {
+		match self {
+			Some(x) => x.aim(mouse),
+			None => melee_aim(mouse),
+		}
+	}
+
+	fn get_damage(&self) -> Damage {
+		match self {
+			Some(x) => x.get_damage(),
+			None => Damage(1),
+		}
+	}
+}
