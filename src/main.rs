@@ -62,6 +62,9 @@ mod server;
 #[cfg(feature = "client")] mod menu;
 #[cfg(feature = "client")] pub use menu::*;
 
+#[cfg(feature = "client")] mod animation;
+#[cfg(feature = "client")] pub use animation::*;
+
 #[cfg(feature = "client")] 
 pub use sfml::{
 	graphics::{RenderTarget, Color, RectangleShape, Text, Shape, Transformable, RenderWindow, Font, Sprite, Texture},

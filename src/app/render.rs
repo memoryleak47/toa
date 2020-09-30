@@ -38,6 +38,7 @@ impl App {
 		self.render_itemmap();
 		self.render_unitmap();
 		self.render_markers();
+		self.render_animations();
 		self.render_menu();
 	}
 
@@ -101,6 +102,14 @@ impl App {
 				}
 			}
 			_ => ()
+		}
+	}
+
+	fn render_animations(&mut self) {
+		for t in Pos::iter_all() {
+			if self.animationmap.get(t).is_some() {
+				draw!(self, t, &Marker::Combat); // TODO make another icon for animations
+			}
 		}
 	}
 

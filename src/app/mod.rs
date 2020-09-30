@@ -18,6 +18,7 @@ pub struct App {
 	pub pending: Option<Vec<MenuCommand>>,
 	pub menu_state: MenuState,
 	pub world: World,
+	pub animationmap: OptTileMap<Animation>,
 	pub window: RenderWindow,
 	pub texture_state: TextureState,
 	pub sound_state: SoundState,
