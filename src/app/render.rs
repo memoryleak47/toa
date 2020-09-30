@@ -107,8 +107,8 @@ impl App {
 
 	fn render_animations(&mut self) {
 		for t in Pos::iter_all() {
-			if self.animationmap.get(t).is_some() {
-				draw!(self, t, &Marker::Combat); // TODO make another icon for animations
+			if let Some(a) = self.animationmap.get(t) {
+				draw!(self, t, &a.kind);
 			}
 		}
 	}

@@ -123,6 +123,9 @@ setup!(
 	CombatCursor: "cursors/combat_cursor.png",
 	ItemDropCursor: "cursors/item_drop_cursor.png",
 
+	DamageAnimation: "animation/damage.png",
+	BurnAnimation: "animation/burn.png",
+
 	// hued:
 
 	SpawnerBuilding: "building/spawner_template.png",
