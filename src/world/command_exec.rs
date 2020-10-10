@@ -66,7 +66,6 @@ impl World {
 			if next_team == self.pool.get_starting_team() {
 				self.reset_turn();
 			}
-			self.on_turn_start();
 		}
 	}
 

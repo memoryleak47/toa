@@ -47,6 +47,8 @@ impl PlayerPool {
 			}
 		}
 
+		teams.sort_by_key(|x| x.0);
+
 		teams
 	}
 
