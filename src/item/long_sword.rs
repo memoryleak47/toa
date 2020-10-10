@@ -10,9 +10,7 @@ pub struct LongSwordClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct LongSword {
-	health: u32,
-}
+pub struct LongSword;
 
 impl ItemClassTrait for LongSwordClass {
 	type Instance = LongSword;
@@ -20,7 +18,7 @@ impl ItemClassTrait for LongSwordClass {
 	fn get_name() -> &'static str { "LongSword" }
 	fn get_weight() -> u32 { 15 }
 	fn build() -> Item {
-		Item::LongSword(LongSword { health: 100 })
+		Item::LongSword(LongSword)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
 	fn stateless() -> bool { false }
@@ -32,10 +30,7 @@ impl ItemTrait for LongSword {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::LongSword
 	}
-	fn damage(&mut self, damage: Damage) -> bool {
-		self.health = self.health.saturating_sub(damage.0);
-		self.health == 0
-	}
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn get_damage(&self) -> Damage { Damage(15) }
 	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
 		let t = melee_aim(v)[0];

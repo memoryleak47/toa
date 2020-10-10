@@ -10,9 +10,7 @@ pub struct WoodSwordClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct WoodSword {
-	health: u32,
-}
+pub struct WoodSword;
 
 impl ItemClassTrait for WoodSwordClass {
 	type Instance = WoodSword;
@@ -20,7 +18,7 @@ impl ItemClassTrait for WoodSwordClass {
 	fn get_name() -> &'static str { "WoodSword" }
 	fn get_weight() -> u32 { 8 }
 	fn build() -> Item {
-		Item::WoodSword(WoodSword { health: 100 })
+		Item::WoodSword(WoodSword)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
 	fn stateless() -> bool { false }
@@ -32,9 +30,6 @@ impl ItemTrait for WoodSword {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::WoodSword
 	}
-	fn damage(&mut self, damage: Damage) -> bool {
-		self.health = self.health.saturating_sub(damage.0);
-		self.health == 0
-	}
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn get_damage(&self) -> Damage { Damage(10) }
 }

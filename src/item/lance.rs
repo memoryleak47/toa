@@ -10,9 +10,7 @@ pub struct LanceClass;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
-pub struct Lance {
-	health: u32,
-}
+pub struct Lance;
 
 impl ItemClassTrait for LanceClass {
 	type Instance = Lance;
@@ -20,7 +18,7 @@ impl ItemClassTrait for LanceClass {
 	fn get_name() -> &'static str { "Lance" }
 	fn get_weight() -> u32 { 15 }
 	fn build() -> Item {
-		Item::Lance(Lance { health: 100 })
+		Item::Lance(Lance)
 	}
 	fn get_recipe() -> Option<&'static [ItemClass]> { Some(&RECIPE[..]) }
 	fn stateless() -> bool { false }
@@ -32,10 +30,7 @@ impl ItemTrait for Lance {
 	fn get_class(&self) -> ItemClass {
 		ItemClass::Lance
 	}
-	fn damage(&mut self, damage: Damage) -> bool {
-		self.health = self.health.saturating_sub(damage.0);
-		self.health == 0
-	}
+	fn damage(&mut self, _: Damage) -> bool { true }
 	fn get_damage(&self) -> Damage { Damage(12) }
 	fn aim(&self, v: Vec2f) -> Vec<Vec2i> {
 		let mut tiles = melee_aim(v);
