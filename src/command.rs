@@ -29,8 +29,8 @@ impl UnitCommand {
 		match self {
 			UnitCommand::Move(dir) => {
 				let to = pos.map(|x| x + **dir).unwrap();
-				let terrain_summand = (stamina_cost_at(pos, w) + stamina_cost_at(to, w)) / 2;
-				let weight_summand = 2 * w.unitmap.get(pos).unwrap().get_weight() / 5;
+				let terrain_summand = stamina_cost_at(pos, w) + stamina_cost_at(to, w);
+				let weight_summand = w.unitmap.get(pos).unwrap().get_weight() / 5;
 				terrain_summand + weight_summand
 			},
 			UnitCommand::Attack(..) => { 10 },

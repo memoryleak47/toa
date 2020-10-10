@@ -26,12 +26,12 @@ const SPAWN_DISTRIBUTION: [(Terrain, u32); 6] =
 impl Terrain {
 	pub fn get_stamina_cost(self) -> u32 {
 		match self {
-			Terrain::GRASS => 20,
-			Terrain::FOREST => 30,
-			Terrain::STONE => 30,
-			Terrain::IRON => 30,
-			Terrain::MOUNTAIN => 50,
-			Terrain::MARSH => 50,
+			Terrain::GRASS => 10,
+			Terrain::FOREST => 12,
+			Terrain::STONE => 12,
+			Terrain::IRON => 12,
+			Terrain::MARSH => 15,
+			Terrain::MOUNTAIN => 15,
 		}
 	}
 

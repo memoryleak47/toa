@@ -28,7 +28,7 @@ impl BuildingClassTrait for StreetClass {
 	fn get_name() -> &'static str {
 		"Street"
 	}
-	fn reduces_walk_stamina() -> Option<u32> { Some(10) }
+	fn reduces_walk_stamina() -> Option<u32> { Some(5) }
 }
 
 impl BuildingTrait for Street {
@@ -42,10 +42,7 @@ impl BuildingTrait for Street {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, w: &mut World, p: Pos) {
-		let u = w.unitmap.get_mut(p).unwrap();
-		u.inventory.push(ItemClass::Wood.build());
-	}
+	fn work(&mut self, _: &mut World, _: Pos) { panic!("can't work on street") }
 	fn get_info_string(&self) -> String {
 		format!("Street( health: {})", self.health)
 	}
