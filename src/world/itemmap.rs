@@ -1,6 +1,6 @@
 use crate::*;
 
-const GROUND_DAMAGE: Damage = Damage(5);
+const GROUND_DAMAGE: Damage = Damage(1);
 
 impl World {
 	pub fn tick_itemmap(&mut self) {
