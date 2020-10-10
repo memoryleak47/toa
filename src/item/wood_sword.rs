@@ -18,7 +18,7 @@ impl ItemClassTrait for WoodSwordClass {
 	type Instance = WoodSword;
 
 	fn get_name() -> &'static str { "WoodSword" }
-	fn get_weight() -> u32 { 10 }
+	fn get_weight() -> u32 { 8 }
 	fn build() -> Item {
 		Item::WoodSword(WoodSword { health: 100 })
 	}

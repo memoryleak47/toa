@@ -16,7 +16,7 @@ impl ItemClassTrait for SettlementKitClass {
 	type Instance = SettlementKit;
 	
 	fn get_name() -> &'static str { "SettlementKit" }
-	fn get_weight() -> u32 { 20 }
+	fn get_weight() -> u32 { 15 }
 	fn build() -> Item {
 		Item::SettlementKit(SettlementKit)
 	}

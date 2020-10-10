@@ -18,7 +18,7 @@ impl ItemClassTrait for LanceClass {
 	type Instance = Lance;
 
 	fn get_name() -> &'static str { "Lance" }
-	fn get_weight() -> u32 { 20 }
+	fn get_weight() -> u32 { 15 }
 	fn build() -> Item {
 		Item::Lance(Lance { health: 100 })
 	}
