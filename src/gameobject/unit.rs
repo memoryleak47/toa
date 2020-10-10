@@ -2,7 +2,7 @@ use crate::*;
 
 pub struct Cloth(pub PlayerID);
 
-const RELATIVE_POS: Vec2f = Vec2f::new(0.25, 0.25);
+const RELATIVE_POS: Vec2f = Vec2f::new(0.25, 0.20);
 const SIZE: Vec2f = Vec2f::new(0.5, 0.755);
 
 const NO_STAMINA_ALPHA: u8 = 170;
