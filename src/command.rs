@@ -30,7 +30,7 @@ impl UnitCommand {
 			UnitCommand::Move(dir) => {
 				let to = pos.map(|x| x + **dir).unwrap();
 				let terrain_summand = stamina_cost_at(pos, w) + stamina_cost_at(to, w);
-				let weight_summand = w.unitmap.get(pos).unwrap().get_weight() / 5;
+				let weight_summand = w.unitmap.get(pos).unwrap().get_weight();
 				terrain_summand + weight_summand
 			},
 			UnitCommand::Attack(..) => { 10 },
@@ -46,7 +46,7 @@ impl UnitCommand {
 					.nth(*i)
 					.unwrap()
 					.get_class()
-					.get_weight() / 2
+					.get_weight()
 			},
 			UnitCommand::BurnBuilding => 0,
 			UnitCommand::Craft(_) => 0,

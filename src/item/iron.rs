@@ -12,7 +12,7 @@ impl ItemClassTrait for IronClass {
 	type Instance = Iron;
 
 	fn get_name() -> &'static str { "Iron" }
-	fn get_weight() -> u32 { 10 }
+	fn get_weight() -> u32 { 3 }
 	fn build() -> Item {
 		Item::Iron(Iron)
 	}

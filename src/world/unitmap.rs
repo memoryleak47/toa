@@ -67,7 +67,8 @@ impl World {
 	fn reduce_food(&mut self) {
 		for p in Pos::iter_all() {
 			if let Some(ref mut unit) = self.unitmap.get_mut(p) {
-				unit.food = unit.food.saturating_sub(FOOD_PER_TURN);
+				let food_reduct = FOOD_PER_TURN + 2 * unit.get_weight() / 10;
+				unit.food = unit.food.saturating_sub(food_reduct);
 			}
 		}
 	}
