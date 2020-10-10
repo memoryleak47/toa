@@ -5,7 +5,7 @@ use crate::*;
 lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
 		item_cost: &[ItemClass::Wood, ItemClass::Wood, ItemClass::Wood, ItemClass::Wood],
-		stamina_cost: 80,
+		stamina_cost: 0,
 		build: || Building::Sawmill(Sawmill { health: 100 }),
 		required_terrain: Some(Terrain::FOREST),
 	};

@@ -46,10 +46,10 @@ impl UnitCommand {
 					.nth(*i)
 					.unwrap()
 					.get_class()
-					.get_weight()
+					.get_weight() / 2
 			},
-			UnitCommand::BurnBuilding => 10,
-			UnitCommand::Craft(_) => 10,
+			UnitCommand::BurnBuilding => 0,
+			UnitCommand::Craft(_) => 0,
 			UnitCommand::ExecItem(_) => 0,
 			UnitCommand::Idle => 0,
 		}

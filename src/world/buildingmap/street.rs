@@ -5,7 +5,7 @@ use crate::*;
 lazy_static! {
 	static ref BUILD_PROPERTY: BuildProperty = BuildProperty {
 		item_cost: &[ItemClass::Stone],
-		stamina_cost: 20,
+		stamina_cost: 0,
 		build: || Building::Street(Street { health: 5 }),
 		required_terrain: None,
 	};
