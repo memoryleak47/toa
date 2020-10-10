@@ -59,7 +59,7 @@ pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> OptTileMap<Unit> {
 
 
 impl World {
-	pub fn tick_unitmap(&mut self) {
+	pub fn tick_hunger(&mut self) {
 		self.reduce_food();
 		self.apply_hunger_consequences();
 	}

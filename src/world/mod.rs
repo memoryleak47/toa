@@ -54,14 +54,6 @@ impl World {
 		}
 	}
 
-	fn reset_turn(&mut self) {
-		self.refill_stamina();
-		self.tick_spawners();
-
-		self.tick_unitmap();
-		self.tick_itemmap();
-	}
-
 	pub fn damage(&mut self, p: Pos, damage: Damage) {
 		if let Some(x) = self.buildingmap.get_mut(p) {
 			if x.damage(damage) {

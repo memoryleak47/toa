@@ -64,8 +64,13 @@ impl World {
 			let next_team = self.pool.get_next_team(current_team);
 			self.active_player_ids = self.pool.get_ids_for_team(next_team);
 			if next_team == self.pool.get_starting_team() {
-				self.reset_turn();
+				// after every player has finished his turn:
+				self.tick_hunger();
 			}
+			// after any player has finished his turn:
+			self.refill_stamina();
+			self.tick_spawners();
+			self.tick_itemmap();
 		}
 	}
 
