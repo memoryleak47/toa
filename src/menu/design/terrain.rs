@@ -18,7 +18,7 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (offset + (0.01, 0.03)),
 			size: ws * (0.025, 0.025),
-			draw_type: format!("stamina cost summand: {}", t.get_stamina_cost()).into(),
+			draw_type: format!("stamina cost summand: {}", stamina_cost_at(self.cursor, &self.world)).into(),
 			on_click: vec![],
 			hotkey: None,
 		});

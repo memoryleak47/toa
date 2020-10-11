@@ -60,7 +60,7 @@ impl UnitCommand {
 	}
 }
 
-fn stamina_cost_at(pos: Pos, w: &World) -> u32 {
+pub fn stamina_cost_at(pos: Pos, w: &World) -> u32 {
 	w.buildingmap.get(pos).and_then(
 			|x| x.get_class().reduces_walk_stamina()
 		).unwrap_or_else(
