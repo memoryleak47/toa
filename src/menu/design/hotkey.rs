@@ -1,7 +1,7 @@
 use crate::*;
 
 // button hotkeys
-pub const WORK_HOTKEY: Key = Key::R;
+pub const CRAFT_HOTKEY: Key = Key::R;
 pub const TAKE_ITEM_HOTKEY: Key = Key::T;
 pub const DROP_ITEM_HOTKEY: Key = Key::G;
 pub const IDLE_HOTKEY: Key = Key::V;

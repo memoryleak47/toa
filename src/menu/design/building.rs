@@ -21,18 +21,21 @@ impl App {
 			widgets.push(Widget {
 				pos: ws * (offset + (0.01, 0.08)),
 				size: ws * 0.025,
-				draw_type: Color::rgb(30, 30, 30).into(),
-				on_click: self.work_commands(),
-				hotkey: Some(WORK_HOTKEY),
-			});
-
-			widgets.push(Widget {
-				pos: ws * (offset + (0.04, 0.08)),
-				size: ws * 0.025,
 				draw_type: Color::rgb(100, 30, 30).into(),
 				on_click: vec![MenuCommand::Command(Command::UnitCommand{ command: UnitCommand::BurnBuilding, pos: cursor })],
 				hotkey: Some(BURN_BUILDING_HOTKEY),
 			});
+
+			if let Some(BuildingClass::Workshop) = self.world.buildingmap.get(self.cursor).map(|x| x.get_class()) {
+				widgets.push(Widget {
+					pos: ws * (offset + (0.04, 0.08)),
+					size: ws * 0.025,
+					draw_type: Color::rgb(30, 30, 30).into(),
+					on_click: vec![MenuCommand::StateChange(MenuState::Craft)],
+					hotkey: Some(CRAFT_HOTKEY),
+				});
+			}
+
 
 		} else {
 			widgets.push(Widget {
@@ -107,14 +110,5 @@ impl App {
 		}
 
 		widgets
-	}
-
-	pub fn work_commands(&self) -> Vec<MenuCommand> {
-		if let Some(b) = self.world.buildingmap.get(self.cursor) {
-			vec![match matches!(b.get_class(), BuildingClass::Workshop) {
-				true => MenuCommand::StateChange(MenuState::Craft),
-				false => MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Work, pos: self.cursor })
-			}]
-		} else { vec![] }
 	}
 }
