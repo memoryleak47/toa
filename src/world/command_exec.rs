@@ -27,7 +27,7 @@ impl World {
 			UnitCommand::Attack(weapon_id, v) => self.exec_attack(pos, weapon_id, v),
 			UnitCommand::Build(class) => self.exec_build(pos, class),
 			UnitCommand::Work => self.exec_work(pos),
-			UnitCommand::UnrefinedWork => self.exec_unrefined_work(pos),
+			UnitCommand::TerrainWork => self.exec_terrain_work(pos),
 			UnitCommand::DropItem(i, dir) => self.exec_drop_item(pos, i, dir),
 			UnitCommand::TakeItem(i) => self.exec_take_item(pos, i),
 			UnitCommand::BurnBuilding => self.exec_discard_building(pos),
@@ -96,8 +96,10 @@ impl World {
 		}
 	}
 
-	fn exec_unrefined_work(&mut self, at: Pos) {
-		let item_class = self.terrainmap.get(at).get_item_class();
+	fn exec_terrain_work(&mut self, at: Pos) {
+		let t = self.terrainmap.get(at);
+		let b = self.buildingmap.get(at);
+		let (_stamina_cost, item_class) = t.terrain_work_stats(b).unwrap();
 		let u = self.unitmap.get_mut(at).unwrap();
 		u.inventory.push(item_class.build());
 	}

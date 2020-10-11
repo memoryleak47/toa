@@ -34,9 +34,10 @@ impl World {
 				if !b.is_workable(self, pos) { Err(format!("You cannot work on {}", b.get_class().get_name()))?; }
 				Ok(())
 			},
-			UnitCommand::UnrefinedWork => {
+			UnitCommand::TerrainWork => {
 				let terrain = self.terrainmap.get(pos);
-				if !terrain.is_unrefined_workable(unit) { Err(format!("You cannot work on {} (without the right building).", terrain.str()))?; }
+				let b = self.buildingmap.get(pos);
+				if terrain.terrain_work_stats(b).is_none() { Err(format!("You cannot work on {} (without the right building).", terrain.str()))?; }
 				Ok(())
 			}
 			UnitCommand::DropItem(i, opt_dir) => {

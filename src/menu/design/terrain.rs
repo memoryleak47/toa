@@ -15,7 +15,7 @@ impl App {
 			hotkey: None,
 		});
 
-		let cmd = Command::UnitCommand{ command: UnitCommand::UnrefinedWork, pos: cursor };
+		let cmd = Command::UnitCommand{ command: UnitCommand::TerrainWork, pos: cursor };
 
 		// TODO check whether its a valid command
 		widgets.push(Widget {
@@ -23,7 +23,7 @@ impl App {
 			size: ws * 0.025,
 			draw_type: Color::rgb(10, 10, 10).into(),
 			on_click: vec![MenuCommand::Command(cmd)],
-			hotkey: Some(UNREFINED_WORK_HOTKEY),
+			hotkey: Some(TERRAIN_WORK_HOTKEY),
 		});
 
 		widgets

@@ -8,7 +8,7 @@ pub enum UnitCommand {
 	Attack(Option<usize>, Vec2f), // relative mouse vector
 	Build(BuildingClass),
 	Work, // building-work
-	UnrefinedWork, // terrain-work
+	TerrainWork,
 	DropItem(usize, Option<Direction>),
 	TakeItem(usize),
 	BurnBuilding,
@@ -37,8 +37,12 @@ impl UnitCommand {
 			UnitCommand::Build(class) => {
 				class.get_build_property().unwrap().stamina_cost
 			},
-			UnitCommand::Work => { 40 },
-			UnitCommand::UnrefinedWork => { 80 },
+			UnitCommand::Work => { 0 }, // there actually aren't any workable buildings currently
+			UnitCommand::TerrainWork => {
+				let t = w.terrainmap.get(pos);
+				let b = w.buildingmap.get(pos);
+				t.terrain_work_stats(b).unwrap().0
+			},
 			UnitCommand::DropItem(_, _) => 0,
 			UnitCommand::TakeItem(i) => {
 				w.itemmap.get(pos)
