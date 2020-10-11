@@ -41,14 +41,13 @@ impl BuildingTrait for StoneMine {
 	fn as_any_mut(&mut self) -> &mut dyn Any { self }
 	fn get_class(&self) -> BuildingClass { BuildingClass::StoneMine }
 	fn is_burnable(&self, _w: &World, _p: Pos) -> bool { true }
-	fn is_workable(&self, _w: &World, _p: Pos) -> bool { true }
+	fn is_workable(&self, _w: &World, _p: Pos) -> bool { false }
 	fn damage(&mut self, damage: Damage) -> bool {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
 	fn work(&mut self, w: &mut World, p: Pos) {
-		let u = w.unitmap.get_mut(p).unwrap();
-		u.inventory.push(ItemClass::Stone.build());
+		panic!("you cannot work at stone mine!")
 	}
 	fn get_info_string(&self) -> String {
 		format!("StoneMine( health: {})", self.health)
