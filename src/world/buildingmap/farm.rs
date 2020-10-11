@@ -46,7 +46,7 @@ impl BuildingTrait for Farm {
 		self.health = self.health.saturating_sub(damage.0);
 		self.health == 0
 	}
-	fn work(&mut self, w: &mut World, p: Pos) {
+	fn work(&mut self, _: &mut World, _: Pos) {
 		panic!("you cannot work at farm!")
 	}
 	fn get_info_string(&self) -> String {
