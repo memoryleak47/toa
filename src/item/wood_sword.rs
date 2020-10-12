@@ -31,5 +31,5 @@ impl ItemTrait for WoodSword {
 		ItemClass::WoodSword
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn get_damage(&self) -> Damage { Damage(6) }
+	fn get_damage(&self) -> Damage { Damage(10) }
 }
