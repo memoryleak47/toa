@@ -66,9 +66,9 @@ impl World {
 			if next_team == self.pool.get_starting_team() {
 				// after every player has finished his turn:
 				self.tick_hunger();
+				self.refill_stamina();
 			}
 			// after any player has finished his turn:
-			self.refill_stamina();
 			self.tick_spawners();
 			self.tick_itemmap();
 		}
