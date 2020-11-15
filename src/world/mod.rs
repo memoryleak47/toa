@@ -18,15 +18,6 @@ pub use unitmap::*;
 mod itemmap;
 pub use itemmap::*;
 
-const REQUIRED_FOOD: u32 = 10;
-lazy_static! {
-	static ref SPAWN_FOOD_VEC: Vec<ItemClass> = {
-		iter::repeat(ItemClass::Food)
-			.take(REQUIRED_FOOD as usize)
-			.collect()
-	};
-}
-
 // represents the current world situation
 #[derive(Serialize, Deserialize, Clone)]
 pub struct World {
@@ -34,6 +25,8 @@ pub struct World {
 	pub buildingmap: OptTileMap<Building>,
 	pub unitmap: OptTileMap<Unit>,
 	pub itemmap: TileMap<Inventory>,
+	pub created_unit_counter: Vec<u32>,
+	pub invested_food_counter: Vec<u32>,
 	pub pool: PlayerPool,
 	pub active_player_ids: Vec<PlayerID>,
 }
@@ -49,6 +42,8 @@ impl World {
 			buildingmap: OptTileMap::new(),
 			unitmap: new_unitmap(&spawns[..]),
 			itemmap: TileMap::new(Inventory::new()),
+			created_unit_counter: vec![0; ids.len()],
+			invested_food_counter: vec![0; ids.len()],
 			pool,
 			active_player_ids: ids,
 		}
@@ -89,14 +84,30 @@ impl World {
 	fn tick_spawners(&mut self) {
 		for p in Pos::iter_all() {
 			if let Some(Building::Spawner(s)) = self.buildingmap.get(p) {
-				let player = s.get_player_id();
-				if self.unitmap.get(p).is_some() { continue; }
-				if self.itemmap.get(p).contains_all(&SPAWN_FOOD_VEC[..]) {
-					self.itemmap.get_mut(p).reduce(&SPAWN_FOOD_VEC[..]);
-					let new_unit = Unit::new(player);
+				let pid = s.get_player_id();
+				let PlayerID(pidu) = pid;
+
+				// eat food
+				let mut food_was_placed = false;
+				while self.itemmap.get(p).contains_all(&[ItemClass::Food]) {
+					self.itemmap.get_mut(p).reduce(&[ItemClass::Food]);
+					self.invested_food_counter[pidu] += 1;
+					food_was_placed = true;
+				}
+
+				// spawn unit
+				let cost = Self::unit_cost_fn(self.created_unit_counter[pidu]);
+				if food_was_placed && self.unitmap.get(p).is_none() && self.invested_food_counter[pidu] >= cost {
+					self.invested_food_counter[pidu] -= cost;
+					self.created_unit_counter[pidu] += 1;
+					let new_unit = Unit::new(pid);
 					self.unitmap.set(p, Some(new_unit));
 				}
 			}
 		}
+	}
+
+	pub fn unit_cost_fn(created_unit_count: u32) -> u32 {
+		2u32.pow(created_unit_count.min(7))
 	}
 }

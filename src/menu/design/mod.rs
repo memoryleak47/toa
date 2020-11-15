@@ -91,16 +91,39 @@ impl App {
 		let mut widgets = Vec::new();
 
 		let cond = self.world.active_player_ids.contains(&self.player_id);
-		let text = match cond {
+		let text1 = match cond {
 			true => "Your turn",
 			false => "Enemies turn"
 		};
+
+		let mut text2 = "food until unit: [".to_string();
+		self.world.pool.get_player_ids()
+			.iter()
+			.for_each(|&PlayerID(pidu)| {
+				let current = self.world.invested_food_counter[pidu];
+				let required = World::unit_cost_fn(self.world.created_unit_counter[pidu]);
+				text2 += &format!("{}: {}/{}, ", pidu, current, required);
+			});
+		// this removes the trailing comma
+		text2.pop();
+		text2.pop();
+		text2 += "]";
 
 		widgets.push(
 			Widget {
 				pos: ws * offset,
 				size: ws * (0.025, 0.025),
-				draw_type: text.to_string().into(),
+				draw_type: text1.to_string().into(),
+				on_click: vec![],
+				hotkey: None,
+			},
+		);
+
+		widgets.push(
+			Widget {
+				pos: ws * (offset + (0., 0.02)),
+				size: ws * (0.025, 0.025),
+				draw_type: text2.to_string().into(),
 				on_click: vec![],
 				hotkey: None,
 			},
