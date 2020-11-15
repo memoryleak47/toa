@@ -86,6 +86,7 @@ setup!(
 	// non-hued:
 
 	GrassTerrain: "terrain/grass.png",
+	PlainsTerrain: "terrain/plains.png",
 	ForestTerrain: "terrain/forest.png",
 	StoneTerrain: "terrain/stone.png",
 	IronTerrain: "terrain/iron.png",

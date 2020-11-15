@@ -6,6 +6,7 @@ use crate::*;
 #[derive(Serialize, Deserialize)]
 pub enum Terrain {
 	GRASS,
+	PLAINS,
 	FOREST,
 	STONE,
 	IRON,
@@ -13,9 +14,10 @@ pub enum Terrain {
 	MARSH,
 }
 
-const SPAWN_DISTRIBUTION: [(Terrain, u32); 6] =
-[
+static SPAWN_DISTRIBUTION: &[(Terrain, u32)] =
+&[
 	(Terrain::GRASS, 30),
+	(Terrain::PLAINS, 40),
 	(Terrain::FOREST, 15),
 	(Terrain::STONE, 5),
 	(Terrain::IRON, 3),
@@ -27,6 +29,7 @@ impl Terrain {
 	pub fn get_stamina_cost(self) -> u32 {
 		match self {
 			Terrain::GRASS => 10,
+			Terrain::PLAINS => 10,
 			Terrain::FOREST => 12,
 			Terrain::STONE => 12,
 			Terrain::IRON => 12,
@@ -38,6 +41,7 @@ impl Terrain {
 	pub fn str(self) -> &'static str {
 		match self {
 			Terrain::GRASS => "Grass",
+			Terrain::PLAINS => "Plains",
 			Terrain::FOREST => "Forest",
 			Terrain::STONE => "Stone",
 			Terrain::IRON => "Iron",
@@ -61,6 +65,7 @@ impl Terrain {
 			(Terrain::IRON, _)                               => None,
 			(Terrain::MOUNTAIN, _)                           => None,
 			(Terrain::MARSH, _)                              => None,
+			(Terrain::PLAINS, _)							 => None,
 		}
 
 	}
