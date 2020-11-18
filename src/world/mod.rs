@@ -35,6 +35,8 @@ impl World {
 	pub fn gen(pool: PlayerPool) -> World {
 		let ids = pool.get_ids_for_team(pool.get_starting_team());
 
+		let player_count = pool.get_player_ids().len();
+
 		let spawns = World::gen_spawns(&pool);
 
 		World {
@@ -42,8 +44,8 @@ impl World {
 			buildingmap: OptTileMap::new(),
 			unitmap: new_unitmap(&spawns[..]),
 			itemmap: TileMap::new(Inventory::new()),
-			created_unit_counter: vec![0; ids.len()],
-			invested_food_counter: vec![0; ids.len()],
+			created_unit_counter: vec![0; player_count],
+			invested_food_counter: vec![0; player_count],
 			pool,
 			active_player_ids: ids,
 		}
