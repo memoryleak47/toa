@@ -27,15 +27,7 @@ static SPAWN_DISTRIBUTION: &[(Terrain, u32)] =
 
 impl Terrain {
 	pub fn get_stamina_cost(self) -> u32 {
-		match self {
-			Terrain::GRASS => 10,
-			Terrain::PLAINS => 10,
-			Terrain::FOREST => 12,
-			Terrain::STONE => 12,
-			Terrain::IRON => 12,
-			Terrain::MARSH => 15,
-			Terrain::MOUNTAIN => 15,
-		}
+		10
 	}
 
 	pub fn str(self) -> &'static str {
