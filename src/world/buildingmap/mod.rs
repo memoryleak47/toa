@@ -32,8 +32,8 @@ pub use wood_wall::*;
 mod stone_wall;
 pub use stone_wall::*;
 
-mod street;
-pub use street::*;
+// mod street;
+// pub use street::*;
 
 pub trait BuildingTrait {
 	type Class: BuildingClassTrait + Sized;
@@ -114,4 +114,4 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall, Street);
+setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall); // deactivated: Street

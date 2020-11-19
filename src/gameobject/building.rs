@@ -29,7 +29,7 @@ impl BuildingClass {
 			BuildingClass::Castle => RawTextureId::CastleBuilding.into(),
 			BuildingClass::WoodWall => RawTextureId::WoodWallBuilding.into(),
 			BuildingClass::StoneWall => RawTextureId::StoneWallBuilding.into(),
-			BuildingClass::Street => RawTextureId::StreetBuilding.into(),
+			// BuildingClass::Street => RawTextureId::StreetBuilding.into(),
 		}
 	}
 }
