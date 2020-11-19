@@ -27,9 +27,4 @@ impl ItemTrait for Food {
 		ItemClass::Food
 	}
 	fn damage(&mut self, _: Damage) -> bool { true }
-	fn is_execable(&self, _p: Pos, _w: &World) -> bool { true }
-	fn exec(&self, p: Pos, w: &mut World) {
-		w.unitmap.get_mut(p).unwrap()
-			.food += 20;
-	}
 }

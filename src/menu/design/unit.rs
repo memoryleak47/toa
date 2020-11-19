@@ -17,7 +17,7 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (offset + (0.01, 0.03)),
 			size: ws * (0.025, 0.025),
-			draw_type: format!("food: {}", u.food).into(),
+			draw_type: format!("stamina: {}", u.stamina).into(),
 			on_click: vec![],
 			hotkey: None,
 		});
@@ -25,21 +25,13 @@ impl App {
 		widgets.push(Widget {
 			pos: ws * (offset + (0.01, 0.05)),
 			size: ws * (0.025, 0.025),
-			draw_type: format!("stamina: {}", u.stamina).into(),
-			on_click: vec![],
-			hotkey: None,
-		});
-
-		widgets.push(Widget {
-			pos: ws * (offset + (0.01, 0.07)),
-			size: ws * (0.025, 0.025),
 			draw_type: format!("weight: {}", u.get_weight()).into(),
 			on_click: vec![],
 			hotkey: None,
 		});
 
 		widgets.push(Widget {
-			pos: ws * (offset + (0.01, 0.10)),
+			pos: ws * (offset + (0.01, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::Attack(_)) { Color::rgb(200, 0, 0) } else { Color::rgb(100, 0, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::Attack(None)) ],
@@ -47,7 +39,7 @@ impl App {
 		});
 
 		widgets.push(Widget {
-			pos: ws * (offset + (0.04, 0.10)),
+			pos: ws * (offset + (0.04, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::ExecItem) { Color::rgb(0, 200, 0) } else { Color::rgb(0, 100, 0) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
@@ -55,7 +47,7 @@ impl App {
 		});
 
 		widgets.push(Widget {
-			pos: ws * (offset + (0.07, 0.10)),
+			pos: ws * (offset + (0.07, 0.08)),
 			size: ws * 0.025,
 			draw_type: if matches!(self.menu_state, MenuState::DropItem(_)) { Color::rgb(0, 0, 200) } else { Color::rgb(0, 0, 100) }.into(),
 			on_click: vec![MenuCommand::StateChange(MenuState::DropItem(HashSet::new()))],
@@ -63,14 +55,14 @@ impl App {
 		});
 
 		widgets.push(Widget {
-			pos: ws * (offset + (0.10, 0.10)),
+			pos: ws * (offset + (0.10, 0.08)),
 			size: ws * 0.025,
 			draw_type: Color::rgb(130, 130, 130).into(),
 			on_click: vec![MenuCommand::Command(Command::UnitCommand { command: UnitCommand::Idle, pos: self.cursor })],
 			hotkey: Some(IDLE_HOTKEY),
 		});
 
-		widgets.extend(self.build_unit_inv_pane(u, offset + (0.00, 0.13)));
+		widgets.extend(self.build_unit_inv_pane(u, offset + (0.00, 0.11)));
 
 		widgets
 	}

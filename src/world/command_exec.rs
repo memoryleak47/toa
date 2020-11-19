@@ -65,7 +65,6 @@ impl World {
 			self.active_player_ids = self.pool.get_ids_for_team(next_team);
 			if next_team == self.pool.get_starting_team() {
 				// after every team has finished:
-				self.tick_hunger();
 				self.refill_stamina();
 			}
 			// after any team has finished:

@@ -170,23 +170,14 @@ impl App {
 	}
 
 	fn pane_color(&self) -> Color {
-		let base_color = (|| {
-			if !self.world.active_player_ids.contains(&self.player_id) { return Color::rgb(30, 30, 30); }
-
-			if let Some(unit) = self.selected_unit() {
-				if unit.stamina <= 0 {
-					return Color::rgb(70, 70, 70);
-				}
-			}
-			Color::rgb(100, 100, 100)
-		})();
+		if !self.world.active_player_ids.contains(&self.player_id) { return Color::rgb(30, 30, 30); }
 
 		if let Some(unit) = self.selected_unit() {
-			if unit.food < 20 {
-				return base_color + Color::rgb(70, 0, 0);
+			if unit.stamina <= 0 {
+				return Color::rgb(70, 70, 70);
 			}
 		}
-		base_color
+		Color::rgb(100, 100, 100)
 	}
 
 	fn msg_label(&self) -> Widget {

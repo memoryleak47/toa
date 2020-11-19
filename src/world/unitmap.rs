@@ -4,9 +4,6 @@ use crate::*;
 
 const FULL_STAMINA: u32 = 100;
 const FULL_HEALTH: u32 = 100;
-const FULL_FOOD: u32 = 100;
-const FOOD_PER_TURN: u32 = 4;
-const HUNGER_DAMAGE: u32 = 10;
 
 #[derive(Clone)]
 #[derive(Serialize, Deserialize)]
@@ -14,7 +11,6 @@ pub struct Unit {
 	pub owner: PlayerID,
 	pub stamina: i32,
 	pub health: u32,
-	pub food: u32,
 	pub inventory: Inventory,
 }
 
@@ -24,7 +20,6 @@ impl Unit {
 			owner,
 			stamina: FULL_STAMINA as i32,
 			health: FULL_HEALTH,
-			food: FULL_FOOD,
 			inventory: Inventory::new(),
 		}
 	}
@@ -59,37 +54,6 @@ pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> OptTileMap<Unit> {
 
 
 impl World {
-	pub fn tick_hunger(&mut self) {
-		self.reduce_food();
-		self.apply_hunger_consequences();
-	}
-
-	fn reduce_food(&mut self) {
-		for p in Pos::iter_all() {
-			if let Some(ref mut unit) = self.unitmap.get_mut(p) {
-				let food_reduct = FOOD_PER_TURN + unit.get_weight() / 2;
-				unit.food = unit.food.saturating_sub(food_reduct);
-			}
-		}
-	}
-
-	fn apply_hunger_consequences(&mut self) {
-		for p in Pos::iter_all() {
-			let u: &mut Option<Unit> = self.unitmap.get_mut_raw(p);
-			if let Some(ref mut unit) = u {
-				if unit.food == 0 {
-					unit.health = unit.health.saturating_sub(HUNGER_DAMAGE);
-				}
-			}
-			if u.as_ref()
-					.filter(|x| x.health == 0)
-					.is_some() {
-				self.kill_unit(p);
-			}
-		}
-	}
-
-
 	pub fn refill_stamina(&mut self) {
 		for p in Pos::iter_all() {
 			if let Some(ref mut unit) = self.unitmap.get_mut(p) {
