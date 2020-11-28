@@ -47,7 +47,7 @@ impl PlayerPool {
 			}
 		}
 
-		teams.sort_by_key(|x| x.0);
+		teams.sort_by_key(|&Team(x)| x);
 
 		teams
 	}
@@ -92,7 +92,11 @@ impl PlayerPool {
 	}
 
 	pub fn get_player_ids(&self) -> Vec<PlayerID> {
-		self.players.keys().cloned().collect()
+		let mut v: Vec<_> = self.players.keys().cloned().collect();
+
+		v.sort_by_key(|&PlayerID(x)| x);
+
+		v
 	}
 
 	pub fn change_team(&mut self, player_id: PlayerID, team: Team) -> bool {
