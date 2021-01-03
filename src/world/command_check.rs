@@ -72,13 +72,13 @@ impl World {
 				Ok(())
 			},
 			UnitCommand::FarmFood => {
-				if self.will_spawn(player) {
+				if self.ready_to_spawn(player) {
 					Err("FarmFood can not be executed when a unit can be spawned!".to_owned())?;
 				}
 				Ok(())
 			},
 			UnitCommand::SpawnUnit(d) => {
-				if !self.will_spawn(player) {
+				if !self.ready_to_spawn(player) {
 					Err("SpawnUnit can only be executed when enough food is collected!".to_owned())?;
 				}
 				let target = pos.map(|x| x + **d);
