@@ -84,7 +84,7 @@ impl World {
 	}
 
 	pub fn unit_cost_fn(created_unit_count: u32) -> u32 {
-		2u32.pow(created_unit_count.min(7))
+		2u32.pow(created_unit_count + 1).min(128)
 	}
 
 	// returns true, iff a new unit is spawned with the next invested food
