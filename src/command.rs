@@ -7,13 +7,15 @@ pub enum UnitCommand {
 	Move(Direction),
 	Attack(Option<usize>, Vec2f), // relative mouse vector
 	Build(BuildingClass),
-	Work, // building-work
+	Work, // building-work, NOTE: currently unused
 	TerrainWork,
 	DropItem(usize, Option<Direction>),
 	TakeItem(usize),
 	BurnBuilding,
 	Craft(ItemClass),
-	ExecItem(usize),
+	ExecItem(usize), // NOTE: currently unused
+	FarmFood,
+	SpawnUnit(Direction),
 	Idle, // consumes all your stamina
 }
 
@@ -55,6 +57,11 @@ impl UnitCommand {
 			UnitCommand::BurnBuilding => 0,
 			UnitCommand::Craft(_) => 0,
 			UnitCommand::ExecItem(_) => 0,
+			UnitCommand::FarmFood | UnitCommand::SpawnUnit(_) =>
+				match w.buildingmap.get(pos).map(|b| b.get_class()) {
+					Some(BuildingClass::Farm) => 40,
+					_ => 80,
+				},
 			UnitCommand::Idle => 0,
 		}
 	}

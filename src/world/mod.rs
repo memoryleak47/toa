@@ -112,4 +112,10 @@ impl World {
 	pub fn unit_cost_fn(created_unit_count: u32) -> u32 {
 		2u32.pow(created_unit_count.min(7))
 	}
+
+	// returns true, iff a new unit is spawned with the next invested food
+	pub fn will_spawn(&self, PlayerID(pidu): PlayerID) -> bool {
+		let cost = Self::unit_cost_fn(self.created_unit_counter[pidu]);
+		self.invested_food_counter[pidu] == cost - 1
+	}
 }

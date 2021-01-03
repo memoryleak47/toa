@@ -123,6 +123,7 @@ setup!(
 	Cursor: "cursors/cursor.png",
 	CombatCursor: "cursors/combat_cursor.png",
 	ItemDropCursor: "cursors/item_drop_cursor.png",
+	SpawnUnitCursor: "cursors/spawn_unit_cursor.png",
 
 	DamageAnimation: "animation/damage.png",
 	BurnAnimation: "animation/burn.png",

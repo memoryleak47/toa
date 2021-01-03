@@ -5,6 +5,7 @@ pub enum Marker {
 	Normal,
 	Combat,
 	ItemDrop,
+	SpawnUnit,
 }
 
 impl GameObject for Marker {
@@ -13,6 +14,7 @@ impl GameObject for Marker {
 			Marker::Normal => RawTextureId::Cursor.into(),
 			Marker::Combat => RawTextureId::CombatCursor.into(),
 			Marker::ItemDrop => RawTextureId::ItemDropCursor.into(),
+			Marker::SpawnUnit => RawTextureId::SpawnUnitCursor.into(),
 		}
 	}
 	fn get_relative_pos(&self) -> Vec2f { <_>::from(0.) }

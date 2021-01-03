@@ -71,6 +71,25 @@ impl World {
 				} else { Err("ExecItem index out of range".to_owned())? }
 				Ok(())
 			},
+			UnitCommand::FarmFood => {
+				if self.will_spawn(player) {
+					Err("FarmFood can not be executed when a unit can be spawned!".to_owned())?;
+				}
+				Ok(())
+			},
+			UnitCommand::SpawnUnit(d) => {
+				if !self.will_spawn(player) {
+					Err("SpawnUnit can only be executed when enough food is collected!".to_owned())?;
+				}
+				let target = pos.map(|x| x + **d);
+				match target {
+					Some(p) => if self.unitmap.get(p).is_some() {
+						Err("You can not spawn a unit there. There already is one!".to_owned())?;
+					}
+					None => Err("SpawnUnit: Out of range!")?,
+				}
+				Ok(())
+			},
 			UnitCommand::Idle => Ok(()),
 		}
 	}

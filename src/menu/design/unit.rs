@@ -38,12 +38,24 @@ impl App {
 			hotkey: Some(ATTACK_HOTKEY),
 		});
 
+		let will_spawn = self.world.will_spawn(self.player_id);
+
 		widgets.push(Widget {
 			pos: ws * (offset + (0.04, 0.08)),
 			size: ws * 0.025,
-			draw_type: if matches!(self.menu_state, MenuState::ExecItem) { Color::rgb(0, 200, 0) } else { Color::rgb(0, 100, 0) }.into(),
-			on_click: vec![MenuCommand::StateChange(MenuState::ExecItem) ],
-			hotkey: Some(EXEC_ITEM_HOTKEY)
+			draw_type: if matches!(self.menu_state, MenuState::SpawnUnit) {
+					Color::rgb(0, 200, 0)
+				} else if will_spawn {
+					Color::rgb(0, 150, 0)
+				} else {
+					Color::rgb(0, 100, 0)
+				}.into(),
+			on_click: vec![if will_spawn {
+				MenuCommand::StateChange(MenuState::SpawnUnit)
+			} else {
+				MenuCommand::Command(Command::UnitCommand { command: UnitCommand::FarmFood, pos: self.cursor })
+			}],
+			hotkey: Some(FARM_FOOD_HOTKEY),
 		});
 
 		widgets.push(Widget {

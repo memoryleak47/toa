@@ -33,6 +33,8 @@ impl World {
 			UnitCommand::BurnBuilding => self.exec_discard_building(pos),
 			UnitCommand::Craft(ic) => self.exec_craft_item_class(ic, pos),
 			UnitCommand::ExecItem(i) => self.exec_exec_item(i, pos),
+			UnitCommand::FarmFood => self.exec_farm_food(pos),
+			UnitCommand::SpawnUnit(d) => self.exec_spawn_unit(pos, d),
 			UnitCommand::Idle => self.exec_idle(pos),
 		}
 	}
@@ -145,6 +147,25 @@ impl World {
 			.inventory
 			.remove(i);
 		item.exec(at, self);
+	}
+
+	fn exec_farm_food(&mut self, at: Pos) {
+		let PlayerID(pidu) = self.unitmap.get(at).unwrap().owner;
+		self.invested_food_counter[pidu] += 1;
+	}
+
+	fn exec_spawn_unit(&mut self, at: Pos, d: Direction) {
+		let player_id = self.unitmap.get(at).unwrap().owner;
+		let target = at.map(|x| x + *d).unwrap();
+
+		let mut unit = Unit::new(player_id);
+		unit.stamina = 0; // in order to hinder offensive spawning
+
+		self.unitmap.set(target, Some(unit));
+
+		let PlayerID(pidu) = player_id;
+		self.invested_food_counter[pidu] = 0;
+		self.created_unit_counter[pidu] += 1;
 	}
 
 	fn exec_idle(&mut self, at: Pos) {

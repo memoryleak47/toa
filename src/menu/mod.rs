@@ -16,7 +16,8 @@ pub enum MenuCommand {
 #[derive(Clone)]
 pub enum MenuState {
 	Normal,
-	ExecItem,
+	SpawnUnit,
+	ExecItem, // NOTE: currently unused
 	Attack(Option<usize>),
 	DropItem(HashSet<usize>),
 	TakeItem,

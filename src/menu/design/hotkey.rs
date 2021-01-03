@@ -8,7 +8,7 @@ pub const IDLE_HOTKEY: Key = Key::V;
 pub const ATTACK_HOTKEY: Key = Key::F;
 pub const TERRAIN_WORK_HOTKEY: Key = Key::E;
 pub const BURN_BUILDING_HOTKEY: Key = Key::X;
-pub const EXEC_ITEM_HOTKEY: Key = Key::Q;
+pub const FARM_FOOD_HOTKEY: Key = Key::Q;
 pub const BUILD_HOTKEY: Key = Key::B;
 pub const MAIN_HOTKEY: Key = Key::Space;
 

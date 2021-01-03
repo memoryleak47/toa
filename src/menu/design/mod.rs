@@ -31,6 +31,21 @@ impl App {
 						vec![]
 					}
 				},
+				MenuState::SpawnUnit => {
+					let v = vec![Direction::Left, Direction::Right, Direction::Up, Direction::Down];
+					let mouse = if let Some(x) = self.get_world_mouse().to_i().to_pos() { x }
+					else { return vec![]; };
+
+					let cond = |d: &Direction| Some(mouse) == self.cursor.map(|x| x + **d);
+					if let Some(d) = v.into_iter().find(cond) {
+						vec![
+							MenuCommand::Command(Command::UnitCommand { command: UnitCommand::SpawnUnit(d), pos: self.cursor}),
+							MenuCommand::StateChange(MenuState::Normal),
+						]
+					} else {
+						vec![]
+					}
+				}
 				_ => vec![MenuCommand::Cursor(p)],
 			};
 		}

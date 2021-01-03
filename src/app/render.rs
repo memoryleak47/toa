@@ -100,6 +100,13 @@ impl App {
 					}
 				}
 			}
+			MenuState::SpawnUnit => {
+				for d in Direction::iter() {
+					if let Some(c) = self.cursor.map(|p| p + *d) {
+						draw!(self, c, &Marker::SpawnUnit);
+					}
+				}
+			}
 			_ => ()
 		}
 	}
