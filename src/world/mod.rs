@@ -83,32 +83,6 @@ impl World {
 				.collect()
 	}
 
-	fn tick_spawners(&mut self) {
-		for p in Pos::iter_all() {
-			if let Some(Building::Spawner(s)) = self.buildingmap.get(p) {
-				let pid = s.get_player_id();
-				let PlayerID(pidu) = pid;
-
-				// eat food
-				let mut food_was_placed = false;
-				while self.itemmap.get(p).contains_all(&[ItemClass::Food]) {
-					self.itemmap.get_mut(p).reduce(&[ItemClass::Food]);
-					self.invested_food_counter[pidu] += 1;
-					food_was_placed = true;
-				}
-
-				// spawn unit
-				let cost = Self::unit_cost_fn(self.created_unit_counter[pidu]);
-				if food_was_placed && self.unitmap.get(p).is_none() && self.invested_food_counter[pidu] >= cost {
-					self.invested_food_counter[pidu] -= cost;
-					self.created_unit_counter[pidu] += 1;
-					let new_unit = Unit::new(pid);
-					self.unitmap.set(p, Some(new_unit));
-				}
-			}
-		}
-	}
-
 	pub fn unit_cost_fn(created_unit_count: u32) -> u32 {
 		2u32.pow(created_unit_count.min(7))
 	}

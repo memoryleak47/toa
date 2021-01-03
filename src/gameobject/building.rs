@@ -2,15 +2,7 @@ use crate::*;
 
 impl GameObject for Building {
 	fn get_texture_id(&self) -> TextureId {
-		match *self {
-			Building::Spawner(ref spawner) => {
-				HuedTextureId {
-					raw: RawTextureId::SpawnerBuilding,
-					player_id: spawner.get_player_id()
-				}.into()
-			},
-			_ => self.get_class().get_texture_id()
-		}
+		self.get_class().get_texture_id()
 	}
 	fn get_relative_pos(&self) -> Vec2f { (0.).into() }
 	fn get_size(&self) -> Vec2f { (1., 0.5).into() }
@@ -19,7 +11,6 @@ impl GameObject for Building {
 impl BuildingClass {
 	pub fn get_texture_id(&self) -> TextureId {
 		match *self {
-			BuildingClass::Spawner => RawTextureId::SpawnerBuilding.into(),
 			BuildingClass::Farm => RawTextureId::FarmBuilding.into(),
 			BuildingClass::Camp => RawTextureId::CampBuilding.into(),
 			BuildingClass::Sawmill => RawTextureId::SawmillBuilding.into(),

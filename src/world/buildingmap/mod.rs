@@ -2,9 +2,6 @@ use std::any::Any;
 
 use crate::*;
 
-mod spawner;
-pub use spawner::*;
-
 mod farm;
 pub use farm::*;
 
@@ -114,4 +111,4 @@ macro_rules! setup {
 
 }
 
-setup!(Spawner, Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall); // deactivated: Street
+setup!(Farm, Camp, Sawmill, StoneMine, IronMine, Workshop, Castle, WoodWall, StoneWall); // deactivated: Street

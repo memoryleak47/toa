@@ -70,7 +70,6 @@ impl World {
 				self.refill_stamina();
 			}
 			// after any team has finished:
-			self.tick_spawners();
 			self.tick_itemmap();
 		}
 	}

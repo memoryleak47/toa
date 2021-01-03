@@ -9,14 +9,12 @@ impl GameObject for Item {
 impl ItemClass {
 	pub fn get_texture_id(&self) -> TextureId {
 		match self {
-			ItemClass::Food => RawTextureId::FoodItem,
 			ItemClass::Wood => RawTextureId::WoodItem,
 			ItemClass::WoodSword => RawTextureId::WoodSwordItem,
 			ItemClass::Stone => RawTextureId::StoneItem,
 			ItemClass::Iron => RawTextureId::IronItem,
 			ItemClass::IronSword => RawTextureId::IronSwordItem,
 			ItemClass::WoodBow => RawTextureId::WoodBowItem,
-			ItemClass::SettlementKit => RawTextureId::SettlementKitItem,
 			ItemClass::LongSword => RawTextureId::LongSwordItem,
 			ItemClass::Lance => RawTextureId::LanceItem,
 		}.into()

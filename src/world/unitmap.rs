@@ -44,8 +44,7 @@ pub fn new_unitmap(spawns: &[(PlayerID, Pos)]) -> OptTileMap<Unit> {
 	let mut unitmap = <OptTileMap<Unit>>::new();
 
 	for (player_id, spawn) in spawns {
-		let mut u = Unit::new(*player_id);
-		u.inventory.push(ItemClass::SettlementKit.build());
+		let u = Unit::new(*player_id);
 		unitmap.set(*spawn, Some(u));
 	}
 

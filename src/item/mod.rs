@@ -1,6 +1,3 @@
-mod food;
-pub use food::*;
-
 mod wood;
 pub use wood::*;
 
@@ -18,9 +15,6 @@ pub use iron_sword::*;
 
 mod wood_bow;
 pub use wood_bow::*;
-
-mod settlement_kit;
-pub use settlement_kit::*;
 
 mod long_sword;
 pub use long_sword::*;
@@ -98,7 +92,7 @@ macro_rules! setup {
 	};
 }
 
-setup!(Food, Wood, WoodSword, Stone, Iron, IronSword, WoodBow, SettlementKit, LongSword, Lance);
+setup!(Wood, WoodSword, Stone, Iron, IronSword, WoodBow, LongSword, Lance);
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Inventory {
