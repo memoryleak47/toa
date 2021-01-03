@@ -57,11 +57,12 @@ impl UnitCommand {
 			UnitCommand::BurnBuilding => 0,
 			UnitCommand::Craft(_) => 0,
 			UnitCommand::ExecItem(_) => 0,
-			UnitCommand::FarmFood | UnitCommand::SpawnUnit(_) =>
+			UnitCommand::FarmFood =>
 				match w.buildingmap.get(pos).map(|b| b.get_class()) {
 					Some(BuildingClass::Farm) => 40,
 					_ => 80,
 				},
+			UnitCommand::SpawnUnit(_) => 0,
 			UnitCommand::Idle => 0,
 		}
 	}
