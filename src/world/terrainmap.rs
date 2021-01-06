@@ -17,11 +17,11 @@ pub enum Terrain {
 static SPAWN_DISTRIBUTION: &[(Terrain, u32)] =
 &[
 	(Terrain::GRASS, 30),
-	(Terrain::PLAINS, 40),
-	(Terrain::FOREST, 15),
-	(Terrain::STONE, 5),
-	(Terrain::IRON, 3),
-	(Terrain::MOUNTAIN, 10),
+	(Terrain::PLAINS, 20),
+	(Terrain::FOREST, 20),
+	(Terrain::STONE, 6),
+	(Terrain::IRON, 4),
+	(Terrain::MOUNTAIN, 20),
 	(Terrain::MARSH, 10),
 ];
 
