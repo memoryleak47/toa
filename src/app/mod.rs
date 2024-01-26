@@ -23,7 +23,7 @@ pub struct App {
 	pub texture_state: TextureState,
 	pub sound_state: SoundState,
 	pub stream: Stream,
-	pub font: Font,
+	pub font: SfBox<Font>,
 	pub window_grab: Option<Vec2f>,
 	pub msg: String,
 }

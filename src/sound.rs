@@ -1,7 +1,7 @@
 use crate::*;
 
 pub struct SoundState {
-	music: Music
+	music: Music<'static>
 }
 
 impl SoundState {

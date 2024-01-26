@@ -1,5 +1,4 @@
 #![deny(bare_trait_objects)]
-#![feature(nll)]
 
 #[macro_use]
 extern crate lazy_static;
@@ -67,7 +66,8 @@ mod server;
 
 #[cfg(feature = "client")] 
 pub use sfml::{
-	graphics::{RenderTarget, Color, RectangleShape, Text, Shape, Transformable, RenderWindow, Font, Sprite, Texture},
+    SfBox,
+	graphics::{RenderTarget, Color, RectangleShape, IntRect, Text, Shape, Transformable, RenderWindow, Font, Sprite, Texture},
 	window::{mouse::Button, Event, VideoMode, Style, Key},
 	audio::Music,
 	system::{Vector2f, Vector2u}

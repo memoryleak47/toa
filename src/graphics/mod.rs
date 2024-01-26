@@ -44,12 +44,12 @@ pub struct HuedTextureId {
 pub struct TextureId(pub usize);
 
 pub struct TextureState {
-	wrappers: HashMap<TextureId, Texture>,
+	wrappers: HashMap<TextureId, SfBox<Texture>>,
 }
 
-fn load_texture(s: &str) -> Option<Texture> {
+fn load_texture(s: &str) -> Option<SfBox<Texture>> {
 	let p = resource(&format!("image/{}", s));
-	Texture::from_file(&p)
+	Texture::from_file(&p).ok()
 }
 
 impl From<HuedTextureId> for TextureId {

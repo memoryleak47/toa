@@ -15,7 +15,7 @@ macro_rules! draw {
 
 			let mut sprite = Sprite::with_texture(texture);
 			if let Some(color) = $go.get_hue() {
-				sprite.set_color(&color);
+				sprite.set_color(color);
 			}
 
 			let posf = pos * tilesize;

@@ -12,7 +12,7 @@ client = ["sfml"]
 fuzz = ["once_cell"]
 
 [dependencies]
-sfml = { optional = true, version = "0.14" }
+sfml = { optional = true, version = "0.21" }
 rand = "0.5"
 lazy_static = "1.0"
 serde = "1.0"

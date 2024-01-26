@@ -19,7 +19,7 @@ impl App {
 		match w.draw_type {
 			DrawType::Color(color) => {
 				let mut s = RectangleShape::new();
-				s.set_fill_color(&color);
+				s.set_fill_color(color);
 				s.set_position(vec2f_to_sfml(w.pos));
 				s.set_size(vec2f_to_sfml(w.size));
 				self.window.draw(&s);
