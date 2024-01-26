@@ -36,37 +36,43 @@ pub use stone_wall::*;
 // pub use street::*;
 
 pub trait BuildingTrait {
-	type Class: BuildingClassTrait + Sized;
+    type Class: BuildingClassTrait + Sized;
 
-	fn as_any_mut(&mut self) -> &mut dyn Any;
-	fn get_class(&self) -> BuildingClass;
-	fn is_burnable(&self, _w: &World, _p: Pos) -> bool;
-	fn is_workable(&self, _w: &World, _p: Pos) -> bool;
-	fn damage(&mut self, damage: Damage) -> bool; // returns whether the building got destroyed
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+    fn get_class(&self) -> BuildingClass;
+    fn is_burnable(&self, _w: &World, _p: Pos) -> bool;
+    fn is_workable(&self, _w: &World, _p: Pos) -> bool;
+    fn damage(&mut self, damage: Damage) -> bool; // returns whether the building got destroyed
 
-	// while this method is executed, the `self`-building is swapped out of the &mut World
-	// `self` will only be placed back, if it wouldn't replace anything
-	fn work(&mut self, _w: &mut World, _p: Pos);
+    // while this method is executed, the `self`-building is swapped out of the &mut World
+    // `self` will only be placed back, if it wouldn't replace anything
+    fn work(&mut self, _w: &mut World, _p: Pos);
 
-	fn get_info_string(&self) -> String;
-	fn is_blocking_against(&self, _pid: PlayerID) -> bool { false }
+    fn get_info_string(&self) -> String;
+    fn is_blocking_against(&self, _pid: PlayerID) -> bool {
+        false
+    }
 }
 
 pub trait BuildingClassTrait {
-	type Instance: BuildingTrait + Sized;
+    type Instance: BuildingTrait + Sized;
 
-	fn get_build_property() -> Option<&'static BuildProperty>;
-	fn get_name() -> &'static str;
-	fn prevents_item_despawn() -> bool { false }
-	fn reduces_walk_stamina() -> Option<u32> { None }
+    fn get_build_property() -> Option<&'static BuildProperty>;
+    fn get_name() -> &'static str;
+    fn prevents_item_despawn() -> bool {
+        false
+    }
+    fn reduces_walk_stamina() -> Option<u32> {
+        None
+    }
 }
 
 #[derive(Clone)]
 pub struct BuildProperty {
-	pub item_cost: &'static [ItemClass],
-	pub stamina_cost: u32,
-	pub build: fn() -> Building,
-	pub required_terrain: Option<Terrain>,
+    pub item_cost: &'static [ItemClass],
+    pub stamina_cost: u32,
+    pub build: fn() -> Building,
+    pub required_terrain: Option<Terrain>,
 }
 
 macro_rules! setup {
@@ -101,7 +107,7 @@ macro_rules! setup {
 			pub fn work(&mut self, w: &mut World, p: Pos)				{ match self { $( Building::$x(a) => a.work(w, p) ),* } }
 			pub fn get_info_string(&self) -> String						{ match self { $( Building::$x(a) => a.get_info_string() ),* } }
 			pub fn is_blocking_against(&self, pid: PlayerID) -> bool	{ match self { $( Building::$x(a) => a.is_blocking_against(pid) ),* } }
-			
+
 		}
 
 		impl BuildingClass {

@@ -33,26 +33,34 @@ use std::slice;
 use crate::*;
 
 pub trait ItemTrait {
-	type Class: ItemClassTrait + Sized;
+    type Class: ItemClassTrait + Sized;
 
-	fn get_class(&self) -> ItemClass;
+    fn get_class(&self) -> ItemClass;
 
-	fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
-	fn get_damage(&self) -> Damage { Damage(1) }
-	// relative mouse position (returning vec![mouse.to_i()]) yields the tile pointed by the mouse
-	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> { melee_aim(mouse) }
-	fn is_execable(&self, _p: Pos, _w: &World) -> bool { false }
-	fn exec(&self, _p: Pos, _w: &mut World) { panic!("default ItemTrait::exec() was called!"); }
+    fn damage(&mut self, damage: Damage) -> bool; // returns whether the item got destroyed
+    fn get_damage(&self) -> Damage {
+        Damage(1)
+    }
+    // relative mouse position (returning vec![mouse.to_i()]) yields the tile pointed by the mouse
+    fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> {
+        melee_aim(mouse)
+    }
+    fn is_execable(&self, _p: Pos, _w: &World) -> bool {
+        false
+    }
+    fn exec(&self, _p: Pos, _w: &mut World) {
+        panic!("default ItemTrait::exec() was called!");
+    }
 }
 
 pub trait ItemClassTrait {
-	type Instance: ItemTrait + Sized;
+    type Instance: ItemTrait + Sized;
 
-	fn get_name() -> &'static str;
-	fn get_weight() -> u32;
-	fn build() -> Item;
-	fn get_recipe() -> Option<&'static [ItemClass]>;
-	fn stateless() -> bool;
+    fn get_name() -> &'static str;
+    fn get_weight() -> u32;
+    fn build() -> Item;
+    fn get_recipe() -> Option<&'static [ItemClass]>;
+    fn stateless() -> bool;
 }
 
 macro_rules! setup {
@@ -98,126 +106,128 @@ macro_rules! setup {
 	};
 }
 
-setup!(Food, Wood, WoodSword, Stone, Iron, IronSword, WoodBow, SettlementKit, LongSword, Lance);
+setup!(
+    Food,
+    Wood,
+    WoodSword,
+    Stone,
+    Iron,
+    IronSword,
+    WoodBow,
+    SettlementKit,
+    LongSword,
+    Lance
+);
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Inventory {
-	items: Vec<Item>,
+    items: Vec<Item>,
 }
 
 impl Inventory {
-	pub fn new() -> Inventory {
-		Inventory { items: Vec::new() }
-	}
+    pub fn new() -> Inventory {
+        Inventory { items: Vec::new() }
+    }
 
-	pub fn push(&mut self, item: Item) {
-		self.items.push(item);
-	}
+    pub fn push(&mut self, item: Item) {
+        self.items.push(item);
+    }
 
-	pub fn remove(&mut self, index: usize) -> Item {
-		self.items.remove(index)
-	}
+    pub fn remove(&mut self, index: usize) -> Item {
+        self.items.remove(index)
+    }
 
-	pub fn contains_all(&self, required_classes: &[ItemClass]) -> bool {
-		let mut classes: Vec<ItemClass> = self.iter()
-			.map(|x| x.get_class())
-			.collect();
+    pub fn contains_all(&self, required_classes: &[ItemClass]) -> bool {
+        let mut classes: Vec<ItemClass> = self.iter().map(|x| x.get_class()).collect();
 
-		for req_class in required_classes {
-			if let Some(pos) = classes
-					.iter()
-					.position(|x| x == req_class) {
+        for req_class in required_classes {
+            if let Some(pos) = classes.iter().position(|x| x == req_class) {
+                classes.remove(pos);
+            } else {
+                return false;
+            }
+        }
 
-				classes.remove(pos);
-			} else { return false; }
-		}
+        true
+    }
 
-		true
-	}
+    pub fn iter(&self) -> slice::Iter<Item> {
+        self.as_ref().iter()
+    }
 
-	pub fn iter(&self) -> slice::Iter<Item> {
-		self.as_ref().iter()
-	}
+    pub fn as_ref(&self) -> &[Item] {
+        self.items.as_ref()
+    }
 
-	pub fn as_ref(&self) -> &[Item] {
-		self.items.as_ref()
-	}
+    #[allow(dead_code)]
+    pub fn as_mut(&mut self) -> &mut [Item] {
+        self.items.as_mut()
+    }
 
-	#[allow(dead_code)]
-	pub fn as_mut(&mut self) -> &mut [Item] {
-		self.items.as_mut()
-	}
+    pub fn get_item_vec(&mut self) -> &mut Vec<Item> {
+        &mut self.items
+    }
 
-	pub fn get_item_vec(&mut self) -> &mut Vec<Item> {
-		&mut self.items
-	}
+    pub fn get(&self, i: usize) -> &Item {
+        &self.items[i]
+    }
 
-	pub fn get(&self, i: usize) -> &Item {
-		&self.items[i]
-	}
+    pub fn has_index(&self, i: usize) -> bool {
+        i < self.items.len()
+    }
 
-	pub fn has_index(&self, i: usize) -> bool {
-		i < self.items.len()
-	}
+    pub fn reduce(&mut self, items: &[ItemClass]) {
+        for &item in items {
+            let p = self
+                .items
+                .iter()
+                .position(|x| x.get_class() == item)
+                .unwrap();
+            self.items.remove(p);
+        }
+    }
 
-	pub fn reduce(&mut self, items: &[ItemClass]) {
-		for &item in items {
-			let p = self.items
-				.iter()
-				.position(|x| x.get_class() == item)
-				.unwrap();
-			self.items.remove(p);
-		}
-	}
+    pub fn get_weight(&self) -> u32 {
+        self.iter().map(|x| (*x).get_class().get_weight()).sum()
+    }
 
-	pub fn get_weight(&self) -> u32 {
-		self.iter()
-			.map(|x| (*x).get_class()
-						  .get_weight()
-			)
-			.sum()
-	}
+    pub fn damage(&mut self, damage: Damage) {
+        let mut items = Vec::new();
+        mem::swap(&mut items, &mut self.items);
 
-	pub fn damage(&mut self, damage: Damage) {
-		let mut items = Vec::new();
-		mem::swap(&mut items, &mut self.items);
-		
-		for mut item in items.into_iter() {
-			if !item.damage(damage) {
-				self.items.push(item);
-			}
-		}
-	}
+        for mut item in items.into_iter() {
+            if !item.damage(damage) {
+                self.items.push(item);
+            }
+        }
+    }
 }
 
 pub fn melee_aim(mouse: Vec2f) -> Vec<Vec2i> {
-	let vec = vec![(0,1), (0,-1), (1,0), (-1,0)];
-	let tile_center = |v: Vec2i| v.to_f() + 0.5;
-	let f = |&w: &Vec2i| ((tile_center(w) - mouse).magnitude_sqr() * 1000.0) as i32;
-	let ret = vec![vec.into_iter()
-		.map(Vec2i::from)
-		.min_by_key(f)
-		.unwrap()];
-	ret
+    let vec = vec![(0, 1), (0, -1), (1, 0), (-1, 0)];
+    let tile_center = |v: Vec2i| v.to_f() + 0.5;
+    let f = |&w: &Vec2i| ((tile_center(w) - mouse).magnitude_sqr() * 1000.0) as i32;
+    let ret = vec![vec.into_iter().map(Vec2i::from).min_by_key(f).unwrap()];
+    ret
 }
 
 pub trait HasWeapon {
-	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i>;
-	fn get_damage(&self) -> Damage;
+    fn aim(&self, mouse: Vec2f) -> Vec<Vec2i>;
+    fn get_damage(&self) -> Damage;
 }
 
 impl<'a> HasWeapon for Option<&'a Item> {
-	fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> {
-		match self {
-			Some(x) => x.aim(mouse),
-			None => melee_aim(mouse),
-		}
-	}
+    fn aim(&self, mouse: Vec2f) -> Vec<Vec2i> {
+        match self {
+            Some(x) => x.aim(mouse),
+            None => melee_aim(mouse),
+        }
+    }
 
-	fn get_damage(&self) -> Damage {
-		match self {
-			Some(x) => x.get_damage(),
-			None => Damage(1),
-		}
-	}
+    fn get_damage(&self) -> Damage {
+        match self {
+            Some(x) => x.get_damage(),
+            None => Damage(1),
+        }
+    }
 }

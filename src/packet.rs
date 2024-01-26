@@ -1,4 +1,4 @@
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::*;
 
@@ -8,20 +8,20 @@ use crate::*;
 
 #[derive(Serialize, Deserialize)]
 pub enum ServerToClientPacket {
-	Init {
-		world: World,
-		your_id: PlayerID
-	},
-	Command {
-		command: Command,
-		author_id: PlayerID,
-	},
-	DeclineCommand,
+    Init {
+        world: World,
+        your_id: PlayerID,
+    },
+    Command {
+        command: Command,
+        author_id: PlayerID,
+    },
+    DeclineCommand,
 }
 
 #[derive(Serialize, Deserialize)]
 pub enum ClientToServerPacket {
-	Command(Command),
+    Command(Command),
 }
 
 pub trait Packet: Serialize + DeserializeOwned {}
